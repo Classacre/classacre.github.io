@@ -5,6 +5,18 @@ const heroParticles = {
     "shape": { "type": "circle" },
     "opacity": { "value": 0.5 },
     "size": { "value": 3 },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#00bf63",
+      "opacity": 0.4,
+      "width": 1,
+      "gradient": {
+        "enable": true,
+        "start": "#00bf63",
+        "end": "#004aad"
+      }
+    },
     "move": {
       "enable": true,
       "speed": 2,
