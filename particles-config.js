@@ -1,6 +1,8 @@
+const isMobile = window.innerWidth <= 768;
+
 const heroParticles = {
   "particles": {
-    "number": { "value": 80 },
+    "number": { "value": isMobile ? 40 : 80 },
     "color": { "value": ["#00bf63", "#004aad"] },
     "shape": { "type": "circle" },
     "opacity": { "value": 0.5 },
@@ -28,7 +30,7 @@ const heroParticles = {
 
 const servicesParticles = {
   "particles": {
-    "number": { "value": 40 },
+    "number": { "value": isMobile ? 20 : 40 },
     "color": { "value": "#ffffff" },
     "shape": { "type": "polygon", "polygon": { "nb_sides": 6 } },
     "opacity": { "value": 0.3 },
@@ -44,7 +46,7 @@ const servicesParticles = {
 
 const teamParticles = {
   "particles": {
-    "number": { "value": 30 },
+    "number": { "value": isMobile ? 15 : 30 },
     "color": { "value": "#efef2c" },
     "shape": { "type": "circle" },
     "opacity": { "value": 0.4 },
@@ -60,7 +62,7 @@ const teamParticles = {
 
 const contactParticles = {
     "particles": {
-        "number": { "value": 50 },
+        "number": { "value": isMobile ? 25 : 50 },
         "color": { "value": ["#00bf63", "#004aad"] },
         "shape": { "type": "circle" },
         "opacity": { "value": 0.3 },

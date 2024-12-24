@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
     const header = document.getElementById('header');
     const logoSmall = document.querySelector('.logo-small');
     const logoLarge = document.querySelector('.logo-large');
@@ -31,5 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
             top: 0,
             behavior: 'smooth'
         });
+    });
+
+    // Mobile menu toggle
+    mobileMenuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-links') && 
+            !e.target.closest('.mobile-menu-toggle') && 
+            navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     });
 });
