@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Theme handling - add this at the top
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const themeToggle = document.getElementById('theme-toggle');
     
@@ -10,8 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.pJSDom) {
             window.pJSDom.forEach(dom => {
                 const particles = dom.pJS.particles;
+                
+                // Update general particle properties
                 particles.opacity.value = isDark ? 0.3 : 0.5;
                 particles.line_linked.opacity = isDark ? 0.2 : 0.4;
+                
+                // Update services particles color specifically
+                if (dom.pJS.canvas.el.id === 'services-particles') {
+                    particles.color.value = isDark ? '#ffffff' : '#000000';
+                    particles.line_linked.color = isDark ? '#ffffff' : '#000000';
+                }
+                
+                // Refresh particles
                 dom.pJS.fn.particlesRefresh();
             });
         }
@@ -29,17 +38,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // System theme change detection
     prefersDark.addListener((e) => setTheme(e.matches));
 
+    // Initialize particles after theme is set
+    setTimeout(() => {
+        particlesJS('hero-particles', heroParticles);
+        particlesJS('services-particles', servicesParticles);
+        particlesJS('team-particles', teamParticles);
+    }, 0);
+
+    // Keep all your existing code below this point
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
     const header = document.getElementById('header');
     const logoSmall = document.querySelector('.logo-small');
     const logoLarge = document.querySelector('.logo-large');
     const headerCompanyName = document.querySelector('.header-company-name');
-
-    // Initialize particles for each section
-    particlesJS('hero-particles', heroParticles);
-    particlesJS('services-particles', servicesParticles);
-    particlesJS('team-particles', teamParticles);
 
     // Enhanced parallax scrolling
     window.addEventListener('scroll', () => {
