@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    function updateTheme(e) {
+        document.body.style.setProperty('--background', e.matches ? '#121212' : '#ffffff');
+        document.body.style.setProperty('--text', e.matches ? '#ffffff' : '#000000');
+    }
+    
+    prefersDark.addListener(updateTheme);
+    updateTheme(prefersDark);
+    
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
     const header = document.getElementById('header');
