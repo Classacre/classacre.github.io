@@ -1,14 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Theme handling - add this at the top
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const themeToggle = document.getElementById('theme-toggle');
     
-    function updateTheme(e) {
-        document.body.style.setProperty('--background', e.matches ? '#121212' : '#ffffff');
-        document.body.style.setProperty('--text', e.matches ? '#ffffff' : '#000000');
+    function setTheme(isDark) {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        
+        // Update particles
+        if (window.pJSDom) {
+            window.pJSDom.forEach(dom => {
+                const particles = dom.pJS.particles;
+                particles.opacity.value = isDark ? 0.3 : 0.5;
+                particles.line_linked.opacity = isDark ? 0.2 : 0.4;
+                dom.pJS.fn.particlesRefresh();
+            });
+        }
     }
     
-    prefersDark.addListener(updateTheme);
-    updateTheme(prefersDark);
+    // Set initial theme
+    setTheme(prefersDark.matches);
     
+    // Theme toggle button
+    themeToggle?.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        setTheme(currentTheme !== 'dark');
+    });
+    
+    // System theme change detection
+    prefersDark.addListener((e) => setTheme(e.matches));
+
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
     const header = document.getElementById('header');

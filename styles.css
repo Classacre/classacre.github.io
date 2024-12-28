@@ -2,6 +2,15 @@
     --primary-green: #00bf63;
     --primary-blue: #004aad;
     --gradient-yellow: #efef2c;
+    --background: #ffffff;
+    --text: #000000;
+    --card-bg: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] {
+    --background: #121212;
+    --text: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.05);
 }
 
 * {
@@ -122,6 +131,8 @@ nav a:hover {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    background-color: var(--background);
+    color: var(--text);
 }
 
 .content-section.alt {
@@ -159,6 +170,7 @@ nav a:hover {
     min-width: 250px;
     max-width: 350px;
     transition: transform 0.3s ease;
+    color: var(--text);
 }
 
 .card:hover {
@@ -240,6 +252,7 @@ nav a:hover {
 main {
     background: var(--background);
     position: relative;
+    color: var(--text);
 }
 
 .team-card {
@@ -311,7 +324,7 @@ main {
         right: -100%;
         height: 100vh;
         width: 70%;
-        background: var(--background);
+        background: white;
         flex-direction: column;
         padding: 80px 40px;
         transition: right 0.3s ease;
@@ -363,4 +376,47 @@ main {
     .logo-large {
         width: 150px;
     }
+}
+
+.nav-links {
+    background-color: var(--background);
+}
+
+/* Keep existing theme toggle styles */
+#theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--primary-blue);
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+}
+
+#theme-toggle svg {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transition: opacity 0.3s ease;
+}
+
+#theme-toggle .sun-icon {
+    opacity: 0;
+}
+
+#theme-toggle .moon-icon {
+    opacity: 1;
+}
+
+[data-theme="dark"] #theme-toggle .sun-icon {
+    opacity: 1;
+}
+
+[data-theme="dark"] #theme-toggle .moon-icon {
+    opacity: 0;
 } 
