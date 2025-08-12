@@ -1,24 +1,25 @@
 // backend/src/app/api/traits/route.ts
 import { getPrisma } from '../../../lib/prisma';
+import { NextResponse } from 'next/server';
 
-export default async function handler(req: any, res: any) {
-  if (req.method === 'GET') {
-    try {
-      const prisma = await getPrisma();
-      const category = (req as any).query.category as string | undefined;
+export async function GET(request: Request) {
+  try {
+    const prisma = await getPrisma();
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get('category') || undefined;
 
-      const where = category ? { category } : {};
-      const traits = await prisma.traits.findMany({
-        where,
-        orderBy: { updated_at: 'desc' },
-      });
+    const where = category ? { category } : {};
+    const traits = await prisma.traits.findMany({
+      where,
+      orderBy: { updated_at: 'desc' },
+    });
 
-      res.status(200).json({ traits });
-    } catch (error) {
-      console.error('[traits] error', error);
-      res.status(500).json({ error: 'Failed to fetch traits' });
-    }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    return NextResponse.json({ traits });
+  } catch (error) {
+    console.error('[traits] error', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch traits' },
+      { status: 500 }
+    );
   }
 }

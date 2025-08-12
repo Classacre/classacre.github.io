@@ -40,7 +40,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ handler)\n/* harmony export */ });\n/* harmony import */ var _lib_prisma__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../lib/prisma */ \"(rsc)/./src/lib/prisma.ts\");\n// backend/src/app/api/traits/route.ts\n\nasync function handler(req, res) {\n    if (req.method === 'GET') {\n        try {\n            const prisma = await (0,_lib_prisma__WEBPACK_IMPORTED_MODULE_0__.getPrisma)();\n            const category = req.query.category;\n            const where = category ? {\n                category\n            } : {};\n            const traits = await prisma.traits.findMany({\n                where,\n                orderBy: {\n                    updated_at: 'desc'\n                }\n            });\n            res.status(200).json({\n                traits\n            });\n        } catch (error) {\n            console.error('[traits] error', error);\n            res.status(500).json({\n                error: 'Failed to fetch traits'\n            });\n        }\n    } else {\n        res.status(405).json({\n            error: 'Method not allowed'\n        });\n    }\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9zcmMvYXBwL2FwaS90cmFpdHMvcm91dGUudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7QUFBQSxzQ0FBc0M7QUFDVTtBQUVqQyxlQUFlQyxRQUFRQyxHQUFRLEVBQUVDLEdBQVE7SUFDdEQsSUFBSUQsSUFBSUUsTUFBTSxLQUFLLE9BQU87UUFDeEIsSUFBSTtZQUNGLE1BQU1DLFNBQVMsTUFBTUwsc0RBQVNBO1lBQzlCLE1BQU1NLFdBQVcsSUFBYUMsS0FBSyxDQUFDRCxRQUFRO1lBRTVDLE1BQU1FLFFBQVFGLFdBQVc7Z0JBQUVBO1lBQVMsSUFBSSxDQUFDO1lBQ3pDLE1BQU1HLFNBQVMsTUFBTUosT0FBT0ksTUFBTSxDQUFDQyxRQUFRLENBQUM7Z0JBQzFDRjtnQkFDQUcsU0FBUztvQkFBRUMsWUFBWTtnQkFBTztZQUNoQztZQUVBVCxJQUFJVSxNQUFNLENBQUMsS0FBS0MsSUFBSSxDQUFDO2dCQUFFTDtZQUFPO1FBQ2hDLEVBQUUsT0FBT00sT0FBTztZQUNkQyxRQUFRRCxLQUFLLENBQUMsa0JBQWtCQTtZQUNoQ1osSUFBSVUsTUFBTSxDQUFDLEtBQUtDLElBQUksQ0FBQztnQkFBRUMsT0FBTztZQUF5QjtRQUN6RDtJQUNGLE9BQU87UUFDTFosSUFBSVUsTUFBTSxDQUFDLEtBQUtDLElBQUksQ0FBQztZQUFFQyxPQUFPO1FBQXFCO0lBQ3JEO0FBQ0YiLCJzb3VyY2VzIjpbIkQ6XFxBSVxcQmlvSW5maW5hIFdlYnNpdGVcXGNsYXNzYWNyZS5naXRodWIuaW9cXGJhY2tlbmRcXHNyY1xcYXBwXFxhcGlcXHRyYWl0c1xccm91dGUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gYmFja2VuZC9zcmMvYXBwL2FwaS90cmFpdHMvcm91dGUudHNcclxuaW1wb3J0IHsgZ2V0UHJpc21hIH0gZnJvbSAnLi4vLi4vLi4vbGliL3ByaXNtYSc7XHJcblxyXG5leHBvcnQgZGVmYXVsdCBhc3luYyBmdW5jdGlvbiBoYW5kbGVyKHJlcTogYW55LCByZXM6IGFueSkge1xyXG4gIGlmIChyZXEubWV0aG9kID09PSAnR0VUJykge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcHJpc21hID0gYXdhaXQgZ2V0UHJpc21hKCk7XHJcbiAgICAgIGNvbnN0IGNhdGVnb3J5ID0gKHJlcSBhcyBhbnkpLnF1ZXJ5LmNhdGVnb3J5IGFzIHN0cmluZyB8IHVuZGVmaW5lZDtcclxuXHJcbiAgICAgIGNvbnN0IHdoZXJlID0gY2F0ZWdvcnkgPyB7IGNhdGVnb3J5IH0gOiB7fTtcclxuICAgICAgY29uc3QgdHJhaXRzID0gYXdhaXQgcHJpc21hLnRyYWl0cy5maW5kTWFueSh7XHJcbiAgICAgICAgd2hlcmUsXHJcbiAgICAgICAgb3JkZXJCeTogeyB1cGRhdGVkX2F0OiAnZGVzYycgfSxcclxuICAgICAgfSk7XHJcblxyXG4gICAgICByZXMuc3RhdHVzKDIwMCkuanNvbih7IHRyYWl0cyB9KTtcclxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XHJcbiAgICAgIGNvbnNvbGUuZXJyb3IoJ1t0cmFpdHNdIGVycm9yJywgZXJyb3IpO1xyXG4gICAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAnRmFpbGVkIHRvIGZldGNoIHRyYWl0cycgfSk7XHJcbiAgICB9XHJcbiAgfSBlbHNlIHtcclxuICAgIHJlcy5zdGF0dXMoNDA1KS5qc29uKHsgZXJyb3I6ICdNZXRob2Qgbm90IGFsbG93ZWQnIH0pO1xyXG4gIH1cclxufSJdLCJuYW1lcyI6WyJnZXRQcmlzbWEiLCJoYW5kbGVyIiwicmVxIiwicmVzIiwibWV0aG9kIiwicHJpc21hIiwiY2F0ZWdvcnkiLCJxdWVyeSIsIndoZXJlIiwidHJhaXRzIiwiZmluZE1hbnkiLCJvcmRlckJ5IiwidXBkYXRlZF9hdCIsInN0YXR1cyIsImpzb24iLCJlcnJvciIsImNvbnNvbGUiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(rsc)/./src/app/api/traits/route.ts\n");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   GET: () => (/* binding */ GET)\n/* harmony export */ });\n/* harmony import */ var _lib_prisma__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../lib/prisma */ \"(rsc)/./src/lib/prisma.ts\");\n/* harmony import */ var next_server__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/server */ \"(rsc)/../node_modules/.pnpm/next@15.4.6_@opentelemetry+_7c6c9efa70bc5d77a1e83ef4b94a75df/node_modules/next/dist/api/server.js\");\n// backend/src/app/api/traits/route.ts\n\n\nasync function GET(request) {\n    try {\n        const prisma = await (0,_lib_prisma__WEBPACK_IMPORTED_MODULE_0__.getPrisma)();\n        const { searchParams } = new URL(request.url);\n        const category = searchParams.get('category') || undefined;\n        const where = category ? {\n            category\n        } : {};\n        const traits = await prisma.traits.findMany({\n            where,\n            orderBy: {\n                updated_at: 'desc'\n            }\n        });\n        return next_server__WEBPACK_IMPORTED_MODULE_1__.NextResponse.json({\n            traits\n        });\n    } catch (error) {\n        console.error('[traits] error', error);\n        return next_server__WEBPACK_IMPORTED_MODULE_1__.NextResponse.json({\n            error: 'Failed to fetch traits'\n        }, {\n            status: 500\n        });\n    }\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9zcmMvYXBwL2FwaS90cmFpdHMvcm91dGUudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQUEsc0NBQXNDO0FBQ1U7QUFDTDtBQUVwQyxlQUFlRSxJQUFJQyxPQUFnQjtJQUN4QyxJQUFJO1FBQ0YsTUFBTUMsU0FBUyxNQUFNSixzREFBU0E7UUFDOUIsTUFBTSxFQUFFSyxZQUFZLEVBQUUsR0FBRyxJQUFJQyxJQUFJSCxRQUFRSSxHQUFHO1FBQzVDLE1BQU1DLFdBQVdILGFBQWFJLEdBQUcsQ0FBQyxlQUFlQztRQUVqRCxNQUFNQyxRQUFRSCxXQUFXO1lBQUVBO1FBQVMsSUFBSSxDQUFDO1FBQ3pDLE1BQU1JLFNBQVMsTUFBTVIsT0FBT1EsTUFBTSxDQUFDQyxRQUFRLENBQUM7WUFDMUNGO1lBQ0FHLFNBQVM7Z0JBQUVDLFlBQVk7WUFBTztRQUNoQztRQUVBLE9BQU9kLHFEQUFZQSxDQUFDZSxJQUFJLENBQUM7WUFBRUo7UUFBTztJQUNwQyxFQUFFLE9BQU9LLE9BQU87UUFDZEMsUUFBUUQsS0FBSyxDQUFDLGtCQUFrQkE7UUFDaEMsT0FBT2hCLHFEQUFZQSxDQUFDZSxJQUFJLENBQ3RCO1lBQUVDLE9BQU87UUFBeUIsR0FDbEM7WUFBRUUsUUFBUTtRQUFJO0lBRWxCO0FBQ0YiLCJzb3VyY2VzIjpbIkQ6XFxBSVxcQmlvSW5maW5hIFdlYnNpdGVcXGNsYXNzYWNyZS5naXRodWIuaW9cXGJhY2tlbmRcXHNyY1xcYXBwXFxhcGlcXHRyYWl0c1xccm91dGUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gYmFja2VuZC9zcmMvYXBwL2FwaS90cmFpdHMvcm91dGUudHNcclxuaW1wb3J0IHsgZ2V0UHJpc21hIH0gZnJvbSAnLi4vLi4vLi4vbGliL3ByaXNtYSc7XHJcbmltcG9ydCB7IE5leHRSZXNwb25zZSB9IGZyb20gJ25leHQvc2VydmVyJztcclxuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBHRVQocmVxdWVzdDogUmVxdWVzdCkge1xyXG4gIHRyeSB7XHJcbiAgICBjb25zdCBwcmlzbWEgPSBhd2FpdCBnZXRQcmlzbWEoKTtcclxuICAgIGNvbnN0IHsgc2VhcmNoUGFyYW1zIH0gPSBuZXcgVVJMKHJlcXVlc3QudXJsKTtcclxuICAgIGNvbnN0IGNhdGVnb3J5ID0gc2VhcmNoUGFyYW1zLmdldCgnY2F0ZWdvcnknKSB8fCB1bmRlZmluZWQ7XHJcblxyXG4gICAgY29uc3Qgd2hlcmUgPSBjYXRlZ29yeSA/IHsgY2F0ZWdvcnkgfSA6IHt9O1xyXG4gICAgY29uc3QgdHJhaXRzID0gYXdhaXQgcHJpc21hLnRyYWl0cy5maW5kTWFueSh7XHJcbiAgICAgIHdoZXJlLFxyXG4gICAgICBvcmRlckJ5OiB7IHVwZGF0ZWRfYXQ6ICdkZXNjJyB9LFxyXG4gICAgfSk7XHJcblxyXG4gICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsgdHJhaXRzIH0pO1xyXG4gIH0gY2F0Y2ggKGVycm9yKSB7XHJcbiAgICBjb25zb2xlLmVycm9yKCdbdHJhaXRzXSBlcnJvcicsIGVycm9yKTtcclxuICAgIHJldHVybiBOZXh0UmVzcG9uc2UuanNvbihcclxuICAgICAgeyBlcnJvcjogJ0ZhaWxlZCB0byBmZXRjaCB0cmFpdHMnIH0sXHJcbiAgICAgIHsgc3RhdHVzOiA1MDAgfVxyXG4gICAgKTtcclxuICB9XHJcbn0iXSwibmFtZXMiOlsiZ2V0UHJpc21hIiwiTmV4dFJlc3BvbnNlIiwiR0VUIiwicmVxdWVzdCIsInByaXNtYSIsInNlYXJjaFBhcmFtcyIsIlVSTCIsInVybCIsImNhdGVnb3J5IiwiZ2V0IiwidW5kZWZpbmVkIiwid2hlcmUiLCJ0cmFpdHMiLCJmaW5kTWFueSIsIm9yZGVyQnkiLCJ1cGRhdGVkX2F0IiwianNvbiIsImVycm9yIiwiY29uc29sZSIsInN0YXR1cyJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(rsc)/./src/app/api/traits/route.ts\n");
 
 /***/ }),
 
@@ -51,7 +51,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   getPrisma: () => (/* binding */ getPrisma)\n/* harmony export */ });\n// runtime-safe Prisma getter\nasync function getPrisma() {\n    const pm = await Promise.resolve(/*! import() */).then(__webpack_require__.t.bind(__webpack_require__, /*! @prisma/client */ \"@prisma/client\", 23));\n    const PrismaClientCtor = pm.PrismaClient ?? pm.default ?? pm;\n    const _global = globalThis;\n    _global.__prisma = _global.__prisma ?? new PrismaClientCtor();\n    return _global.__prisma;\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9zcmMvbGliL3ByaXNtYS50cyIsIm1hcHBpbmdzIjoiOzs7O0FBQUEsNkJBQTZCO0FBQ3RCLGVBQWVBO0lBQ3BCLE1BQU1DLEtBQUssTUFBTSxrSUFBd0I7SUFDekMsTUFBTUMsbUJBQXdCLEdBQVlDLFlBQVksSUFBSSxHQUFZQyxPQUFPLElBQUlIO0lBQ2pGLE1BQU1JLFVBQVVDO0lBQ2hCRCxRQUFRRSxRQUFRLEdBQUdGLFFBQVFFLFFBQVEsSUFBSSxJQUFJTDtJQUMzQyxPQUFPRyxRQUFRRSxRQUFRO0FBQ3pCIiwic291cmNlcyI6WyJEOlxcQUlcXEJpb0luZmluYSBXZWJzaXRlXFxjbGFzc2FjcmUuZ2l0aHViLmlvXFxiYWNrZW5kXFxzcmNcXGxpYlxccHJpc21hLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIHJ1bnRpbWUtc2FmZSBQcmlzbWEgZ2V0dGVyXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBnZXRQcmlzbWEoKSB7XHJcbiAgY29uc3QgcG0gPSBhd2FpdCBpbXBvcnQoJ0BwcmlzbWEvY2xpZW50Jyk7XHJcbiAgY29uc3QgUHJpc21hQ2xpZW50Q3RvcjogYW55ID0gKHBtIGFzIGFueSkuUHJpc21hQ2xpZW50ID8/IChwbSBhcyBhbnkpLmRlZmF1bHQgPz8gcG07XHJcbiAgY29uc3QgX2dsb2JhbCA9IGdsb2JhbFRoaXMgYXMgYW55O1xyXG4gIF9nbG9iYWwuX19wcmlzbWEgPSBfZ2xvYmFsLl9fcHJpc21hID8/IG5ldyBQcmlzbWFDbGllbnRDdG9yKCk7XHJcbiAgcmV0dXJuIF9nbG9iYWwuX19wcmlzbWE7XHJcbn0iXSwibmFtZXMiOlsiZ2V0UHJpc21hIiwicG0iLCJQcmlzbWFDbGllbnRDdG9yIiwiUHJpc21hQ2xpZW50IiwiZGVmYXVsdCIsIl9nbG9iYWwiLCJnbG9iYWxUaGlzIiwiX19wcmlzbWEiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(rsc)/./src/lib/prisma.ts\n");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   getPrisma: () => (/* binding */ getPrisma)\n/* harmony export */ });\n// runtime-safe Prisma getter\nasync function getPrisma() {\n    const pm = await __webpack_require__.e(/*! import() */ \"_rsc_src_generated_prisma_index_js\").then(__webpack_require__.t.bind(__webpack_require__, /*! ../generated/prisma */ \"(rsc)/./src/generated/prisma/index.js\", 23));\n    const PrismaClientCtor = pm.PrismaClient ?? pm.default ?? pm;\n    const _global = globalThis;\n    _global.__prisma = _global.__prisma ?? new PrismaClientCtor();\n    return _global.__prisma;\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9zcmMvbGliL3ByaXNtYS50cyIsIm1hcHBpbmdzIjoiOzs7O0FBQUEsNkJBQTZCO0FBQ3RCLGVBQWVBO0lBQ3BCLE1BQU1DLEtBQUssTUFBTSx5TUFBNkI7SUFDOUMsTUFBTUMsbUJBQXdCLEdBQVlDLFlBQVksSUFBSSxHQUFZQyxPQUFPLElBQUlIO0lBQ2pGLE1BQU1JLFVBQVVDO0lBQ2hCRCxRQUFRRSxRQUFRLEdBQUdGLFFBQVFFLFFBQVEsSUFBSSxJQUFJTDtJQUMzQyxPQUFPRyxRQUFRRSxRQUFRO0FBQ3pCIiwic291cmNlcyI6WyJEOlxcQUlcXEJpb0luZmluYSBXZWJzaXRlXFxjbGFzc2FjcmUuZ2l0aHViLmlvXFxiYWNrZW5kXFxzcmNcXGxpYlxccHJpc21hLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIHJ1bnRpbWUtc2FmZSBQcmlzbWEgZ2V0dGVyXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBnZXRQcmlzbWEoKSB7XHJcbiAgY29uc3QgcG0gPSBhd2FpdCBpbXBvcnQoJy4uL2dlbmVyYXRlZC9wcmlzbWEnKTtcclxuICBjb25zdCBQcmlzbWFDbGllbnRDdG9yOiBhbnkgPSAocG0gYXMgYW55KS5QcmlzbWFDbGllbnQgPz8gKHBtIGFzIGFueSkuZGVmYXVsdCA/PyBwbTtcclxuICBjb25zdCBfZ2xvYmFsID0gZ2xvYmFsVGhpcyBhcyBhbnk7XHJcbiAgX2dsb2JhbC5fX3ByaXNtYSA9IF9nbG9iYWwuX19wcmlzbWEgPz8gbmV3IFByaXNtYUNsaWVudEN0b3IoKTtcclxuICByZXR1cm4gX2dsb2JhbC5fX3ByaXNtYTtcclxufSJdLCJuYW1lcyI6WyJnZXRQcmlzbWEiLCJwbSIsIlByaXNtYUNsaWVudEN0b3IiLCJQcmlzbWFDbGllbnQiLCJkZWZhdWx0IiwiX2dsb2JhbCIsImdsb2JhbFRoaXMiLCJfX3ByaXNtYSJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(rsc)/./src/lib/prisma.ts\n");
 
 /***/ }),
 
@@ -62,6 +62,17 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ (() => {
 
 
+
+/***/ }),
+
+/***/ "../app-render/after-task-async-storage.external":
+/*!***********************************************************************************!*\
+  !*** external "next/dist/server/app-render/after-task-async-storage.external.js" ***!
+  \***********************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("next/dist/server/app-render/after-task-async-storage.external.js");
 
 /***/ }),
 
@@ -87,14 +98,14 @@ module.exports = require("next/dist/server/app-render/work-unit-async-storage.ex
 
 /***/ }),
 
-/***/ "@prisma/client":
-/*!*********************************!*\
-  !*** external "@prisma/client" ***!
-  \*********************************/
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("@prisma/client");
+module.exports = require("fs");
 
 /***/ }),
 
@@ -139,6 +150,138 @@ module.exports = require("next/dist/shared/lib/no-fallback-error.external");
 
 "use strict";
 module.exports = require("next/dist/shared/lib/router/utils/app-paths");
+
+/***/ }),
+
+/***/ "node:async_hooks":
+/*!***********************************!*\
+  !*** external "node:async_hooks" ***!
+  \***********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:async_hooks");
+
+/***/ }),
+
+/***/ "node:child_process":
+/*!*************************************!*\
+  !*** external "node:child_process" ***!
+  \*************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:child_process");
+
+/***/ }),
+
+/***/ "node:crypto":
+/*!******************************!*\
+  !*** external "node:crypto" ***!
+  \******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:crypto");
+
+/***/ }),
+
+/***/ "node:events":
+/*!******************************!*\
+  !*** external "node:events" ***!
+  \******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:events");
+
+/***/ }),
+
+/***/ "node:fs":
+/*!**************************!*\
+  !*** external "node:fs" ***!
+  \**************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs");
+
+/***/ }),
+
+/***/ "node:fs/promises":
+/*!***********************************!*\
+  !*** external "node:fs/promises" ***!
+  \***********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs/promises");
+
+/***/ }),
+
+/***/ "node:os":
+/*!**************************!*\
+  !*** external "node:os" ***!
+  \**************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:os");
+
+/***/ }),
+
+/***/ "node:path":
+/*!****************************!*\
+  !*** external "node:path" ***!
+  \****************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:path");
+
+/***/ }),
+
+/***/ "node:process":
+/*!*******************************!*\
+  !*** external "node:process" ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:process");
+
+/***/ }),
+
+/***/ "node:tty":
+/*!***************************!*\
+  !*** external "node:tty" ***!
+  \***************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:tty");
+
+/***/ }),
+
+/***/ "node:util":
+/*!****************************!*\
+  !*** external "node:util" ***!
+  \****************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:util");
+
+/***/ }),
+
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("path");
 
 /***/ })
 
