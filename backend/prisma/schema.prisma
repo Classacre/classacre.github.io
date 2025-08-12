@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  created_at DateTime @default(now())
+  credentials credentials[]
+  sessions    sessions[]
+  profiles    profiles?
+  traits     traits[]
+  sources     sources[]
+  messages    messages[]
+  voice_profiles voice_profiles[]
+}
+
+model credentials {
+  id                   String   @id @default(uuid())
+  user_id              String
+  webauthn_credential_id String   @unique
+  public_key           String
+  sign_count           Int
+  created_at           DateTime @default(now())
+  user                 users    @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+}
+
+model sessions {
+  id           String   @id @default(uuid())
+  user_id      String
+  hashed_token String
+  user_agent   String
+  ip_hash      String
+  created_at   DateTime @default(now())
+  expires_at   DateTime
+  revoked_at   DateTime?
+  user         users    @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+}
+
+model profiles {
+  user_id      String   @id
+  display_name String?
+  timezone     String?
+  theme_color  String?
+  updated_at   DateTime @updatedAt
+  user         users    @relation(fields: [user_id], references: [id])
+}
+
+model traits {
+  id          String   @id @default(uuid())
+  user_id     String
+  category    String
+  key         String
+  value_json  Json
+  confidence  Float
+  completeness Float
+  provenance  String
+  updated_at  DateTime @updatedAt
+  user        users    @relation(fields: [user_id], references: [id])
+  sources     sources? @relation(fields: [source_id], references: [id])
+  source_id   String?
+
+  @@index([user_id])
+}
+
+model sources {
+  id              String   @id @default(uuid())
+  user_id         String
+  type            SourceType
+  title           String
+  content_encrypted Bytes
+  created_at      DateTime @default(now())
+  user            users    @relation(fields: [user_id], references: [id])
+  traits          traits[]
+  embeddings embeddings[]
+
+  @@index([user_id])
+}
+
+enum SourceType {
+  survey
+  chat
+  file
+  link
+}
+
+model messages {
+  id              String   @id @default(uuid())
+  user_id         String
+  role            String
+  content_encrypted Bytes
+  audio_url       String?
+  created_at      DateTime @default(now())
+  user            users    @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+}
+
+model embeddings {
+  id         String   @id @default(uuid())
+  user_id    String
+  vector_ref String
+  source_id  String
+  category   String
+  chunk_meta Json?
+  created_at DateTime @default(now())
+  source   sources @relation(fields: [source_id], references: [id])
+
+  @@index([user_id])
+  @@index([source_id])
+}
+
+model voice_profiles {
+  id              String   @id @default(uuid())
+  user_id         String
+  provider        String
+  voice_id        String
+  consent_signed_at DateTime?
+  sample_meta     Json?
+  user users @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+}

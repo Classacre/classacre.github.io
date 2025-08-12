@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postinstall": "npx prisma generate --schema=prisma/schema.prisma"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
