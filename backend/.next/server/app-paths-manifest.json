@@ -1,1 +1,3 @@
-{}
+{
+  "/api/sources/ingest/route": "app/api/sources/ingest/route.js"
+}

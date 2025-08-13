@@ -1,21 +1,42 @@
 // backend/src/app/api/voice/speak/route.ts
-import { getPrisma } from '../../../../lib/prisma';
+import ElevenLabs from "elevenlabs";
 
-export default async function handler(req: any, res: any) {
-  if (req.method === 'POST') {
-    try {
-      const prisma = await getPrisma();
-      const { text } = (req as any).body;
-
-      // TODO: Implement logic to call ElevenLabs or PlayHT for TTS and stream audio
-      // Example placeholder: await someTTSProvider.speak(text);
-
-      res.status(200).json({ message: 'Voice speaking started successfully' });
-    } catch (error) {
-      console.error('[voice/speak] error', error);
-      res.status(500).json({ error: 'Failed to speak voice' });
+export async function POST(req: Request) {
+  try {
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: 'ELEVENLABS_API_KEY is not set' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+
+    const body = await req.json();
+    const { text, voiceId } = body;
+
+    const elevenLabs = new ElevenLabsClient({
+      apiKey: apiKey,
+    });
+
+    const voiceSettings = {
+        stability: 0.5,
+        similarity_boost: 0.5,
+    }
+    const audio = await elevenLabs.textToSpeech.generate({
+      text: text,
+      voice_id: voiceId || "pNInz6obpgDQGcfmxZJm",
+      model_id: "eleven_monolingual_v1",
+      voice_settings: voiceSettings,
+    });
+
+    return new Response(audio as any, {
+      headers: { 'Content-Type': 'audio/mpeg' },
+    });
+  } catch (error) {
+    console.error('[voice/speak] error', error);
+    return new Response(JSON.stringify({ error: 'Failed to generate speech' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

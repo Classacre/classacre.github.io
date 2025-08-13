@@ -1,4 +1,5 @@
 import { streamText } from 'ai';
+import { Readable } from 'stream';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { z } from 'zod';
 
@@ -62,12 +63,24 @@ export async function POST(req: Request) {
      return (stream as any).toUIMessageStreamResponse();
    }
  
-   // Fallback: return a readable stream as a chunked response
-   // @ts-ignore
-   if (typeof (stream as any).toDataStreamResponse === 'function') {
-     // @ts-ignore
-     return (stream as any).toDataStreamResponse();
-   }
+   // Manual ReadableStream fallback
+   const encoder = new TextEncoder();
+   const readableStream = new ReadableStream({
+     async start(controller) {
+       try {
+         for await (const chunk of stream) {
+           controller.enqueue(encoder.encode(chunk));
+         }
+         controller.close();
+       } catch (e) {
+         controller.error(e);
+       }
+     },
+   });
+
+   return new Response(readableStream, {
+     headers: { 'Content-Type': 'text/plain' },
+   });
  
    return new Response(JSON.stringify({ error: 'Streaming not supported by installed ai SDK version' }), {
      status: 500,

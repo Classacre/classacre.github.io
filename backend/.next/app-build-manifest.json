@@ -1,14 +1,9 @@
 {
   "pages": {
-    "/api/chat/route": [
+    "/api/sources/ingest/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/chat/route.js"
-    ],
-    "/api/traits/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/traits/route.js"
+      "static/chunks/app/api/sources/ingest/route.js"
     ]
   }
 }
