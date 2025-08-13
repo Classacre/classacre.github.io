@@ -8,6 +8,8 @@ export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await req.json()
+    
     const prisma = await getPrisma();
     const formData = await req.formData();
     const audioFile = formData.get('audio') as unknown as File;
@@ -51,10 +53,10 @@ export async function POST(req: NextRequest) {
     // Process the transcription and save the source to the database
     const source = await prisma.sources.create({
       data: {
-        user_id: '42f21866-0cdb-40e8-b9f0-3f09fed57b4b', // Replace with the actual user ID
+        user_id: userId,
         type: 'file',
         title: audioFile.name,
-        content_encrypted: Buffer.from(transcription.text), // Encrypt the content
+        content_encrypted: Buffer.from(transcription.text),
       },
     });
 

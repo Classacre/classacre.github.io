@@ -1,6 +1,6 @@
 // backend/src/app/api/export/route.ts
-import { getPrisma } from '../../../../lib/prisma';
-import { encrypt, decrypt } from '../../../../lib/encryption';
+import { getPrisma } from '../../../lib/prisma';
+import { encrypt } from '../../../lib/encryption';
 import { NextResponse } from 'next/server';
 
 export default async function handler(

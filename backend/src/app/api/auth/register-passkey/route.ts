@@ -1,6 +1,7 @@
 // backend/src/app/api/auth/register-passkey/route.ts
 import { generateRegistrationOptions } from '@simplewebauthn/server';
 import { getPrisma } from '../../../../lib/prisma';
+import { randomBytes } from 'crypto';
 
 export async function POST(request: Request) {
   try {
@@ -9,7 +10,7 @@ export async function POST(request: Request) {
 
     // 1. Create a new user in the database
     const user = await prisma.users.create({
-      data: { email },
+      data: { email: email },
     });
 
     // 2. Generate registration options
@@ -23,13 +24,17 @@ export async function POST(request: Request) {
       excludeCredentials: [],
     });
 
-    // TODO: Store the user's credential information in the database
+    // Generate a challenge
+    const challenge = randomBytes(32).toString('hex');
 
-    // 3. Return the options to the client
-    return new Response(JSON.stringify(registrationOptions), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    // 3. Return the options and challenge to the client
+    return new Response(
+      JSON.stringify({ registrationOptions, challenge }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
     console.error('[register-passkey] error', error);
     return new Response(JSON.stringify({ error: 'Failed to generate registration options' }), {

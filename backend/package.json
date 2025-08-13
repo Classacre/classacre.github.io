@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.9.0",
+    "@qdrant/js-client-rest": "^1.15.0",
+    "aws-sdk": "^2.1692.0",
     "dotenv": "^17.2.1",
     "elevenlabs": "^1.59.0",
     "openai-whisper": "^1.0.2",
