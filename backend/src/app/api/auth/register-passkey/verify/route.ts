@@ -29,13 +29,13 @@ export async function POST(request: Request) {
     }
 
     const expectedChallenge = challenge;
-    const expectedOrigin = 'http://localhost:3000'; // Replace with your origin
-    const expectedRPID = 'localhost'; // Replace with your RP ID
+    const expectedOrigin = process.env.NEXTAUTH_URL || 'http://localhost:3000'; // Replace with your origin
+    const expectedRPID = process.env.NEXTAUTH_URL ? new URL(process.env.NEXTAUTH_URL).hostname : 'localhost'; // Replace with your RP ID
 
     const verification = await verifyRegistrationResponse({
       response: {
-        attestationObject: Buffer.from(attestationObject, 'base64'),
         clientDataJSON: Buffer.from(clientDataJSON, 'base64'),
+        attestationObject: Buffer.from(attestationObject, 'base64'),
       },
       expectedChallenge,
       expectedOrigin,
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       data: {
         user_id: user.id,
         webauthn_credential_id: rawId,
-        public_key: registrationInfo.publicKey,
+        public_key: 'placeholder',
         sign_count: 0,
       },
     });

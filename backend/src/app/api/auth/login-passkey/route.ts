@@ -1,8 +1,7 @@
 // backend/src/app/api/auth/login-passkey/route.ts
-import { generateAuthenticationOptions, verifyAuthenticationResponse } from '@simplewebauthn/server';
+import { generateAuthenticationOptions } from '@simplewebauthn/server';
 import { getPrisma } from '../../../../lib/prisma';
-import { cookies } from 'next/headers';
-import { randomBytes, createHash } from 'crypto';
+import { randomBytes } from 'crypto';
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +35,7 @@ export async function POST(request: Request) {
 
     // 2. Generate authentication options
     const authenticationOptions = await generateAuthenticationOptions({
-      rpID: 'localhost', // Replace with your RP ID
+      rpID: process.env.NEXTAUTH_URL ? new URL(process.env.NEXTAUTH_URL).hostname : 'localhost',
       // Allow the user to sign in with any credential they have registered
       allowCredentials: user.credentials.map((credential: any) => ({
         id: credential.webauthn_credential_id,

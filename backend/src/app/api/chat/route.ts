@@ -51,26 +51,27 @@ export async function POST(req: Request) {
      model: openrouter.chat('anthropic/claude-3.5-sonnet'),
      // cast to any because different ai SDK versions expect slightly different message shapes
      messages: modelMessages as any,
-   });
- 
-   // The stream helper exposes convenience methods for Next.js route handlers.
-   // Prefer toUIMessageStreamResponse() for UI-friendly streaming responses when available.
-   // Fall back to a generic Response if the helper shape differs.
-   // (Using `any` guards because the `ai` SDK versions vary.)
-   // @ts-ignore
-   if (typeof (stream as any).toUIMessageStreamResponse === 'function') {
-     // @ts-ignore
-     return (stream as any).toUIMessageStreamResponse();
-   }
- 
-   // Manual ReadableStream fallback
+     });
+  
+  
+     //TODO: Save messages to database
+    // await prisma.messages.create({
+    //   data: {
+    //     user_id: user.id,
+    //     role: "assistant",
+    //     content_encrypted: Buffer.from(encryptedData, 'hex'),
+    //     audio_url: null,
+    //   },
+    // });
+  
+     // Manual ReadableStream fallback
    const encoder = new TextEncoder();
    const readableStream = new ReadableStream({
      async start(controller) {
        try {
-         for await (const chunk of stream) {
-           controller.enqueue(encoder.encode(chunk));
-         }
+        // for await (const chunk of stream) {
+        //   controller.enqueue(encoder.encode(chunk));
+        // }
          controller.close();
        } catch (e) {
          controller.error(e);
@@ -78,17 +79,17 @@ export async function POST(req: Request) {
      },
    });
 
-   return new Response(readableStream, {
-     headers: { 'Content-Type': 'text/plain' },
-   });
+   //return new Response(readableStream, {
+   //  headers: { 'Content-Type': 'text/plain' },
+   //});
  
    return new Response(JSON.stringify({ error: 'Streaming not supported by installed ai SDK version' }), {
      status: 500,
      headers: { 'Content-Type': 'application/json' },
    });
- } catch (error) {
+ } catch (error: any) {
    console.error('[chat/route] error', error);
-   return new Response(JSON.stringify({ error: 'Failed to generate chat response' }), {
+   return new Response(JSON.stringify({ error: error.message || 'Failed to generate chat response' }), {
      status: 500,
      headers: { 'Content-Type': 'application/json' },
    });

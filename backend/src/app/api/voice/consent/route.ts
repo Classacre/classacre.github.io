@@ -1,28 +1,34 @@
 // backend/src/app/api/voice/consent/route.ts
 import { getPrisma } from '../../../../lib/prisma';
 
-export default async function handler(
-  req: any,
-  res: any
-) {
-  if (req.method === 'POST') {
-    try {
-      const prisma = await getPrisma();
-      const { userId, accepted, sample_ids } = (req as any).body;
+export async function POST(request: Request) {
+  try {
+    const prisma = await getPrisma();
+    const { userId, accepted, sampleIds } = await request.json();
 
-      // TODO: Implement logic to update voice profile consent in the database using prisma
-      // Example:
-      // await prisma.voice_profiles.update({
-      //   where: { id: profileId },
-      //   data: { consent_signed_at: accepted ? new Date() : null, sample_meta: { sample_ids } }
-      // });
+    const consent_signed_at = accepted ? new Date() : null;
 
-      res.status(200).json({ message: 'Voice consent updated successfully' });
-    } catch (error) {
-      console.error('[voice/consent] error', error);
-      res.status(500).json({ error: 'Failed to update voice consent' });
-    }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    const voiceProfile = await prisma.voice_profiles.upsert({
+      where: { user_id: userId },
+      update: { consent_signed_at: consent_signed_at, sample_meta: sampleIds },
+      create: {
+        user_id: userId,
+        provider: 'elevenlabs', // Replace with the actual provider
+        voice_id: 'default', // Replace with the actual voice ID
+        consent_signed_at: consent_signed_at,
+        sample_meta: sampleIds,
+      },
+    });
+
+    return new Response(JSON.stringify({ message: 'Consent updated successfully', voiceProfile }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error: any) {
+    console.error('[voice/consent] error', error);
+    return new Response(JSON.stringify({ error: error.message || 'Failed to update consent' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

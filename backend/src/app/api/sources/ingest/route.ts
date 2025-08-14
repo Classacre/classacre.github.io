@@ -3,6 +3,7 @@ import { getPrisma } from '../../../../lib/prisma';
 import OpenAI from 'openai';
 import * as fs from 'node:fs';
 import { NextRequest } from 'next/server';
+import { encrypt } from '../../../../../src/lib/crypto';
 
 export const runtime = 'nodejs';
 
@@ -51,12 +52,14 @@ export async function POST(req: NextRequest) {
     fs.unlinkSync(tempFilePath);
 
     // Process the transcription and save the source to the database
+   // const { iv, encryptedData } = await encrypt(transcription.text);
     const source = await prisma.sources.create({
       data: {
         user_id: userId,
         type: 'file',
         title: audioFile.name,
         content_encrypted: Buffer.from(transcription.text),
+        iv: ""
       },
     });
 

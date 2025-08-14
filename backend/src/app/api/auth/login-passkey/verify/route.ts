@@ -16,6 +16,7 @@ export async function POST(request: Request) {
       authenticatorData,
       clientDataJSON,
       signature,
+      challenge,
     } = await request.json();
 
     const user = await prisma.users.findUnique({
@@ -41,9 +42,9 @@ export async function POST(request: Request) {
 
     const credential = user.credentials[0];
 
-    const expectedChallenge = ''; // Replace with the actual challenge
-    const expectedOrigin = 'http://localhost:3000'; // Replace with your origin
-    const expectedRPID = 'localhost'; // Replace with your RP ID
+    const expectedChallenge = challenge;
+    const expectedOrigin = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    const expectedRPID = process.env.NEXTAUTH_URL ? new URL(process.env.NEXTAUTH_URL).hostname : 'localhost';
 
     const { authenticationInfo } = await verifyAuthenticationResponse({
       response: {

@@ -1,27 +1,69 @@
 // backend/src/app/api/export/route.ts
-import { getPrisma } from '../../../lib/prisma';
-import { encrypt } from '../../../lib/encryption';
-import { NextResponse } from 'next/server';
+import { getPrisma } from '../../../../src/lib/prisma';
+import { cookies } from 'next/headers';
+import { createHash } from 'crypto';
 
-export default async function handler(
-  req: any,
-  res: any
-) {
-  if (req.method === 'GET') {
-    try {
-      const prisma = await getPrisma();
-      const userId = (req as any).query.userId as string;
+export async function GET(request: Request) {
+  try {
+    const prisma = await getPrisma();
+    const sessionToken = await (cookies().get('session_token'))?.value;
 
-      // TODO: Implement logic to fetch all data for the user and format it for export using prisma
-      // Example:
-      // const user = await prisma.users.findUnique({ where: { id: userId }, include: { traits: true, sources: true, messages: true } });
-
-      res.status(200).json({ message: 'Data exported successfully' });
-    } catch (error) {
-      console.error('[export] error', error);
-      res.status(500).json({ error: 'Failed to export data' });
+    if (!sessionToken) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+
+    // Verify session token
+    const session = await prisma.sessions.findUnique({
+      where: { hashed_token: createHash('sha256').update(sessionToken).digest('hex') },
+      include: { user: true },
+    });
+
+    if (!session) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userId = session.user.id;
+
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+      include: {
+        credentials: true,
+        sessions: true,
+        profiles: true,
+        traits: true,
+        sources: true,
+        messages: true,
+        voice_profiles: true,
+      },
+    });
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userData = JSON.stringify(user, null, 2);
+
+    return new Response(userData, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Disposition': 'attachment; filename="legaci_data.json"',
+      },
+    });
+  } catch (error: any) {
+    console.error('[export] error', error);
+    return new Response(JSON.stringify({ error: error.message || 'Failed to export data' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
