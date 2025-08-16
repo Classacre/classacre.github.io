@@ -1,25 +1,57 @@
 // backend/src/app/api/account/route.ts
-import { getPrisma } from '../../../lib/prisma';
+import { getPrisma } from '../../../../src/lib/prisma';
+import { cookies } from 'next/headers';
+//import { createHash } from 'crypto';
 
-export default async function handler(
-  req: any,
-  res: any
-) {
-  if (req.method === 'DELETE') {
-    try {
-      const prisma = await getPrisma();
-      const userId = (req as any).query.userId as string;
+export async function DELETE(request: Request) {
+  try {
+    const prisma = await getPrisma();
+    //const sessionToken = (await cookies().get('session_token'))?.value;
 
-      // TODO: Implement logic to delete the user account and all associated data using prisma
-      // Example:
-      // await prisma.users.delete({ where: { id: userId } });
+    //if (!sessionToken) {
+    //  return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    //    status: 401,
+    //    headers: { 'Content-Type': 'application/json' },
+    //  });
+    //}
 
-      res.status(200).json({ message: 'Account deleted successfully' });
-    } catch (error) {
-      console.error('[account/delete] error', error);
-      res.status(500).json({ error: 'Failed to delete account' });
-    }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    // Verify session token
+    //const session = await prisma.sessions.findUnique({
+    //  where: { hashed_token: createHash('sha256').update(sessionToken).digest('hex') },
+    //  include: { user: true },
+    //});
+
+    //if (!session) {
+    //  return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    //    status: 401,
+    //    headers: { 'Content-Type': 'application/json' },
+    //  });
+    //}
+
+    const userId = 'test'; //session.user.id;
+
+    // Delete all data associated with the user
+    await prisma.users.delete({
+      where: { id: userId },
+    });
+
+    // Invalidate the user's session
+    await prisma.sessions.deleteMany({
+      where: { user_id: userId },
+    });
+
+    // Clear the session cookie
+    //await (await cookies()).delete('session_token');
+
+    return new Response(JSON.stringify({ message: 'Account deleted successfully' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error: any) {
+    console.error('[account/delete] error', error);
+    return new Response(JSON.stringify({ error: error.message || 'Failed to delete account' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

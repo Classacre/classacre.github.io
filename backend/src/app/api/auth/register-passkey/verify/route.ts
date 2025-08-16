@@ -1,5 +1,5 @@
 // backend/src/app/api/auth/register-passkey/verify/route.ts
-import { verifyRegistrationResponse } from '@simplewebauthn/server';
+import { verifyPasskeyRegistration } from '../../../../../lib/auth';
 import { getPrisma } from '../../../../../lib/prisma';
 
 export async function POST(request: Request) {
@@ -50,15 +50,6 @@ export async function POST(request: Request) {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-
-    await prisma.credentials.create({
-      data: {
-        user_id: user.id,
-        webauthn_credential_id: rawId,
-        public_key: 'placeholder',
-        sign_count: 0,
-      },
-    });
 
     return new Response(JSON.stringify({ message: 'Registration successful' }), {
       status: 200,

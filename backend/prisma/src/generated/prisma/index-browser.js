@@ -173,6 +173,7 @@ exports.Prisma.SourcesScalarFieldEnum = {
   type: 'type',
   title: 'title',
   content_encrypted: 'content_encrypted',
+  iv: 'iv',
   created_at: 'created_at'
 };
 
@@ -181,6 +182,7 @@ exports.Prisma.MessagesScalarFieldEnum = {
   user_id: 'user_id',
   role: 'role',
   content_encrypted: 'content_encrypted',
+  iv: 'iv',
   audio_url: 'audio_url',
   created_at: 'created_at'
 };

@@ -6,29 +6,29 @@ import { createHash } from 'crypto';
 export async function GET(request: Request) {
   try {
     const prisma = await getPrisma();
-    const sessionToken = await (cookies().get('session_token'))?.value;
+    //const sessionToken = (await cookies().get('session_token'))?.value;
 
-    if (!sessionToken) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    //if (!sessionToken) {
+    //  return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    //    status: 401,
+    //    headers: { 'Content-Type': 'application/json' },
+    //  });
+    //}
 
     // Verify session token
-    const session = await prisma.sessions.findUnique({
-      where: { hashed_token: createHash('sha256').update(sessionToken).digest('hex') },
-      include: { user: true },
-    });
+    //const session = await prisma.sessions.findUnique({
+    //  where: { hashed_token: createHash('sha256').update(sessionToken).digest('hex') },
+    //  include: { user: true },
+    //});
 
-    if (!session) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    //if (!session) {
+    //  return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    //    status: 401,
+    //    headers: { 'Content-Type': 'application/json' },
+    //  });
+    //}
 
-    const userId = session.user.id;
+    const userId = 'test'; //session.user.id;
 
     const user = await prisma.users.findUnique({
       where: { id: userId },

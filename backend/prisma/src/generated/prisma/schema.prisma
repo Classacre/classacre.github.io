@@ -79,6 +79,7 @@ model sources {
   type              SourceType
   title             String
   content_encrypted Bytes
+  iv                String       @default("")
   created_at        DateTime     @default(now())
   user              users        @relation(fields: [user_id], references: [id])
   traits            traits[]
@@ -99,6 +100,7 @@ model messages {
   user_id           String
   role              String
   content_encrypted Bytes
+  iv                String   @default("")
   audio_url         String?
   created_at        DateTime @default(now())
   user              users    @relation(fields: [user_id], references: [id])

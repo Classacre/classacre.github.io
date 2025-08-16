@@ -7411,6 +7411,7 @@ export namespace Prisma {
     type: $Enums.SourceType | null
     title: string | null
     content_encrypted: Uint8Array | null
+    iv: string | null
     created_at: Date | null
   }
 
@@ -7420,6 +7421,7 @@ export namespace Prisma {
     type: $Enums.SourceType | null
     title: string | null
     content_encrypted: Uint8Array | null
+    iv: string | null
     created_at: Date | null
   }
 
@@ -7429,6 +7431,7 @@ export namespace Prisma {
     type: number
     title: number
     content_encrypted: number
+    iv: number
     created_at: number
     _all: number
   }
@@ -7440,6 +7443,7 @@ export namespace Prisma {
     type?: true
     title?: true
     content_encrypted?: true
+    iv?: true
     created_at?: true
   }
 
@@ -7449,6 +7453,7 @@ export namespace Prisma {
     type?: true
     title?: true
     content_encrypted?: true
+    iv?: true
     created_at?: true
   }
 
@@ -7458,6 +7463,7 @@ export namespace Prisma {
     type?: true
     title?: true
     content_encrypted?: true
+    iv?: true
     created_at?: true
     _all?: true
   }
@@ -7540,6 +7546,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv: string
     created_at: Date
     _count: SourcesCountAggregateOutputType | null
     _min: SourcesMinAggregateOutputType | null
@@ -7566,6 +7573,7 @@ export namespace Prisma {
     type?: boolean
     title?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     created_at?: boolean
     user?: boolean | usersDefaultArgs<ExtArgs>
     traits?: boolean | sources$traitsArgs<ExtArgs>
@@ -7579,6 +7587,7 @@ export namespace Prisma {
     type?: boolean
     title?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     created_at?: boolean
     user?: boolean | usersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sources"]>
@@ -7589,6 +7598,7 @@ export namespace Prisma {
     type?: boolean
     title?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     created_at?: boolean
     user?: boolean | usersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sources"]>
@@ -7599,10 +7609,11 @@ export namespace Prisma {
     type?: boolean
     title?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     created_at?: boolean
   }
 
-  export type sourcesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "type" | "title" | "content_encrypted" | "created_at", ExtArgs["result"]["sources"]>
+  export type sourcesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "type" | "title" | "content_encrypted" | "iv" | "created_at", ExtArgs["result"]["sources"]>
   export type sourcesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | usersDefaultArgs<ExtArgs>
     traits?: boolean | sources$traitsArgs<ExtArgs>
@@ -7629,6 +7640,7 @@ export namespace Prisma {
       type: $Enums.SourceType
       title: string
       content_encrypted: Uint8Array
+      iv: string
       created_at: Date
     }, ExtArgs["result"]["sources"]>
     composites: {}
@@ -8061,6 +8073,7 @@ export namespace Prisma {
     readonly type: FieldRef<"sources", 'SourceType'>
     readonly title: FieldRef<"sources", 'String'>
     readonly content_encrypted: FieldRef<"sources", 'Bytes'>
+    readonly iv: FieldRef<"sources", 'String'>
     readonly created_at: FieldRef<"sources", 'DateTime'>
   }
     
@@ -8539,6 +8552,7 @@ export namespace Prisma {
     user_id: string | null
     role: string | null
     content_encrypted: Uint8Array | null
+    iv: string | null
     audio_url: string | null
     created_at: Date | null
   }
@@ -8548,6 +8562,7 @@ export namespace Prisma {
     user_id: string | null
     role: string | null
     content_encrypted: Uint8Array | null
+    iv: string | null
     audio_url: string | null
     created_at: Date | null
   }
@@ -8557,6 +8572,7 @@ export namespace Prisma {
     user_id: number
     role: number
     content_encrypted: number
+    iv: number
     audio_url: number
     created_at: number
     _all: number
@@ -8568,6 +8584,7 @@ export namespace Prisma {
     user_id?: true
     role?: true
     content_encrypted?: true
+    iv?: true
     audio_url?: true
     created_at?: true
   }
@@ -8577,6 +8594,7 @@ export namespace Prisma {
     user_id?: true
     role?: true
     content_encrypted?: true
+    iv?: true
     audio_url?: true
     created_at?: true
   }
@@ -8586,6 +8604,7 @@ export namespace Prisma {
     user_id?: true
     role?: true
     content_encrypted?: true
+    iv?: true
     audio_url?: true
     created_at?: true
     _all?: true
@@ -8668,6 +8687,7 @@ export namespace Prisma {
     user_id: string
     role: string
     content_encrypted: Uint8Array
+    iv: string
     audio_url: string | null
     created_at: Date
     _count: MessagesCountAggregateOutputType | null
@@ -8694,6 +8714,7 @@ export namespace Prisma {
     user_id?: boolean
     role?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     audio_url?: boolean
     created_at?: boolean
     user?: boolean | usersDefaultArgs<ExtArgs>
@@ -8704,6 +8725,7 @@ export namespace Prisma {
     user_id?: boolean
     role?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     audio_url?: boolean
     created_at?: boolean
     user?: boolean | usersDefaultArgs<ExtArgs>
@@ -8714,6 +8736,7 @@ export namespace Prisma {
     user_id?: boolean
     role?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     audio_url?: boolean
     created_at?: boolean
     user?: boolean | usersDefaultArgs<ExtArgs>
@@ -8724,11 +8747,12 @@ export namespace Prisma {
     user_id?: boolean
     role?: boolean
     content_encrypted?: boolean
+    iv?: boolean
     audio_url?: boolean
     created_at?: boolean
   }
 
-  export type messagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "role" | "content_encrypted" | "audio_url" | "created_at", ExtArgs["result"]["messages"]>
+  export type messagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "role" | "content_encrypted" | "iv" | "audio_url" | "created_at", ExtArgs["result"]["messages"]>
   export type messagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | usersDefaultArgs<ExtArgs>
   }
@@ -8749,6 +8773,7 @@ export namespace Prisma {
       user_id: string
       role: string
       content_encrypted: Uint8Array
+      iv: string
       audio_url: string | null
       created_at: Date
     }, ExtArgs["result"]["messages"]>
@@ -9179,6 +9204,7 @@ export namespace Prisma {
     readonly user_id: FieldRef<"messages", 'String'>
     readonly role: FieldRef<"messages", 'String'>
     readonly content_encrypted: FieldRef<"messages", 'Bytes'>
+    readonly iv: FieldRef<"messages", 'String'>
     readonly audio_url: FieldRef<"messages", 'String'>
     readonly created_at: FieldRef<"messages", 'DateTime'>
   }
@@ -11824,6 +11850,7 @@ export namespace Prisma {
     type: 'type',
     title: 'title',
     content_encrypted: 'content_encrypted',
+    iv: 'iv',
     created_at: 'created_at'
   };
 
@@ -11835,6 +11862,7 @@ export namespace Prisma {
     user_id: 'user_id',
     role: 'role',
     content_encrypted: 'content_encrypted',
+    iv: 'iv',
     audio_url: 'audio_url',
     created_at: 'created_at'
   };
@@ -12365,6 +12393,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFilter<"sources"> | $Enums.SourceType
     title?: StringFilter<"sources"> | string
     content_encrypted?: BytesFilter<"sources"> | Uint8Array
+    iv?: StringFilter<"sources"> | string
     created_at?: DateTimeFilter<"sources"> | Date | string
     user?: XOR<UsersScalarRelationFilter, usersWhereInput>
     traits?: TraitsListRelationFilter
@@ -12377,6 +12406,7 @@ export namespace Prisma {
     type?: SortOrder
     title?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     created_at?: SortOrder
     user?: usersOrderByWithRelationInput
     traits?: traitsOrderByRelationAggregateInput
@@ -12392,6 +12422,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFilter<"sources"> | $Enums.SourceType
     title?: StringFilter<"sources"> | string
     content_encrypted?: BytesFilter<"sources"> | Uint8Array
+    iv?: StringFilter<"sources"> | string
     created_at?: DateTimeFilter<"sources"> | Date | string
     user?: XOR<UsersScalarRelationFilter, usersWhereInput>
     traits?: TraitsListRelationFilter
@@ -12404,6 +12435,7 @@ export namespace Prisma {
     type?: SortOrder
     title?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     created_at?: SortOrder
     _count?: sourcesCountOrderByAggregateInput
     _max?: sourcesMaxOrderByAggregateInput
@@ -12419,6 +12451,7 @@ export namespace Prisma {
     type?: EnumSourceTypeWithAggregatesFilter<"sources"> | $Enums.SourceType
     title?: StringWithAggregatesFilter<"sources"> | string
     content_encrypted?: BytesWithAggregatesFilter<"sources"> | Uint8Array
+    iv?: StringWithAggregatesFilter<"sources"> | string
     created_at?: DateTimeWithAggregatesFilter<"sources"> | Date | string
   }
 
@@ -12430,6 +12463,7 @@ export namespace Prisma {
     user_id?: StringFilter<"messages"> | string
     role?: StringFilter<"messages"> | string
     content_encrypted?: BytesFilter<"messages"> | Uint8Array
+    iv?: StringFilter<"messages"> | string
     audio_url?: StringNullableFilter<"messages"> | string | null
     created_at?: DateTimeFilter<"messages"> | Date | string
     user?: XOR<UsersScalarRelationFilter, usersWhereInput>
@@ -12440,6 +12474,7 @@ export namespace Prisma {
     user_id?: SortOrder
     role?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     audio_url?: SortOrderInput | SortOrder
     created_at?: SortOrder
     user?: usersOrderByWithRelationInput
@@ -12453,6 +12488,7 @@ export namespace Prisma {
     user_id?: StringFilter<"messages"> | string
     role?: StringFilter<"messages"> | string
     content_encrypted?: BytesFilter<"messages"> | Uint8Array
+    iv?: StringFilter<"messages"> | string
     audio_url?: StringNullableFilter<"messages"> | string | null
     created_at?: DateTimeFilter<"messages"> | Date | string
     user?: XOR<UsersScalarRelationFilter, usersWhereInput>
@@ -12463,6 +12499,7 @@ export namespace Prisma {
     user_id?: SortOrder
     role?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     audio_url?: SortOrderInput | SortOrder
     created_at?: SortOrder
     _count?: messagesCountOrderByAggregateInput
@@ -12478,6 +12515,7 @@ export namespace Prisma {
     user_id?: StringWithAggregatesFilter<"messages"> | string
     role?: StringWithAggregatesFilter<"messages"> | string
     content_encrypted?: BytesWithAggregatesFilter<"messages"> | Uint8Array
+    iv?: StringWithAggregatesFilter<"messages"> | string
     audio_url?: StringNullableWithAggregatesFilter<"messages"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"messages"> | Date | string
   }
@@ -12964,6 +13002,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     user: usersCreateNestedOneWithoutSourcesInput
     traits?: traitsCreateNestedManyWithoutSourcesInput
@@ -12976,6 +13015,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     traits?: traitsUncheckedCreateNestedManyWithoutSourcesInput
     embeddings?: embeddingsUncheckedCreateNestedManyWithoutSourceInput
@@ -12986,6 +13026,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutSourcesNestedInput
     traits?: traitsUpdateManyWithoutSourcesNestedInput
@@ -12998,6 +13039,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     traits?: traitsUncheckedUpdateManyWithoutSourcesNestedInput
     embeddings?: embeddingsUncheckedUpdateManyWithoutSourceNestedInput
@@ -13009,6 +13051,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
   }
 
@@ -13017,6 +13060,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -13026,6 +13070,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -13033,6 +13078,7 @@ export namespace Prisma {
     id?: string
     role: string
     content_encrypted: Uint8Array
+    iv?: string
     audio_url?: string | null
     created_at?: Date | string
     user: usersCreateNestedOneWithoutMessagesInput
@@ -13043,6 +13089,7 @@ export namespace Prisma {
     user_id: string
     role: string
     content_encrypted: Uint8Array
+    iv?: string
     audio_url?: string | null
     created_at?: Date | string
   }
@@ -13051,6 +13098,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutMessagesNestedInput
@@ -13061,6 +13109,7 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13070,6 +13119,7 @@ export namespace Prisma {
     user_id: string
     role: string
     content_encrypted: Uint8Array
+    iv?: string
     audio_url?: string | null
     created_at?: Date | string
   }
@@ -13078,6 +13128,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13087,6 +13138,7 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13708,6 +13760,7 @@ export namespace Prisma {
     type?: SortOrder
     title?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     created_at?: SortOrder
   }
 
@@ -13717,6 +13770,7 @@ export namespace Prisma {
     type?: SortOrder
     title?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     created_at?: SortOrder
   }
 
@@ -13726,6 +13780,7 @@ export namespace Prisma {
     type?: SortOrder
     title?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     created_at?: SortOrder
   }
 
@@ -13754,6 +13809,7 @@ export namespace Prisma {
     user_id?: SortOrder
     role?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     audio_url?: SortOrder
     created_at?: SortOrder
   }
@@ -13763,6 +13819,7 @@ export namespace Prisma {
     user_id?: SortOrder
     role?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     audio_url?: SortOrder
     created_at?: SortOrder
   }
@@ -13772,6 +13829,7 @@ export namespace Prisma {
     user_id?: SortOrder
     role?: SortOrder
     content_encrypted?: SortOrder
+    iv?: SortOrder
     audio_url?: SortOrder
     created_at?: SortOrder
   }
@@ -14790,6 +14848,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     traits?: traitsCreateNestedManyWithoutSourcesInput
     embeddings?: embeddingsCreateNestedManyWithoutSourceInput
@@ -14800,6 +14859,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     traits?: traitsUncheckedCreateNestedManyWithoutSourcesInput
     embeddings?: embeddingsUncheckedCreateNestedManyWithoutSourceInput
@@ -14819,6 +14879,7 @@ export namespace Prisma {
     id?: string
     role: string
     content_encrypted: Uint8Array
+    iv?: string
     audio_url?: string | null
     created_at?: Date | string
   }
@@ -14827,6 +14888,7 @@ export namespace Prisma {
     id?: string
     role: string
     content_encrypted: Uint8Array
+    iv?: string
     audio_url?: string | null
     created_at?: Date | string
   }
@@ -15007,6 +15069,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFilter<"sources"> | $Enums.SourceType
     title?: StringFilter<"sources"> | string
     content_encrypted?: BytesFilter<"sources"> | Uint8Array
+    iv?: StringFilter<"sources"> | string
     created_at?: DateTimeFilter<"sources"> | Date | string
   }
 
@@ -15034,6 +15097,7 @@ export namespace Prisma {
     user_id?: StringFilter<"messages"> | string
     role?: StringFilter<"messages"> | string
     content_encrypted?: BytesFilter<"messages"> | Uint8Array
+    iv?: StringFilter<"messages"> | string
     audio_url?: StringNullableFilter<"messages"> | string | null
     created_at?: DateTimeFilter<"messages"> | Date | string
   }
@@ -15292,6 +15356,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     user: usersCreateNestedOneWithoutSourcesInput
     embeddings?: embeddingsCreateNestedManyWithoutSourceInput
@@ -15303,6 +15368,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     embeddings?: embeddingsUncheckedCreateNestedManyWithoutSourceInput
   }
@@ -15363,6 +15429,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutSourcesNestedInput
     embeddings?: embeddingsUpdateManyWithoutSourceNestedInput
@@ -15374,6 +15441,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     embeddings?: embeddingsUncheckedUpdateManyWithoutSourceNestedInput
   }
@@ -15618,6 +15686,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     user: usersCreateNestedOneWithoutSourcesInput
     traits?: traitsCreateNestedManyWithoutSourcesInput
@@ -15629,6 +15698,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
     traits?: traitsUncheckedCreateNestedManyWithoutSourcesInput
   }
@@ -15654,6 +15724,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutSourcesNestedInput
     traits?: traitsUpdateManyWithoutSourcesNestedInput
@@ -15665,6 +15736,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     traits?: traitsUncheckedUpdateManyWithoutSourcesNestedInput
   }
@@ -15768,6 +15840,7 @@ export namespace Prisma {
     type: $Enums.SourceType
     title: string
     content_encrypted: Uint8Array
+    iv?: string
     created_at?: Date | string
   }
 
@@ -15775,6 +15848,7 @@ export namespace Prisma {
     id?: string
     role: string
     content_encrypted: Uint8Array
+    iv?: string
     audio_url?: string | null
     created_at?: Date | string
   }
@@ -15882,6 +15956,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     traits?: traitsUpdateManyWithoutSourcesNestedInput
     embeddings?: embeddingsUpdateManyWithoutSourceNestedInput
@@ -15892,6 +15967,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     traits?: traitsUncheckedUpdateManyWithoutSourcesNestedInput
     embeddings?: embeddingsUncheckedUpdateManyWithoutSourceNestedInput
@@ -15902,6 +15978,7 @@ export namespace Prisma {
     type?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     title?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15909,6 +15986,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15917,6 +15995,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15925,6 +16004,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
+    iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

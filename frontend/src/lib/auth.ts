@@ -42,7 +42,12 @@ export const useAuth = () => {
         },
         body: JSON.stringify({
           email,
-          ...registration,
+          id: registration.id,
+          rawId: registration.rawId,
+          response: registration.response,
+          type: registration.type,
+          clientDataJSON: registration.clientDataJSON,
+          attestationObject: registration.attestationObject,
           challenge: data.challenge,
         }),
       });
@@ -88,7 +93,12 @@ export const useAuth = () => {
         },
         body: JSON.stringify({
           email,
-          ...authentication,
+          id: authentication.id,
+          rawId: authentication.rawId,
+          response: authentication.response,
+          type: authentication.type,
+          clientDataJSON: authentication.clientDataJSON,
+          authenticatorAttachment: authentication.authenticatorAttachment,
           challenge: data.challenge,
         }),
       });

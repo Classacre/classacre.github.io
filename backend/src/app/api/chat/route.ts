@@ -2,6 +2,7 @@ import { streamText } from 'ai';
 import { Readable } from 'stream';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { z } from 'zod';
+import { SAFETY_INSTRUCTIONS, PERSONA_SUMMARY, LEGACI_STYLE_GUIDE, RETRIEVAL_CONTEXT, VOICE_CLONING_CONSENT } from '../../../../src/lib/prompt';
 
 /* Prisma client is created at request-time with a runtime-only dynamic import to avoid
    TypeScript resolution conflicts between a generated local client and the installed package.
@@ -42,29 +43,20 @@ export async function POST(req: Request) {
    const prisma = _global.__prisma ?? (_global.__prisma = new PrismaClientCtor());
  
    // Map incoming simple { role, content } messages into the model shape expected by the installed ai SDK.
-   const modelMessages = messages.map((m: any) => ({
+   const systemPrompt = `${SAFETY_INSTRUCTIONS}\n\n${PERSONA_SUMMARY}\n\n${LEGACI_STYLE_GUIDE}\n\n${RETRIEVAL_CONTEXT}\n\n${VOICE_CLONING_CONSENT}`;
+   const modelMessages = [{ role: 'system', content: systemPrompt }, ...messages.map((m: any) => ({
      role: m.role,
      content: typeof m.content === 'string' ? m.content : String(m.content),
-   }));
+   }))];
  
    const stream = streamText({
      model: openrouter.chat('anthropic/claude-3.5-sonnet'),
      // cast to any because different ai SDK versions expect slightly different message shapes
      messages: modelMessages as any,
-     });
-  
-  
-     //TODO: Save messages to database
-    // await prisma.messages.create({
-    //   data: {
-    //     user_id: user.id,
-    //     role: "assistant",
-    //     content_encrypted: Buffer.from(encryptedData, 'hex'),
-    //     audio_url: null,
-    //   },
-    // });
-  
-     // Manual ReadableStream fallback
+   });
+ 
+
+   // Manual ReadableStream fallback
    const encoder = new TextEncoder();
    const readableStream = new ReadableStream({
      async start(controller) {
@@ -79,9 +71,9 @@ export async function POST(req: Request) {
      },
    });
 
-   //return new Response(readableStream, {
-   //  headers: { 'Content-Type': 'text/plain' },
-   //});
+   return new Response(readableStream, {
+     headers: { 'Content-Type': 'text/plain' },
+   });
  
    return new Response(JSON.stringify({ error: 'Streaming not supported by installed ai SDK version' }), {
      status: 500,

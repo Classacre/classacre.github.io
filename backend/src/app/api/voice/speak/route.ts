@@ -1,40 +1,60 @@
 // backend/src/app/api/voice/speak/route.ts
-import ElevenLabs from "elevenlabs";
+import { getPrisma } from '../../../../lib/prisma';
+import { z } from 'zod';
+import { ElevenLabs } from '@elevenlabs/elevenlabs-js';
 
-export async function POST(req: Request) {
+const BodySchema = z.object({
+  text: z.string(),
+});
+
+export async function POST(request: Request) {
   try {
+    const prisma = await getPrisma();
+    const { text } = BodySchema.parse(await request.json());
+
+    // Implement TTS using ElevenLabs
+    console.log('Generating speech for:', text);
+    
+    // Get the ElevenLabs API key from environment variables
     const apiKey = process.env.ELEVENLABS_API_KEY;
+    
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'ELEVENLABS_API_KEY is not set' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
+      throw new Error('ElevenLabs API key is not configured. Please set ELEVENLABS_API_KEY in your environment variables.');
+    }
+    
+    // Initialize ElevenLabs client with the API key
+    // Note: The ElevenLabs SDK usage may vary; ensure you refer to the official documentation for the correct method.
+    const elevenLabs = ElevenLabs({ apiKey });
+    
+    try {
+      // Generate speech from text using ElevenLabs
+      // Example usage based on common TTS SDK patterns (adjust according to ElevenLabs JS SDK documentation)
+      const speechResponse = await elevenLabs.generate({
+        text: text,
+        voice: 'Charlotte', // Example voice; choose appropriate voice
+        model: 'eleven_monolingual_v1', // Example model; use the correct one
+        // Additional options like speed, stability can be added here
       });
+    
+      // Assuming speechResponse contains the audio data (e.g., a buffer or stream)
+      // For example, speechResponse.audio might be the binary data
+      const audioBuffer = speechResponse.audio; // Hypothetical property; check SDK docs
+    
+      // Return the audio response with appropriate headers
+      return new Response(audioBuffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'audio/mpeg', // Adjust MIME type based on output format
+          'Cache-Control': 'public, max-age=0, must-revalidate',
+        },
+      });
+    } catch (error: any) {
+      console.error('TTS generation failed:', error);
+      throw error;
     }
-
-    const body = await req.json();
-    const { text, voiceId } = body;
-
-    const elevenLabs = new ElevenLabsClient({
-      apiKey: apiKey,
-    });
-
-    const voiceSettings = {
-        stability: 0.5,
-        similarity_boost: 0.5,
-    }
-    const audio = await elevenLabs.textToSpeech.generate({
-      text: text,
-      voice_id: voiceId || "pNInz6obpgDQGcfmxZJm",
-      model_id: "eleven_monolingual_v1",
-      voice_settings: voiceSettings,
-    });
-
-    return new Response(audio as any, {
-      headers: { 'Content-Type': 'audio/mpeg' },
-    });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[voice/speak] error', error);
-    return new Response(JSON.stringify({ error: 'Failed to generate speech' }), {
+    return new Response(JSON.stringify({ error: error.message || 'Failed to generate audio' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

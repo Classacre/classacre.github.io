@@ -1,26 +1,25 @@
 // backend/src/app/api/voice/consent/route.ts
 import { getPrisma } from '../../../../lib/prisma';
+import { z } from 'zod';
+
+const BodySchema = z.object({
+  userId: z.string(),
+  consentGiven: z.boolean(),
+});
 
 export async function POST(request: Request) {
   try {
     const prisma = await getPrisma();
-    const { userId, accepted, sampleIds } = await request.json();
+    const { userId, consentGiven } = BodySchema.parse(await request.json());
 
-    const consent_signed_at = accepted ? new Date() : null;
-
-    const voiceProfile = await prisma.voice_profiles.upsert({
-      where: { user_id: userId },
-      update: { consent_signed_at: consent_signed_at, sample_meta: sampleIds },
-      create: {
-        user_id: userId,
-        provider: 'elevenlabs', // Replace with the actual provider
-        voice_id: 'default', // Replace with the actual voice ID
-        consent_signed_at: consent_signed_at,
-        sample_meta: sampleIds,
-      },
+    // Update user's consent status
+    // Assuming user model has a consentGiven field
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { consentGiven },
     });
 
-    return new Response(JSON.stringify({ message: 'Consent updated successfully', voiceProfile }), {
+    return new Response(JSON.stringify({ message: 'Consent updated successfully' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

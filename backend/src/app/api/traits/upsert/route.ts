@@ -1,79 +1,56 @@
 // backend/src/app/api/traits/upsert/route.ts
 import { getPrisma } from '../../../../lib/prisma';
+import { z } from 'zod';
 
-export async function POST(req: Request) {
+const BodySchema = z.object({
+  userId: z.string(),
+  category: z.string(),
+  key: z.string(),
+  value_json: z.any(),
+  confidence: z.number(),
+  completeness: z.number(),
+  provenance: z.string(),
+});
+
+export async function POST(request: Request) {
   try {
-    const body = await req.json();
-    const {
-      userId,
-      category,
-      key,
-      value_json,
-      confidence,
-      completeness,
-      provenance,
-      source_id,
-    } = body as {
-      userId: string;
-      category: string;
-      key: string;
-      value_json: any;
-      confidence: number;
-      completeness: number;
-      provenance: string;
-      source_id?: string | null;
-    };
-
-    if (!userId || !category || !key) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
-
     const prisma = await getPrisma();
+    const body = await request.json();
+    const { userId, category, key, value_json, confidence, completeness, provenance } = BodySchema.parse(body);
 
-    // Try to find existing trait by user + category + key
-    const existing = await prisma.traits.findFirst({
+    const trait = await prisma.traits.upsert({
       where: {
+        user_id_category_key: {
+          user_id: userId,
+          category: category,
+          key: key,
+        },
+      },
+      update: {
+        value_json: value_json,
+        confidence: confidence,
+        completeness: completeness,
+        provenance: provenance,
+        updated_at: new Date(),
+      },
+      create: {
         user_id: userId,
-        category,
-        key,
+        category: category,
+        key: key,
+        value_json: value_json,
+        confidence: confidence,
+        completeness: completeness,
+        provenance: provenance,
       },
     });
 
-    let trait;
-    if (existing) {
-      trait = await prisma.traits.update({
-        where: { id: existing.id },
-        data: {
-          value_json,
-          confidence,
-          completeness,
-          provenance,
-          source_id: source_id ?? undefined,
-          // updated_at is handled by @updatedAt
-        },
-      });
-    } else {
-      trait = await prisma.traits.create({
-        data: {
-          user_id: userId,
-          category,
-          key,
-          value_json,
-          confidence,
-          completeness,
-          provenance,
-          source_id: source_id ?? undefined,
-        },
-      });
-    }
-
-    return new Response(JSON.stringify({ trait }), {
+    return new Response(JSON.stringify({ message: 'Trait upserted successfully', trait }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[traits/upsert] error', error);
-    return new Response(JSON.stringify({ error: 'Failed to upsert trait' }), {
+    return new Response(JSON.stringify({ error: error.message || 'Failed to upsert trait' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
