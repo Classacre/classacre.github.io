@@ -98,7 +98,7 @@ enum SourceType {
 model messages {
   id              String   @id @default(uuid())
   user_id         String
-  role            String
+  role            RoleType
   content_encrypted Bytes
   iv              String @default("")
   audio_url       String?
@@ -106,6 +106,12 @@ model messages {
   user            users    @relation(fields: [user_id], references: [id])
 
   @@index([user_id])
+}
+
+enum RoleType {
+  system
+  user
+  assistant
 }
 
 model embeddings {

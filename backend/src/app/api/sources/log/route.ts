@@ -1,9 +1,9 @@
 // backend/src/app/api/sources/log/route.ts
 import { getPrisma } from '../../../../lib/prisma';
 import { z } from 'zod';
+import { encrypt } from '../../../../lib/crypto';
 
 const BodySchema = z.object({
-  userId: z.string(),
   type: z.string(),
   title: z.string(),
   content: z.string(),
@@ -12,14 +12,19 @@ const BodySchema = z.object({
 export async function POST(request: Request) {
   try {
     const prisma = await getPrisma();
-    const { userId, type, title, content } = BodySchema.parse(await request.json());
+     // TODO: Get userId from session
+    const userId = "testUserId";
+    const { type, title, content } = BodySchema.parse(await request.json());
+
+    const { iv, encryptedData } = await encrypt(content);
 
     const source = await prisma.sources.create({
       data: {
         user_id: userId,
         type: type,
         title: title,
-        content_encrypted: Buffer.from(content),
+        content_encrypted: Buffer.from(encryptedData, 'hex'),
+        iv: iv,
       },
     });
 

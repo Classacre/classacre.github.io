@@ -9,7 +9,8 @@ export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await req.json()
+    // TODO: Get userId from session
+    const userId = "testUserId";
     
     const prisma = await getPrisma();
     const formData = await req.formData();
@@ -52,14 +53,14 @@ export async function POST(req: NextRequest) {
     fs.unlinkSync(tempFilePath);
 
     // Process the transcription and save the source to the database
-   // const { iv, encryptedData } = await encrypt(transcription.text);
+    const { iv, encryptedData } = await encrypt(transcription.text);
     const source = await prisma.sources.create({
       data: {
         user_id: userId,
         type: 'file',
         title: audioFile.name,
-        content_encrypted: Buffer.from(transcription.text),
-        iv: ""
+        content_encrypted: Buffer.from(encryptedData, 'hex'),
+        iv: iv
       },
     });
 

@@ -1,9 +1,9 @@
 // backend/src/app/api/traits/upsert/route.ts
 import { getPrisma } from '../../../../lib/prisma';
 import { z } from 'zod';
+import { encrypt } from '../../../../lib/crypto';
 
 const BodySchema = z.object({
-  userId: z.string(),
   category: z.string(),
   key: z.string(),
   value_json: z.any(),
@@ -15,8 +15,12 @@ const BodySchema = z.object({
 export async function POST(request: Request) {
   try {
     const prisma = await getPrisma();
+    // TODO: Get userId from session
+    const userId = "testUserId"; // Replace with actual user ID from session
     const body = await request.json();
-    const { userId, category, key, value_json, confidence, completeness, provenance } = BodySchema.parse(body);
+    const { category, key, value_json, confidence, completeness, provenance } = BodySchema.parse(body);
+
+    const {iv, encryptedData} = await encrypt(JSON.stringify(value_json));
 
     const trait = await prisma.traits.upsert({
       where: {
@@ -27,7 +31,7 @@ export async function POST(request: Request) {
         },
       },
       update: {
-        value_json: value_json,
+        value_json: encryptedData,
         confidence: confidence,
         completeness: completeness,
         provenance: provenance,
@@ -37,10 +41,11 @@ export async function POST(request: Request) {
         user_id: userId,
         category: category,
         key: key,
-        value_json: value_json,
+        value_json: encryptedData,
         confidence: confidence,
         completeness: completeness,
         provenance: provenance,
+        iv: iv,
       },
     });
 
@@ -55,4 +60,3 @@ export async function POST(request: Request) {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-}

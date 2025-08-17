@@ -72,11 +72,24 @@ export namespace $Enums {
 
 export type SourceType = (typeof SourceType)[keyof typeof SourceType]
 
+
+export const RoleType: {
+  system: 'system',
+  user: 'user',
+  assistant: 'assistant'
+};
+
+export type RoleType = (typeof RoleType)[keyof typeof RoleType]
+
 }
 
 export type SourceType = $Enums.SourceType
 
 export const SourceType: typeof $Enums.SourceType
+
+export type RoleType = $Enums.RoleType
+
+export const RoleType: typeof $Enums.RoleType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -8550,7 +8563,7 @@ export namespace Prisma {
   export type MessagesMinAggregateOutputType = {
     id: string | null
     user_id: string | null
-    role: string | null
+    role: $Enums.RoleType | null
     content_encrypted: Uint8Array | null
     iv: string | null
     audio_url: string | null
@@ -8560,7 +8573,7 @@ export namespace Prisma {
   export type MessagesMaxAggregateOutputType = {
     id: string | null
     user_id: string | null
-    role: string | null
+    role: $Enums.RoleType | null
     content_encrypted: Uint8Array | null
     iv: string | null
     audio_url: string | null
@@ -8685,7 +8698,7 @@ export namespace Prisma {
   export type MessagesGroupByOutputType = {
     id: string
     user_id: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv: string
     audio_url: string | null
@@ -8771,7 +8784,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       user_id: string
-      role: string
+      role: $Enums.RoleType
       content_encrypted: Uint8Array
       iv: string
       audio_url: string | null
@@ -9202,7 +9215,7 @@ export namespace Prisma {
   interface messagesFieldRefs {
     readonly id: FieldRef<"messages", 'String'>
     readonly user_id: FieldRef<"messages", 'String'>
-    readonly role: FieldRef<"messages", 'String'>
+    readonly role: FieldRef<"messages", 'RoleType'>
     readonly content_encrypted: FieldRef<"messages", 'Bytes'>
     readonly iv: FieldRef<"messages", 'String'>
     readonly audio_url: FieldRef<"messages", 'String'>
@@ -12044,6 +12057,20 @@ export namespace Prisma {
    */
   export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
+
+
+  /**
+   * Reference to a field of type 'RoleType'
+   */
+  export type EnumRoleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleType'>
+    
+
+
+  /**
+   * Reference to a field of type 'RoleType[]'
+   */
+  export type ListEnumRoleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -12461,7 +12488,7 @@ export namespace Prisma {
     NOT?: messagesWhereInput | messagesWhereInput[]
     id?: StringFilter<"messages"> | string
     user_id?: StringFilter<"messages"> | string
-    role?: StringFilter<"messages"> | string
+    role?: EnumRoleTypeFilter<"messages"> | $Enums.RoleType
     content_encrypted?: BytesFilter<"messages"> | Uint8Array
     iv?: StringFilter<"messages"> | string
     audio_url?: StringNullableFilter<"messages"> | string | null
@@ -12486,7 +12513,7 @@ export namespace Prisma {
     OR?: messagesWhereInput[]
     NOT?: messagesWhereInput | messagesWhereInput[]
     user_id?: StringFilter<"messages"> | string
-    role?: StringFilter<"messages"> | string
+    role?: EnumRoleTypeFilter<"messages"> | $Enums.RoleType
     content_encrypted?: BytesFilter<"messages"> | Uint8Array
     iv?: StringFilter<"messages"> | string
     audio_url?: StringNullableFilter<"messages"> | string | null
@@ -12513,7 +12540,7 @@ export namespace Prisma {
     NOT?: messagesScalarWhereWithAggregatesInput | messagesScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"messages"> | string
     user_id?: StringWithAggregatesFilter<"messages"> | string
-    role?: StringWithAggregatesFilter<"messages"> | string
+    role?: EnumRoleTypeWithAggregatesFilter<"messages"> | $Enums.RoleType
     content_encrypted?: BytesWithAggregatesFilter<"messages"> | Uint8Array
     iv?: StringWithAggregatesFilter<"messages"> | string
     audio_url?: StringNullableWithAggregatesFilter<"messages"> | string | null
@@ -13076,7 +13103,7 @@ export namespace Prisma {
 
   export type messagesCreateInput = {
     id?: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv?: string
     audio_url?: string | null
@@ -13087,7 +13114,7 @@ export namespace Prisma {
   export type messagesUncheckedCreateInput = {
     id?: string
     user_id: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv?: string
     audio_url?: string | null
@@ -13096,7 +13123,7 @@ export namespace Prisma {
 
   export type messagesUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13107,7 +13134,7 @@ export namespace Prisma {
   export type messagesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13117,7 +13144,7 @@ export namespace Prisma {
   export type messagesCreateManyInput = {
     id?: string
     user_id: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv?: string
     audio_url?: string | null
@@ -13126,7 +13153,7 @@ export namespace Prisma {
 
   export type messagesUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13136,7 +13163,7 @@ export namespace Prisma {
   export type messagesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13804,6 +13831,13 @@ export namespace Prisma {
     _max?: NestedBytesFilter<$PrismaModel>
   }
 
+  export type EnumRoleTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoleType | EnumRoleTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleTypeFilter<$PrismaModel> | $Enums.RoleType
+  }
+
   export type messagesCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
@@ -13832,6 +13866,16 @@ export namespace Prisma {
     iv?: SortOrder
     audio_url?: SortOrder
     created_at?: SortOrder
+  }
+
+  export type EnumRoleTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoleType | EnumRoleTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleTypeWithAggregatesFilter<$PrismaModel> | $Enums.RoleType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleTypeFilter<$PrismaModel>
+    _max?: NestedEnumRoleTypeFilter<$PrismaModel>
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -14441,6 +14485,10 @@ export namespace Prisma {
     connect?: usersWhereUniqueInput
   }
 
+  export type EnumRoleTypeFieldUpdateOperationsInput = {
+    set?: $Enums.RoleType
+  }
+
   export type usersUpdateOneRequiredWithoutMessagesNestedInput = {
     create?: XOR<usersCreateWithoutMessagesInput, usersUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: usersCreateOrConnectWithoutMessagesInput
@@ -14710,6 +14758,23 @@ export namespace Prisma {
     _min?: NestedBytesFilter<$PrismaModel>
     _max?: NestedBytesFilter<$PrismaModel>
   }
+
+  export type NestedEnumRoleTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoleType | EnumRoleTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleTypeFilter<$PrismaModel> | $Enums.RoleType
+  }
+
+  export type NestedEnumRoleTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoleType | EnumRoleTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoleType[] | ListEnumRoleTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleTypeWithAggregatesFilter<$PrismaModel> | $Enums.RoleType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleTypeFilter<$PrismaModel>
+    _max?: NestedEnumRoleTypeFilter<$PrismaModel>
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -14877,7 +14942,7 @@ export namespace Prisma {
 
   export type messagesCreateWithoutUserInput = {
     id?: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv?: string
     audio_url?: string | null
@@ -14886,7 +14951,7 @@ export namespace Prisma {
 
   export type messagesUncheckedCreateWithoutUserInput = {
     id?: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv?: string
     audio_url?: string | null
@@ -15095,7 +15160,7 @@ export namespace Prisma {
     NOT?: messagesScalarWhereInput | messagesScalarWhereInput[]
     id?: StringFilter<"messages"> | string
     user_id?: StringFilter<"messages"> | string
-    role?: StringFilter<"messages"> | string
+    role?: EnumRoleTypeFilter<"messages"> | $Enums.RoleType
     content_encrypted?: BytesFilter<"messages"> | Uint8Array
     iv?: StringFilter<"messages"> | string
     audio_url?: StringNullableFilter<"messages"> | string | null
@@ -15846,7 +15911,7 @@ export namespace Prisma {
 
   export type messagesCreateManyUserInput = {
     id?: string
-    role: string
+    role: $Enums.RoleType
     content_encrypted: Uint8Array
     iv?: string
     audio_url?: string | null
@@ -15984,7 +16049,7 @@ export namespace Prisma {
 
   export type messagesUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15993,7 +16058,7 @@ export namespace Prisma {
 
   export type messagesUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16002,7 +16067,7 @@ export namespace Prisma {
 
   export type messagesUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
     content_encrypted?: BytesFieldUpdateOperationsInput | Uint8Array
     iv?: StringFieldUpdateOperationsInput | string
     audio_url?: NullableStringFieldUpdateOperationsInput | string | null

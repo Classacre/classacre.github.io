@@ -242,6 +242,12 @@ exports.SourceType = exports.$Enums.SourceType = {
   link: 'link'
 };
 
+exports.RoleType = exports.$Enums.RoleType = {
+  system: 'system',
+  user: 'user',
+  assistant: 'assistant'
+};
+
 exports.Prisma.ModelName = {
   users: 'users',
   credentials: 'credentials',
