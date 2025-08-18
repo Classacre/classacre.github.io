@@ -1,60 +1,88 @@
-// DiscoBall.tsx
-import React, { useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+"use client";
+
+import React, { useRef, useState, useMemo, useEffect } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { discoBallVertexShader, discoBallFragmentShader } from '../lib/shaders/discoBall';
 
-// Define the DiscoBall component
-export default function DiscoBall({ categories = ['Childhood', 'Personality', 'Career', 'Relationships', 'Health', 'Habits', 'Location', 'Misc/Notes'], tileSize = 0.5 }) {
-  const discoBallRef = useRef<THREE.Group>(null);
+interface DiscoBallProps {
+  categories?: string[];
+  tileSize?: number;
+  tileCount?: number;
+}
+
+const DiscoBall = ({ categories = ['Childhood', 'Personality', 'Career', 'Relationships', 'Health', 'Habits', 'Location', 'Misc/Notes'], tileSize = 0.5, tileCount = 1000 }: DiscoBallProps) => {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
   const [hoveredTile, setHoveredTile] = useState<number | null>(null);
-  const [completeness, setCompleteness] = useState<number[]>(categories.map(() => 0.5));
+  const [completeness, setCompleteness] = useState<number[]>(Array(categories.length).fill(0.5));
+  const { scene } = useThree();
 
-  useFrame(() => {
-    if (discoBallRef.current) {
-      // Slow auto-rotation
-      discoBallRef.current.rotation.y += 0.005;
+  const geometry = useMemo(() => new THREE.BoxGeometry(tileSize, tileSize, tileSize), [tileSize]);
+  const material = useMemo(() => {
+    const shaderMaterial = new THREE.ShaderMaterial({
+      vertexShader: discoBallVertexShader,
+      fragmentShader: discoBallFragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uMaxOffset: { value: 0.2 },
+      },
+    });
+    return shaderMaterial;
+  }, []);
+
+  useEffect(() => {
+    if (meshRef.current) {
+      const instanceCount = tileCount;
+      meshRef.current.count = instanceCount;
+
+      const categoryAttribute = new THREE.InstancedBufferAttribute(new Float32Array(instanceCount), 1);
+      const completenessAttribute = new THREE.InstancedBufferAttribute(new Float32Array(instanceCount), 1);
+      const selectedAttribute = new THREE.InstancedBufferAttribute(new Float32Array(instanceCount), 1);
+
+      meshRef.current.geometry.setAttribute('aCategory', categoryAttribute);
+      meshRef.current.geometry.setAttribute('aCompleteness', completenessAttribute);
+      meshRef.current.geometry.setAttribute('aSelected', selectedAttribute);
+
+      const dummy = new THREE.Object3D();
+      for (let i = 0; i < instanceCount; i++) {
+        // Calculate position on a sphere
+        const phi = Math.random() * Math.PI;
+        const theta = Math.random() * 2 * Math.PI;
+
+        const x = Math.sin(phi) * Math.cos(theta);
+        const y = Math.cos(phi);
+        const z = Math.sin(phi) * Math.sin(theta);
+
+        dummy.position.set(x, y, z).normalize().multiplyScalar(5);
+        dummy.updateMatrix();
+        meshRef.current.setMatrixAt(i, dummy.matrix);
+
+        // Assign random category, completeness, and selected values
+        categoryAttribute.setX(i, Math.floor(Math.random() * categories.length));
+        completenessAttribute.setX(i, Math.random());
+        selectedAttribute.setX(i, 0);
+      }
+
+      meshRef.current.instanceMatrix.needsUpdate = true;
+      categoryAttribute.needsUpdate = true;
+      completenessAttribute.needsUpdate = true;
+      selectedAttribute.needsUpdate = true;
+    }
+  }, [categories, geometry, tileCount]);
+
+  useFrame(({ clock }) => {
+    if (meshRef.current && material instanceof THREE.ShaderMaterial) {
+      (meshRef.current.material as THREE.ShaderMaterial).uniforms.uTime.value = clock.getElapsedTime();
+      meshRef.current.rotation.y += 0.005;
     }
   });
 
-  const handleHover = (index: number) => {
-    setHoveredTile(index);
-  };
-
-  const handleLeave = () => {
-    setHoveredTile(null);
-  };
-
   return (
-    <group>
-      {/* Disco ball container */}
-      <group ref={discoBallRef} position={[0, 0, 0]}>
-        {categories.map((category, index) => {
-          const hue = index % 4; // Assign a hue group for the color transition
-          const color = hoveredTile === index ? '#ffffff' : `hsl(${hue * 60}, 80%, 60%)`;
-          const baseColor = hoveredTile === index ? '#ffffff' : `hsl(${hue * 60}, 80%, 50%)`;
-          const size = 1 + completeness[index] * 0.5;
-
-          return (
-            <mesh
-              key={index}
-              position={[0, 0, 0]}
-              scale={[size, size, size]}
-              onPointerOver={() => handleHover(index)}
-              onPointerOut={handleLeave}
-            >
-              {/* Base material */}
-              <boxGeometry args={[1, 1, 1]} />
-              <meshStandardMaterial
-                color={color}
-                metalness={0.3}
-                roughness={0.4}
-                emissive={baseColor}
-                emissiveIntensity={0.2}
-              />
-            </mesh>
-          );
-        })}
-      </group>
-    </group>
+    <instancedMesh
+      ref={meshRef}
+      args={[geometry, material, tileCount]}
+    />
   );
-}
+};
+
+export default DiscoBall;
