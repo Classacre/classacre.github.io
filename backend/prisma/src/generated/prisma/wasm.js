@@ -206,6 +206,17 @@ exports.Prisma.Voice_profilesScalarFieldEnum = {
   sample_meta: 'sample_meta'
 };
 
+exports.Prisma.Embedding_jobsScalarFieldEnum = {
+  id: 'id',
+  job_id: 'job_id',
+  user_id: 'user_id',
+  source_id: 'source_id',
+  status: 'status',
+  result: 'result',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -257,7 +268,8 @@ exports.Prisma.ModelName = {
   sources: 'sources',
   messages: 'messages',
   embeddings: 'embeddings',
-  voice_profiles: 'voice_profiles'
+  voice_profiles: 'voice_profiles',
+  embedding_jobs: 'embedding_jobs'
 };
 
 /**

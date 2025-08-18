@@ -58,16 +58,20 @@ export async function POST(request: Request) {
       },
     });
 
-    return new Response(
-      JSON.stringify({ message: 'Login successful' }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Set-Cookie': `session=${sessionToken}; HttpOnly; Secure; SameSite=strict`,
-        },
-      }
-    );
+    // Build headers so we can append Set-Cookie safely and mirror registration behavior
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/json');
+    const maxAge = 30 * 24 * 60 * 60; // 30 days
+    const secureFlag = process.env.NODE_ENV === 'production' ? 'Secure; ' : '';
+    const sessionCookie = `session=${sessionToken}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=${maxAge}`;
+    headers.append('Set-Cookie', sessionCookie);
+    // Optionally clear challenge cookie if present
+    headers.append('Set-Cookie', 'webauthn_challenge=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0');
+
+    return new Response(JSON.stringify({ message: 'Login successful' }), {
+      status: 200,
+      headers,
+    });
   } catch (error: any) {
     console.error('[login-passkey/verify] error', error);
     return new Response(JSON.stringify({ error: error.message || 'Failed to verify authentication' }), {

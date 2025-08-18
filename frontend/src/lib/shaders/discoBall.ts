@@ -1,24 +1,25 @@
-// Simple, WebGL1-compatible disco ball shaders (no #version directive)
-// - Uses attribute / varying instead of GLSL3 'in/out' to avoid #version placement issues
-// - Keeps protrusion, category-color blend, and a subtle fresnel/specular highlight
-// - Avoids advanced GLSL features that require explicit GLSL3 directives so it is robust
-//   when Three.js prepends its own shader chunks.
-
-export const discoBallVertexShader = `
+export const discoBallVertexShader = `#version 300 es
+  precision highp float;
+  in vec3 position;
+  in vec3 normal;
+  in vec2 uv;
   attribute float aCategory;
   attribute float aCompleteness;
   attribute float aSelected;
 
   uniform float uTime;
   uniform float uMaxOffset;
+  uniform mat4 projectionMatrix;
+  uniform mat4 modelViewMatrix;
 
-  varying vec3 vNormal;
-  varying vec3 vViewDir;
-  varying float vCompleteness;
-  varying float vSelected;
-  varying float vCategory;
+  out vec3 vNormal;
+  out vec3 vViewDir;
+  out float vCompleteness;
+  out float vSelected;
+  flat out int vCategory;
 
   void main() {
+    // base position and normal
     vec3 transformed = position;
     vec3 n = normalize(normal);
 
@@ -29,25 +30,27 @@ export const discoBallVertexShader = `
 
     transformed += n * protrusion;
 
+    // output for fragment shader
+    vNormal = mat3(modelViewMatrix) * n;
     vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
-    vNormal = normalize(mat3(modelViewMatrix) * n);
     vViewDir = normalize(-mvPosition.xyz);
     vCompleteness = aCompleteness;
     vSelected = aSelected;
-    vCategory = aCategory;
+    vCategory = int(aCategory);
 
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
 
-export const discoBallFragmentShader = `
-  varying vec3 vNormal;
-  varying vec3 vViewDir;
-  varying float vCompleteness;
-  varying float vSelected;
-  varying float vCategory;
+export const discoBallFragmentShader = `#version 300 es
+  precision highp float;
+  in vec3 vNormal;
+  in vec3 vViewDir;
+  in float vCompleteness;
+  in float vSelected;
+  flat in int vCategory;
 
-  uniform float uTime;
+  out vec4 outColor;
 
   // brand colors (rgb 0..1)
   const vec3 primary = vec3(0.357, 0.357, 0.847); // #5B5BD6
@@ -62,9 +65,9 @@ export const discoBallFragmentShader = `
     vec3(0.580, 0.600, 0.722)  // Misc #94A3B8
   );
 
-  // small time-based hue shimmer (safe approximation)
-  vec3 hueShift(vec3 color, float t, float idx) {
-    float shift = 0.02 * sin(t * 1.2 + idx);
+  // small time-based hue shimmer
+  vec3 hueShift(vec3 color, float t, int idx) {
+    float shift = 0.02 * sin(t * 1.2 + float(idx));
     vec3 c = color;
     c.r += shift * 0.6;
     c.g += shift * 0.3;
@@ -73,28 +76,30 @@ export const discoBallFragmentShader = `
   }
 
   void main() {
-    int idx = int(clamp(vCategory, 0.0, 7.0));
-    vec3 cat = categoryColors[idx];
+    // base color mix from primary -> category by completeness
+    vec3 cat = categoryColors[clamp(vCategory, 0, 7)];
     vec3 base = mix(primary, cat, clamp(vCompleteness, 0.0, 1.0));
 
+    // fresnel/specular highlight for mirror-like tiles
     vec3 N = normalize(vNormal);
     vec3 V = normalize(vViewDir);
     float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0) * 0.9;
 
-    // Use uTime but guard if not provided (Three injects it); safe fallback
-    float t = uTime;
+    // subtle time shimmer
+    vec3 shimmer = hueShift(base, uTime * 0.5, vCategory);
 
-    vec3 shimmer = hueShift(base, t * 0.5, float(idx));
-
+    // selection glow increases brightness & slight tint
     float sel = clamp(vSelected, 0.0, 2.0);
     vec3 selectedTint = mix(shimmer, vec3(1.0, 0.98, 0.92), smoothstep(0.0, 1.0, sel));
 
+    // final color composition: base + fresnel * highlight + selection
     vec3 color = selectedTint + fresnel * vec3(1.0) * 0.25;
     color = mix(shimmer, color, 0.6);
 
+    // small rim lighting using normal and view angle
     float rim = smoothstep(0.0, 0.8, 1.0 - dot(N, V)) * 0.18 * (1.0 + sel * 0.5);
     color += rim * vec3(1.0, 0.9, 0.85) * 0.6;
 
-    gl_FragColor = vec4(color, 1.0);
+    outColor = vec4(color, 1.0);
   }
 `;

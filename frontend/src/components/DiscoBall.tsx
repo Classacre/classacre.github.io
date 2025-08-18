@@ -37,6 +37,8 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
   // Build geometry and shader material
   const geom = useMemo(() => new THREE.PlaneGeometry(0.45, 0.45), []);
   const material = useMemo(() => {
+    // Use a WebGL1-compatible ShaderMaterial (do NOT set GLSL3) because the shader
+    // uses `attribute`/`varying` and `gl_FragColor`.
     const mat = new THREE.ShaderMaterial({
       vertexShader: discoBallVertexShader,
       fragmentShader: discoBallFragmentShader,
@@ -44,7 +46,6 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
         uTime: { value: 0 },
         uMaxOffset: { value: maxOffset },
       },
-      glslVersion: THREE.GLSL3,
     });
     return mat;
   }, [maxOffset]);

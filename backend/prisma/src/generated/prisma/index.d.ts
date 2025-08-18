@@ -58,6 +58,11 @@ export type embeddings = $Result.DefaultSelection<Prisma.$embeddingsPayload>
  * 
  */
 export type voice_profiles = $Result.DefaultSelection<Prisma.$voice_profilesPayload>
+/**
+ * Model embedding_jobs
+ * 
+ */
+export type embedding_jobs = $Result.DefaultSelection<Prisma.$embedding_jobsPayload>
 
 /**
  * Enums
@@ -305,6 +310,16 @@ export class PrismaClient<
     * ```
     */
   get voice_profiles(): Prisma.voice_profilesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.embedding_jobs`: Exposes CRUD operations for the **embedding_jobs** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Embedding_jobs
+    * const embedding_jobs = await prisma.embedding_jobs.findMany()
+    * ```
+    */
+  get embedding_jobs(): Prisma.embedding_jobsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -753,7 +768,8 @@ export namespace Prisma {
     sources: 'sources',
     messages: 'messages',
     embeddings: 'embeddings',
-    voice_profiles: 'voice_profiles'
+    voice_profiles: 'voice_profiles',
+    embedding_jobs: 'embedding_jobs'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -772,7 +788,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "credentials" | "sessions" | "profiles" | "traits" | "sources" | "messages" | "embeddings" | "voice_profiles"
+      modelProps: "users" | "credentials" | "sessions" | "profiles" | "traits" | "sources" | "messages" | "embeddings" | "voice_profiles" | "embedding_jobs"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1442,6 +1458,80 @@ export namespace Prisma {
           }
         }
       }
+      embedding_jobs: {
+        payload: Prisma.$embedding_jobsPayload<ExtArgs>
+        fields: Prisma.embedding_jobsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.embedding_jobsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.embedding_jobsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>
+          }
+          findFirst: {
+            args: Prisma.embedding_jobsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.embedding_jobsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>
+          }
+          findMany: {
+            args: Prisma.embedding_jobsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>[]
+          }
+          create: {
+            args: Prisma.embedding_jobsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>
+          }
+          createMany: {
+            args: Prisma.embedding_jobsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.embedding_jobsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>[]
+          }
+          delete: {
+            args: Prisma.embedding_jobsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>
+          }
+          update: {
+            args: Prisma.embedding_jobsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>
+          }
+          deleteMany: {
+            args: Prisma.embedding_jobsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.embedding_jobsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.embedding_jobsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>[]
+          }
+          upsert: {
+            args: Prisma.embedding_jobsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$embedding_jobsPayload>
+          }
+          aggregate: {
+            args: Prisma.Embedding_jobsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmbedding_jobs>
+          }
+          groupBy: {
+            args: Prisma.embedding_jobsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Embedding_jobsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.embedding_jobsCountArgs<ExtArgs>
+            result: $Utils.Optional<Embedding_jobsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1543,6 +1633,7 @@ export namespace Prisma {
     messages?: messagesOmit
     embeddings?: embeddingsOmit
     voice_profiles?: voice_profilesOmit
+    embedding_jobs?: embedding_jobsOmit
   }
 
   /* Types for Logging */
@@ -11782,6 +11873,1036 @@ export namespace Prisma {
 
 
   /**
+   * Model embedding_jobs
+   */
+
+  export type AggregateEmbedding_jobs = {
+    _count: Embedding_jobsCountAggregateOutputType | null
+    _min: Embedding_jobsMinAggregateOutputType | null
+    _max: Embedding_jobsMaxAggregateOutputType | null
+  }
+
+  export type Embedding_jobsMinAggregateOutputType = {
+    id: string | null
+    job_id: string | null
+    user_id: string | null
+    source_id: string | null
+    status: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Embedding_jobsMaxAggregateOutputType = {
+    id: string | null
+    job_id: string | null
+    user_id: string | null
+    source_id: string | null
+    status: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Embedding_jobsCountAggregateOutputType = {
+    id: number
+    job_id: number
+    user_id: number
+    source_id: number
+    status: number
+    result: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type Embedding_jobsMinAggregateInputType = {
+    id?: true
+    job_id?: true
+    user_id?: true
+    source_id?: true
+    status?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Embedding_jobsMaxAggregateInputType = {
+    id?: true
+    job_id?: true
+    user_id?: true
+    source_id?: true
+    status?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Embedding_jobsCountAggregateInputType = {
+    id?: true
+    job_id?: true
+    user_id?: true
+    source_id?: true
+    status?: true
+    result?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type Embedding_jobsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which embedding_jobs to aggregate.
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of embedding_jobs to fetch.
+     */
+    orderBy?: embedding_jobsOrderByWithRelationInput | embedding_jobsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: embedding_jobsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` embedding_jobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` embedding_jobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned embedding_jobs
+    **/
+    _count?: true | Embedding_jobsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Embedding_jobsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Embedding_jobsMaxAggregateInputType
+  }
+
+  export type GetEmbedding_jobsAggregateType<T extends Embedding_jobsAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmbedding_jobs]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmbedding_jobs[P]>
+      : GetScalarType<T[P], AggregateEmbedding_jobs[P]>
+  }
+
+
+
+
+  export type embedding_jobsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: embedding_jobsWhereInput
+    orderBy?: embedding_jobsOrderByWithAggregationInput | embedding_jobsOrderByWithAggregationInput[]
+    by: Embedding_jobsScalarFieldEnum[] | Embedding_jobsScalarFieldEnum
+    having?: embedding_jobsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Embedding_jobsCountAggregateInputType | true
+    _min?: Embedding_jobsMinAggregateInputType
+    _max?: Embedding_jobsMaxAggregateInputType
+  }
+
+  export type Embedding_jobsGroupByOutputType = {
+    id: string
+    job_id: string
+    user_id: string | null
+    source_id: string | null
+    status: string
+    result: JsonValue | null
+    created_at: Date
+    updated_at: Date
+    _count: Embedding_jobsCountAggregateOutputType | null
+    _min: Embedding_jobsMinAggregateOutputType | null
+    _max: Embedding_jobsMaxAggregateOutputType | null
+  }
+
+  type GetEmbedding_jobsGroupByPayload<T extends embedding_jobsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Embedding_jobsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Embedding_jobsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Embedding_jobsGroupByOutputType[P]>
+            : GetScalarType<T[P], Embedding_jobsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type embedding_jobsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    job_id?: boolean
+    user_id?: boolean
+    source_id?: boolean
+    status?: boolean
+    result?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["embedding_jobs"]>
+
+  export type embedding_jobsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    job_id?: boolean
+    user_id?: boolean
+    source_id?: boolean
+    status?: boolean
+    result?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["embedding_jobs"]>
+
+  export type embedding_jobsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    job_id?: boolean
+    user_id?: boolean
+    source_id?: boolean
+    status?: boolean
+    result?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["embedding_jobs"]>
+
+  export type embedding_jobsSelectScalar = {
+    id?: boolean
+    job_id?: boolean
+    user_id?: boolean
+    source_id?: boolean
+    status?: boolean
+    result?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type embedding_jobsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "job_id" | "user_id" | "source_id" | "status" | "result" | "created_at" | "updated_at", ExtArgs["result"]["embedding_jobs"]>
+
+  export type $embedding_jobsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "embedding_jobs"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      job_id: string
+      user_id: string | null
+      source_id: string | null
+      status: string
+      result: Prisma.JsonValue | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["embedding_jobs"]>
+    composites: {}
+  }
+
+  type embedding_jobsGetPayload<S extends boolean | null | undefined | embedding_jobsDefaultArgs> = $Result.GetResult<Prisma.$embedding_jobsPayload, S>
+
+  type embedding_jobsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<embedding_jobsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Embedding_jobsCountAggregateInputType | true
+    }
+
+  export interface embedding_jobsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['embedding_jobs'], meta: { name: 'embedding_jobs' } }
+    /**
+     * Find zero or one Embedding_jobs that matches the filter.
+     * @param {embedding_jobsFindUniqueArgs} args - Arguments to find a Embedding_jobs
+     * @example
+     * // Get one Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends embedding_jobsFindUniqueArgs>(args: SelectSubset<T, embedding_jobsFindUniqueArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Embedding_jobs that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {embedding_jobsFindUniqueOrThrowArgs} args - Arguments to find a Embedding_jobs
+     * @example
+     * // Get one Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends embedding_jobsFindUniqueOrThrowArgs>(args: SelectSubset<T, embedding_jobsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Embedding_jobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {embedding_jobsFindFirstArgs} args - Arguments to find a Embedding_jobs
+     * @example
+     * // Get one Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends embedding_jobsFindFirstArgs>(args?: SelectSubset<T, embedding_jobsFindFirstArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Embedding_jobs that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {embedding_jobsFindFirstOrThrowArgs} args - Arguments to find a Embedding_jobs
+     * @example
+     * // Get one Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends embedding_jobsFindFirstOrThrowArgs>(args?: SelectSubset<T, embedding_jobsFindFirstOrThrowArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Embedding_jobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {embedding_jobsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.findMany()
+     * 
+     * // Get first 10 Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const embedding_jobsWithIdOnly = await prisma.embedding_jobs.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends embedding_jobsFindManyArgs>(args?: SelectSubset<T, embedding_jobsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Embedding_jobs.
+     * @param {embedding_jobsCreateArgs} args - Arguments to create a Embedding_jobs.
+     * @example
+     * // Create one Embedding_jobs
+     * const Embedding_jobs = await prisma.embedding_jobs.create({
+     *   data: {
+     *     // ... data to create a Embedding_jobs
+     *   }
+     * })
+     * 
+     */
+    create<T extends embedding_jobsCreateArgs>(args: SelectSubset<T, embedding_jobsCreateArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Embedding_jobs.
+     * @param {embedding_jobsCreateManyArgs} args - Arguments to create many Embedding_jobs.
+     * @example
+     * // Create many Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends embedding_jobsCreateManyArgs>(args?: SelectSubset<T, embedding_jobsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Embedding_jobs and returns the data saved in the database.
+     * @param {embedding_jobsCreateManyAndReturnArgs} args - Arguments to create many Embedding_jobs.
+     * @example
+     * // Create many Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Embedding_jobs and only return the `id`
+     * const embedding_jobsWithIdOnly = await prisma.embedding_jobs.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends embedding_jobsCreateManyAndReturnArgs>(args?: SelectSubset<T, embedding_jobsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Embedding_jobs.
+     * @param {embedding_jobsDeleteArgs} args - Arguments to delete one Embedding_jobs.
+     * @example
+     * // Delete one Embedding_jobs
+     * const Embedding_jobs = await prisma.embedding_jobs.delete({
+     *   where: {
+     *     // ... filter to delete one Embedding_jobs
+     *   }
+     * })
+     * 
+     */
+    delete<T extends embedding_jobsDeleteArgs>(args: SelectSubset<T, embedding_jobsDeleteArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Embedding_jobs.
+     * @param {embedding_jobsUpdateArgs} args - Arguments to update one Embedding_jobs.
+     * @example
+     * // Update one Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends embedding_jobsUpdateArgs>(args: SelectSubset<T, embedding_jobsUpdateArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Embedding_jobs.
+     * @param {embedding_jobsDeleteManyArgs} args - Arguments to filter Embedding_jobs to delete.
+     * @example
+     * // Delete a few Embedding_jobs
+     * const { count } = await prisma.embedding_jobs.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends embedding_jobsDeleteManyArgs>(args?: SelectSubset<T, embedding_jobsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Embedding_jobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {embedding_jobsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends embedding_jobsUpdateManyArgs>(args: SelectSubset<T, embedding_jobsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Embedding_jobs and returns the data updated in the database.
+     * @param {embedding_jobsUpdateManyAndReturnArgs} args - Arguments to update many Embedding_jobs.
+     * @example
+     * // Update many Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Embedding_jobs and only return the `id`
+     * const embedding_jobsWithIdOnly = await prisma.embedding_jobs.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends embedding_jobsUpdateManyAndReturnArgs>(args: SelectSubset<T, embedding_jobsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Embedding_jobs.
+     * @param {embedding_jobsUpsertArgs} args - Arguments to update or create a Embedding_jobs.
+     * @example
+     * // Update or create a Embedding_jobs
+     * const embedding_jobs = await prisma.embedding_jobs.upsert({
+     *   create: {
+     *     // ... data to create a Embedding_jobs
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Embedding_jobs we want to update
+     *   }
+     * })
+     */
+    upsert<T extends embedding_jobsUpsertArgs>(args: SelectSubset<T, embedding_jobsUpsertArgs<ExtArgs>>): Prisma__embedding_jobsClient<$Result.GetResult<Prisma.$embedding_jobsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Embedding_jobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {embedding_jobsCountArgs} args - Arguments to filter Embedding_jobs to count.
+     * @example
+     * // Count the number of Embedding_jobs
+     * const count = await prisma.embedding_jobs.count({
+     *   where: {
+     *     // ... the filter for the Embedding_jobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends embedding_jobsCountArgs>(
+      args?: Subset<T, embedding_jobsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Embedding_jobsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Embedding_jobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Embedding_jobsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Embedding_jobsAggregateArgs>(args: Subset<T, Embedding_jobsAggregateArgs>): Prisma.PrismaPromise<GetEmbedding_jobsAggregateType<T>>
+
+    /**
+     * Group by Embedding_jobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {embedding_jobsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends embedding_jobsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: embedding_jobsGroupByArgs['orderBy'] }
+        : { orderBy?: embedding_jobsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, embedding_jobsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmbedding_jobsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the embedding_jobs model
+   */
+  readonly fields: embedding_jobsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for embedding_jobs.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__embedding_jobsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the embedding_jobs model
+   */
+  interface embedding_jobsFieldRefs {
+    readonly id: FieldRef<"embedding_jobs", 'String'>
+    readonly job_id: FieldRef<"embedding_jobs", 'String'>
+    readonly user_id: FieldRef<"embedding_jobs", 'String'>
+    readonly source_id: FieldRef<"embedding_jobs", 'String'>
+    readonly status: FieldRef<"embedding_jobs", 'String'>
+    readonly result: FieldRef<"embedding_jobs", 'Json'>
+    readonly created_at: FieldRef<"embedding_jobs", 'DateTime'>
+    readonly updated_at: FieldRef<"embedding_jobs", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * embedding_jobs findUnique
+   */
+  export type embedding_jobsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * Filter, which embedding_jobs to fetch.
+     */
+    where: embedding_jobsWhereUniqueInput
+  }
+
+  /**
+   * embedding_jobs findUniqueOrThrow
+   */
+  export type embedding_jobsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * Filter, which embedding_jobs to fetch.
+     */
+    where: embedding_jobsWhereUniqueInput
+  }
+
+  /**
+   * embedding_jobs findFirst
+   */
+  export type embedding_jobsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * Filter, which embedding_jobs to fetch.
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of embedding_jobs to fetch.
+     */
+    orderBy?: embedding_jobsOrderByWithRelationInput | embedding_jobsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for embedding_jobs.
+     */
+    cursor?: embedding_jobsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` embedding_jobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` embedding_jobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of embedding_jobs.
+     */
+    distinct?: Embedding_jobsScalarFieldEnum | Embedding_jobsScalarFieldEnum[]
+  }
+
+  /**
+   * embedding_jobs findFirstOrThrow
+   */
+  export type embedding_jobsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * Filter, which embedding_jobs to fetch.
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of embedding_jobs to fetch.
+     */
+    orderBy?: embedding_jobsOrderByWithRelationInput | embedding_jobsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for embedding_jobs.
+     */
+    cursor?: embedding_jobsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` embedding_jobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` embedding_jobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of embedding_jobs.
+     */
+    distinct?: Embedding_jobsScalarFieldEnum | Embedding_jobsScalarFieldEnum[]
+  }
+
+  /**
+   * embedding_jobs findMany
+   */
+  export type embedding_jobsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * Filter, which embedding_jobs to fetch.
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of embedding_jobs to fetch.
+     */
+    orderBy?: embedding_jobsOrderByWithRelationInput | embedding_jobsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing embedding_jobs.
+     */
+    cursor?: embedding_jobsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` embedding_jobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` embedding_jobs.
+     */
+    skip?: number
+    distinct?: Embedding_jobsScalarFieldEnum | Embedding_jobsScalarFieldEnum[]
+  }
+
+  /**
+   * embedding_jobs create
+   */
+  export type embedding_jobsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a embedding_jobs.
+     */
+    data: XOR<embedding_jobsCreateInput, embedding_jobsUncheckedCreateInput>
+  }
+
+  /**
+   * embedding_jobs createMany
+   */
+  export type embedding_jobsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many embedding_jobs.
+     */
+    data: embedding_jobsCreateManyInput | embedding_jobsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * embedding_jobs createManyAndReturn
+   */
+  export type embedding_jobsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * The data used to create many embedding_jobs.
+     */
+    data: embedding_jobsCreateManyInput | embedding_jobsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * embedding_jobs update
+   */
+  export type embedding_jobsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a embedding_jobs.
+     */
+    data: XOR<embedding_jobsUpdateInput, embedding_jobsUncheckedUpdateInput>
+    /**
+     * Choose, which embedding_jobs to update.
+     */
+    where: embedding_jobsWhereUniqueInput
+  }
+
+  /**
+   * embedding_jobs updateMany
+   */
+  export type embedding_jobsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update embedding_jobs.
+     */
+    data: XOR<embedding_jobsUpdateManyMutationInput, embedding_jobsUncheckedUpdateManyInput>
+    /**
+     * Filter which embedding_jobs to update
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * Limit how many embedding_jobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * embedding_jobs updateManyAndReturn
+   */
+  export type embedding_jobsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * The data used to update embedding_jobs.
+     */
+    data: XOR<embedding_jobsUpdateManyMutationInput, embedding_jobsUncheckedUpdateManyInput>
+    /**
+     * Filter which embedding_jobs to update
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * Limit how many embedding_jobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * embedding_jobs upsert
+   */
+  export type embedding_jobsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the embedding_jobs to update in case it exists.
+     */
+    where: embedding_jobsWhereUniqueInput
+    /**
+     * In case the embedding_jobs found by the `where` argument doesn't exist, create a new embedding_jobs with this data.
+     */
+    create: XOR<embedding_jobsCreateInput, embedding_jobsUncheckedCreateInput>
+    /**
+     * In case the embedding_jobs was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<embedding_jobsUpdateInput, embedding_jobsUncheckedUpdateInput>
+  }
+
+  /**
+   * embedding_jobs delete
+   */
+  export type embedding_jobsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+    /**
+     * Filter which embedding_jobs to delete.
+     */
+    where: embedding_jobsWhereUniqueInput
+  }
+
+  /**
+   * embedding_jobs deleteMany
+   */
+  export type embedding_jobsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which embedding_jobs to delete
+     */
+    where?: embedding_jobsWhereInput
+    /**
+     * Limit how many embedding_jobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * embedding_jobs without action
+   */
+  export type embedding_jobsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the embedding_jobs
+     */
+    select?: embedding_jobsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the embedding_jobs
+     */
+    omit?: embedding_jobsOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11906,6 +13027,20 @@ export namespace Prisma {
   };
 
   export type Voice_profilesScalarFieldEnum = (typeof Voice_profilesScalarFieldEnum)[keyof typeof Voice_profilesScalarFieldEnum]
+
+
+  export const Embedding_jobsScalarFieldEnum: {
+    id: 'id',
+    job_id: 'job_id',
+    user_id: 'user_id',
+    source_id: 'source_id',
+    status: 'status',
+    result: 'result',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type Embedding_jobsScalarFieldEnum = (typeof Embedding_jobsScalarFieldEnum)[keyof typeof Embedding_jobsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12672,6 +13807,73 @@ export namespace Prisma {
     sample_meta?: JsonNullableWithAggregatesFilter<"voice_profiles">
   }
 
+  export type embedding_jobsWhereInput = {
+    AND?: embedding_jobsWhereInput | embedding_jobsWhereInput[]
+    OR?: embedding_jobsWhereInput[]
+    NOT?: embedding_jobsWhereInput | embedding_jobsWhereInput[]
+    id?: StringFilter<"embedding_jobs"> | string
+    job_id?: StringFilter<"embedding_jobs"> | string
+    user_id?: StringNullableFilter<"embedding_jobs"> | string | null
+    source_id?: StringNullableFilter<"embedding_jobs"> | string | null
+    status?: StringFilter<"embedding_jobs"> | string
+    result?: JsonNullableFilter<"embedding_jobs">
+    created_at?: DateTimeFilter<"embedding_jobs"> | Date | string
+    updated_at?: DateTimeFilter<"embedding_jobs"> | Date | string
+  }
+
+  export type embedding_jobsOrderByWithRelationInput = {
+    id?: SortOrder
+    job_id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    source_id?: SortOrderInput | SortOrder
+    status?: SortOrder
+    result?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type embedding_jobsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    job_id?: string
+    AND?: embedding_jobsWhereInput | embedding_jobsWhereInput[]
+    OR?: embedding_jobsWhereInput[]
+    NOT?: embedding_jobsWhereInput | embedding_jobsWhereInput[]
+    user_id?: StringNullableFilter<"embedding_jobs"> | string | null
+    source_id?: StringNullableFilter<"embedding_jobs"> | string | null
+    status?: StringFilter<"embedding_jobs"> | string
+    result?: JsonNullableFilter<"embedding_jobs">
+    created_at?: DateTimeFilter<"embedding_jobs"> | Date | string
+    updated_at?: DateTimeFilter<"embedding_jobs"> | Date | string
+  }, "id" | "job_id">
+
+  export type embedding_jobsOrderByWithAggregationInput = {
+    id?: SortOrder
+    job_id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    source_id?: SortOrderInput | SortOrder
+    status?: SortOrder
+    result?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: embedding_jobsCountOrderByAggregateInput
+    _max?: embedding_jobsMaxOrderByAggregateInput
+    _min?: embedding_jobsMinOrderByAggregateInput
+  }
+
+  export type embedding_jobsScalarWhereWithAggregatesInput = {
+    AND?: embedding_jobsScalarWhereWithAggregatesInput | embedding_jobsScalarWhereWithAggregatesInput[]
+    OR?: embedding_jobsScalarWhereWithAggregatesInput[]
+    NOT?: embedding_jobsScalarWhereWithAggregatesInput | embedding_jobsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"embedding_jobs"> | string
+    job_id?: StringWithAggregatesFilter<"embedding_jobs"> | string
+    user_id?: StringNullableWithAggregatesFilter<"embedding_jobs"> | string | null
+    source_id?: StringNullableWithAggregatesFilter<"embedding_jobs"> | string | null
+    status?: StringWithAggregatesFilter<"embedding_jobs"> | string
+    result?: JsonNullableWithAggregatesFilter<"embedding_jobs">
+    created_at?: DateTimeWithAggregatesFilter<"embedding_jobs"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"embedding_jobs"> | Date | string
+  }
+
   export type usersCreateInput = {
     id?: string
     email: string
@@ -13299,6 +14501,83 @@ export namespace Prisma {
     voice_id?: StringFieldUpdateOperationsInput | string
     consent_signed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sample_meta?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type embedding_jobsCreateInput = {
+    id?: string
+    job_id: string
+    user_id?: string | null
+    source_id?: string | null
+    status: string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type embedding_jobsUncheckedCreateInput = {
+    id?: string
+    job_id: string
+    user_id?: string | null
+    source_id?: string | null
+    status: string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type embedding_jobsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type embedding_jobsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type embedding_jobsCreateManyInput = {
+    id?: string
+    job_id: string
+    user_id?: string | null
+    source_id?: string | null
+    status: string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type embedding_jobsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type embedding_jobsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -13983,6 +15262,37 @@ export namespace Prisma {
     provider?: SortOrder
     voice_id?: SortOrder
     consent_signed_at?: SortOrder
+  }
+
+  export type embedding_jobsCountOrderByAggregateInput = {
+    id?: SortOrder
+    job_id?: SortOrder
+    user_id?: SortOrder
+    source_id?: SortOrder
+    status?: SortOrder
+    result?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type embedding_jobsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    job_id?: SortOrder
+    user_id?: SortOrder
+    source_id?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type embedding_jobsMinOrderByAggregateInput = {
+    id?: SortOrder
+    job_id?: SortOrder
+    user_id?: SortOrder
+    source_id?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type credentialsCreateNestedManyWithoutUserInput = {

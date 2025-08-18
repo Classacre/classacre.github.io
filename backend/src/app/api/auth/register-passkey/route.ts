@@ -24,15 +24,20 @@ export async function POST(request: Request) {
     // 2. Generate registration options
     const registrationOptions = await registerPasskey(email);
 
-    // Generate a challenge
+    // Generate a challenge and set it in a short-lived HttpOnly cookie (used to verify the client response)
     const challenge = randomBytes(32).toString('hex');
+    const maxAge = 5 * 60; // 5 minutes
+    const secureFlag = process.env.NODE_ENV === 'production' ? 'Secure; ' : '';
+    const challengeCookie = `webauthn_challenge=${challenge}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=${maxAge}`;
 
-    // 3. Return the options and challenge to the client
     return new Response(
-      JSON.stringify({ challenge, registrationOptions }),
+      JSON.stringify({ challenge: "stored-in-cookie", registrationOptions }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Set-Cookie': challengeCookie,
+        },
       },
     );
   } catch (error) {

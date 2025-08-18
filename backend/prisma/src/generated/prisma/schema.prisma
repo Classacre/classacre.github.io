@@ -139,3 +139,17 @@ model voice_profiles {
 
   @@index([user_id])
 }
+
+model embedding_jobs {
+  id         String   @id @default(uuid())
+  job_id     String   @unique
+  user_id    String?
+  source_id  String?
+  status     String
+  result     Json?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+  @@index([source_id])
+}
