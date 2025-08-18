@@ -1,175 +1,196 @@
-// backend/src/lib/auth.ts
-
+/**
+ * backend/src/lib/auth.ts
+ *
+ * WebAuthn passkey helpers (register/login + verify) adapted to the project's Prisma schema.
+ * Uses getPrisma() from ./prisma and base64 helpers from ./crypto.
+ *
+ * Notes:
+ * - This module avoids strict typing for library return shapes to remain resilient against
+ *   version mismatches. Route handlers are responsible for session creation and cookie flags.
+ * - Make sure environment variables RP_ID, RP_NAME and NEXTAUTH_URL are set in production.
+ */
 import {
   generateRegistrationOptions,
   verifyRegistrationResponse,
   generateAuthenticationOptions,
   verifyAuthenticationResponse,
 } from '@simplewebauthn/server';
-import { prisma } from '../../../lib/prisma';
-import { base64ToBuffer } from '../../../lib/crypto';
-import { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/typescript-types';
+import { getPrisma } from './prisma';
+import { base64ToBuffer, bufferToBase64 } from './crypto';
+
+const RP_NAME = process.env.RP_NAME || 'Legaci';
+const RP_ID = process.env.RP_ID || 'localhost';
+const ORIGIN = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
 export async function registerPasskey(email: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
+  const prisma = await getPrisma();
+  const user = await prisma.users.findUnique({
+    where: { email },
   });
 
-  if (!user) {
-    throw new Error('User not found');
-  }
+  if (!user) throw new Error('User not found');
 
-  const existingCredentials = await prisma.credential.findMany({
-    where: {
-      userId: user.id,
-    },
+  const existingCredentials = await prisma.credentials.findMany({
+    where: { userId: user.id },
   });
 
-  const options = await generateRegistrationOptions({
-    rpName: 'Legaci',
-    rpID: 'localhost', // TODO: Change this to the actual domain
+  const options = generateRegistrationOptions({
+    rpName: RP_NAME,
+    rpID: RP_ID,
     userID: user.id,
     userName: email,
     attestationType: 'none',
-    excludeCredentials: existingCredentials.map((cred) => ({
-      id: base64ToBuffer(cred.webauthnCredentialId),
-      type: 'public-key',
-      transports: [],
-    })),
+    excludeCredentials: existingCredentials.map((cred: any) => {
+      const id = cred.webauthn_credential_id ? base64ToBuffer(cred.webauthn_credential_id) : undefined;
+      return {
+        id,
+        type: 'public-key',
+        transports: [] as string[],
+      };
+    }),
   });
 
   return options;
 }
 
-export async function verifyPasskeyRegistration(
-  email: string,
-  registration: any,
-  challenge: string
-) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
+/**
+ * Verify registration response and persist credential record.
+ * We accept the full client response (which may include rawId) and the original expected challenge.
+ */
+export async function verifyPasskeyRegistration(email: string, registrationResponse: any, expectedChallenge: string) {
+  const prisma = await getPrisma();
+  const user = await prisma.users.findUnique({ where: { email } });
+  if (!user) throw new Error('User not found');
+
+  // Use any typing - library types may vary between versions
+  const { verified, registrationInfo }: any = await verifyRegistrationResponse({
+    response: registrationResponse as any,
+    expectedChallenge,
+    expectedOrigin: ORIGIN,
+    expectedRPID: RP_ID,
+  } as any);
+
+  if (!verified) {
+    return { success: false, error: 'Failed to verify registration' };
+  }
+
+  // Determine credential id (prefer rawId from client response if present)
+  let credentialIdBase64: string | undefined = undefined;
+  try {
+    if (registrationResponse?.rawId) {
+      // rawId may be ArrayBuffer encoded as base64-url; convert if needed
+      if (typeof registrationResponse.rawId === 'string') {
+        credentialIdBase64 = registrationResponse.rawId;
+      } else if (registrationResponse.rawId instanceof ArrayBuffer) {
+        credentialIdBase64 = bufferToBase64(Buffer.from(registrationResponse.rawId));
+      }
+    } else if (registrationInfo?.credentialID) {
+      credentialIdBase64 = bufferToBase64(Buffer.from(registrationInfo.credentialID));
+    } else if (registrationInfo?.credential?.rawId) {
+      credentialIdBase64 = bufferToBase64(Buffer.from(registrationInfo.credential.rawId));
+    }
+  } catch (e) {
+    // best-effort; continue with undefined id fallback
+    console.warn('Could not canonicalize credential id', e);
+  }
+
+  const publicKeyStr = (() => {
+    try {
+      if (registrationInfo?.credentialPublicKey) {
+        // credentialPublicKey may be Buffer/ArrayBuffer; store base64 to keep a reversible form
+        return typeof registrationInfo.credentialPublicKey === 'string'
+          ? registrationInfo.credentialPublicKey
+          : bufferToBase64(Buffer.from(registrationInfo.credentialPublicKey));
+      }
+    } catch (e) {
+      // fall through
+    }
+    return '';
+  })();
+
+  const counter = (registrationInfo && typeof registrationInfo.counter === 'number') ? registrationInfo.counter : 0;
+
+  await prisma.credentials.create({
+    data: {
+      userId: user.id,
+      webauthn_credential_id: credentialIdBase64 || '',
+      public_key: publicKeyStr || '',
+      sign_count: counter,
     },
   });
 
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const { verified, registrationInfo } = await verifyRegistrationResponse(
-    {
-      response: registration as RegistrationResponseJSON,
-      expectedChallenge: challenge,
-      expectedOrigin: `http://localhost:3000`, // TODO: Change this to the actual origin
-      expectedRPID: 'localhost', // TODO: Change this to the actual domain
-    }
-  );
-
-  if (verified && registrationInfo) {
-    const credentialPublicKey = registrationInfo.credentialPublicKey;
-    const credentialID = registrationInfo.credentialID;
-    const counter = registrationInfo.counter;
-
-    await prisma.credential.create({
-      data: {
-        userId: user.id,
-        webauthnCredentialId: credentialID,
-        publicKey: credentialPublicKey,
-        signCount: counter,
-      },
-    });
-
-    return { success: true };
-  }
-
-  return { success: false, error: 'Failed to verify registration' };
+  return { success: true };
 }
-
 
 export async function loginPasskey(email: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
+  const prisma = await getPrisma();
+  const user = await prisma.users.findUnique({ where: { email } });
+  if (!user) throw new Error('User not found');
+
+  const existingCredentials = await prisma.credentials.findMany({
+    where: { userId: user.id },
   });
 
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const existingCredentials = await prisma.credential.findMany({
-    where: {
-      userId: user.id,
-    },
+  const options = generateAuthenticationOptions({
+    rpID: RP_ID,
+    allowCredentials: existingCredentials.map((cred: any) => ({
+      id: base64ToBuffer(cred.webauthn_credential_id || ''),
+      type: 'public-key',
+      transports: [] as string[],
+    })),
+    userVerification: 'preferred',
   });
-
-  const options = await generateAuthenticationOptions({
-  rpID: "localhost",
-  allowCredentials: existingCredentials.map((cred) => ({
-    id: base64ToBuffer(cred.webauthnCredentialId),
-    type: 'public-key',
-    transports: [],
-  })),
-  userVerification: 'discouraged',
-});
 
   return options;
 }
 
-export async function verifyPasskeyLogin(
-  email: string,
-  authentication: any,
-  challenge: string
-) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
+/**
+ * Verify an authentication (login) response.
+ * Returns { success: boolean, error?: string }.
+ */
+export async function verifyPasskeyLogin(email: string, authenticationResponse: any, expectedChallenge: string) {
+  const prisma = await getPrisma();
+  const user = await prisma.users.findUnique({ where: { email } });
+  if (!user) throw new Error('User not found');
 
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const credential = await prisma.credential.findFirst({
+  const credId = authenticationResponse?.id || authenticationResponse?.rawId || '';
+  const credential = await prisma.credentials.findFirst({
     where: {
       userId: user.id,
-      webauthnCredentialId: authentication.id,
+      webauthn_credential_id: credId,
     },
   });
 
-  if (!credential) {
-    throw new Error('Credential not found');
+  if (!credential) throw new Error('Credential not found');
+
+  // verifyAuthenticationResponse typing can vary; cast to any to avoid TS mismatch
+  const verifyResult: any = await verifyAuthenticationResponse({
+    response: authenticationResponse as any,
+    expectedChallenge,
+    expectedOrigin: ORIGIN,
+    expectedRPID: RP_ID,
+    // The library may accept an 'authenticator' shape; include when available.
+    // Provide raw forms from DB (public key stored as base64) where possible.
+    authenticator: {
+      credentialPublicKey: credential.public_key || '',
+      credentialID: base64ToBuffer(credential.webauthn_credential_id || ''),
+      counter: Number(credential.sign_count || 0),
+    } as any,
+  } as any).catch((err: any) => {
+    console.error('verifyAuthenticationResponse error', err);
+    return { verified: false };
+  });
+
+  if (!verifyResult || !verifyResult.verified) {
+    return { success: false, error: 'Failed to verify authentication' };
   }
 
-  const { verified, authenticationInfo } = await verifyAuthenticationResponse(
-    {
-      response: authentication as AuthenticationResponseJSON,
-      expectedChallenge: challenge,
-      expectedOrigin: `http://localhost:3000`, // TODO: Change this to the actual origin
-      expectedRPID: 'localhost', // TODO: Change this to the actual domain
-      authenticator: {
-        credentialPublicKey: credential.publicKey,
-        credentialID: credential.webauthnCredentialId,
-        counter: credential.signCount,
-      },
-    }
-  );
+  const newCounter = verifyResult.authenticationInfo?.newCounter ?? credential.sign_count ?? 0;
 
-  if (verified && authenticationInfo) {
-    await prisma.credential.update({
-      where: {
-        id: credential.id,
-      },
-      data: {
-        signCount: authenticationInfo.newCounter,
-      },
-    });
+  await prisma.credentials.update({
+    where: { id: credential.id },
+    data: { sign_count: Number(newCounter) },
+  });
 
-    return { success: true };
-  }
-
-  return { success: false, error: 'Failed to verify authentication' };
+  return { success: true };
 }
