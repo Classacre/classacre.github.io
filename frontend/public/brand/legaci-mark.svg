@@ -34,9 +34,6 @@
     </radialGradient>
   </defs>
 
-  <!-- Dark rounded canvas -->
-  <rect x="8" y="8" width="240" height="240" rx="28" fill="#0B0F14"/>
-  <rect x="8" y="8" width="240" height="240" rx="28" fill="url(#g-brand)" opacity="0.06"/>
 
   <!-- Brain outline (stylized) -->
   <path d="
@@ -103,6 +100,4 @@
     <circle cx="146" cy="148" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
   </g>
 
-  <!-- Subtle top-corner highlight -->
-  <ellipse cx="64" cy="40" rx="42" ry="18" fill="#FFFFFF" opacity="0.05"/>
 </svg>

@@ -1,3 +1,4 @@
+// DiscoBall.tsx
 "use client";
 
 import React, { useRef, useState, useMemo, useEffect, useCallback } from "react";
@@ -5,15 +6,10 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 /**
- * DiscoBall (homepage demo version)
- * - Instanced tiles distributed on a sphere (Fibonacci)
- * - Continuous "alive" pulsing: each tile moves in/out along its normal with its own phase/speed
- * - Category-based per-instance colors
- * - Hover highlight, click to select:
- *   - stops autorotation
- *   - pops the tile out more
- *   - dispatches: window.dispatchEvent(new CustomEvent("legaci:tileSelect", { detail: { instanceId, category, categoryIndex } }))
- * - No shaders required; uses MeshPhysicalMaterial + instanced colors for robustness
+ * DiscoBall
+ * - Per-instance colors shift from brand base -> category as the cubes protrude.
+ * - Uses StandardMaterial + correct sRGB color pipeline (no manual linear-conversion).
+ * - Keeps additive overlays but ensures they ride above the base without z-fighting.
  */
 
 interface DiscoBallProps {
@@ -33,7 +29,7 @@ const CATEGORY_NAMES = [
   "Misc/Notes",
 ];
 
-// Color palette for categories (feel free to tweak)
+// Category palette in sRGB (do NOT pre-convert to linear; the renderer handles it)
 const CATEGORY_PALETTE = [
   0x7ac7ff, // Childhood
   0xff9ed1, // Personality
@@ -45,79 +41,164 @@ const CATEGORY_PALETTE = [
   0xffa8f2, // Misc
 ].map((hex) => new THREE.Color(hex));
 
-// Slightly darker variant for idle state (multiplied)
-const DARKEN = 0.75;
+// Brand base (sRGB)
+const BASE_BALL = new THREE.Color(0x6b63ff);
+
+// Tile depth so the globe looks solid with just cubes
+const TILE_DEPTH = 1.2;
 
 export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallProps) {
   const meshRef = useRef<THREE.InstancedMesh | null>(null);
+  const glowRef = useRef<THREE.InstancedMesh | null>(null);
+  const colorRef = useRef<THREE.InstancedMesh | null>(null);
   const { camera, gl, clock } = useThree();
 
-  const raycaster = useMemo(() => new THREE.Raycaster(), []);
+  const raycaster = useMemo(() => {
+    const r = new THREE.Raycaster();
+    (r.params as any).Mesh = (r.params as any).Mesh || {};
+    (r.params as any).Mesh.threshold = 0.8;
+    return r;
+  }, []);
   const pointer = useMemo(() => new THREE.Vector2(), []);
   const dummy = useMemo(() => new THREE.Object3D(), []);
+  const overlayDummy = useMemo(() => new THREE.Object3D(), []);
+  const vOut = useMemo(() => new THREE.Vector3(), []);
+  const vTarget = useMemo(() => new THREE.Vector3(), []);
+  const vLocal = useMemo(() => new THREE.Vector3(), []);
+  const vNudge = useMemo(() => new THREE.Vector3(), []);
+  const pickSphere = useMemo(() => new THREE.Sphere(new THREE.Vector3(0, 0, 0), radius), [radius]);
 
-  // States
   const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [autoRotate, setAutoRotate] = useState(true);
 
-  // Geometry - smaller to increase visible gaps between tiles
-  const geom = useMemo(() => new THREE.PlaneGeometry(0.36, 0.36), []);
+  // Cube geometry to form a solid sphere shell
+  const geom = useMemo(() => {
+    const g = new THREE.BoxGeometry(0.34, 0.34, TILE_DEPTH);
+    g.computeBoundingSphere();
+    return g;
+  }, []);
 
-  // Robust physical material that respects instanced colors
+  // Physically-based material that honors instance colors
   const material = useMemo(() => {
-    const m = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0xffffff), // base white so instance colors show
-      metalness: 0.95,
-      roughness: 0.08,
-      clearcoat: 0.7,
-      clearcoatRoughness: 0.05,
-      emissive: new THREE.Color(0x151520),
-      emissiveIntensity: 0.08,
-      side: THREE.DoubleSide,
+    const m = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0xffffff),
+      metalness: 0.15,
+      roughness: 0.45,
+      envMapIntensity: 1.2,
       vertexColors: true,
-    } as any);
+      side: THREE.FrontSide,
+      dithering: true,
+      // small emissive base so tiles are never crushed to black
+      emissive: new THREE.Color(0x1f1f1f),
+      emissiveIntensity: 0.35,
+    });
     return m;
   }, []);
 
-  // Per-instance base directions and pulse params
-  const baseDirs = useRef<Float32Array | null>(null); // length = count * 3
-  const pulsePhase = useRef<Float32Array | null>(null); // 0..2π
-  const pulseSpeed = useRef<Float32Array | null>(null); // 0.6..1.6
-  const pulseAmp = useRef<Float32Array | null>(null); // 0.02..0.18
+  // Additive glow overlay
+  const glowMaterial = useMemo(() => {
+    const gm = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(0xffffff),
+      side: THREE.FrontSide,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.5,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: false,
+    } as any);
+    return gm;
+  }, []);
 
-  // Track colored selection/hover updates efficiently
+  // Color tint overlay to make the category color pop
+  const colorMaterial = useMemo(() => {
+    const cm = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(0xffffff),
+      side: THREE.FrontSide,
+      vertexColors: true,
+      transparent: true,
+      opacity: 1.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: false,
+    } as any);
+    return cm;
+  }, []);
+
+  // Parameters per tile
+  const baseDirs = useRef<Float32Array | null>(null);
+  const pulsePhase = useRef<Float32Array | null>(null);
+  const pulseSpeed = useRef<Float32Array | null>(null);
+  const pulseAmp = useRef<Float32Array | null>(null);
+  const prevKRef = useRef<Float32Array | null>(null);
+
   const lastHoverRef = useRef<number | null>(null);
   const lastSelectRef = useRef<number | null>(null);
 
-  // Initialize instances
+  const getClosestIndex = useCallback((dir: THREE.Vector3) => {
+    const mesh = meshRef.current;
+    const dirs = baseDirs.current;
+    if (!mesh || !dirs) return null;
+    let best = -1;
+    let bestDot = -Infinity;
+    for (let i = 0, n = mesh.count; i < n; i++) {
+      const dx = dirs[i * 3 + 0];
+      const dy = dirs[i * 3 + 1];
+      const dz = dirs[i * 3 + 2];
+      const dot = dir.x * dx + dir.y * dy + dir.z * dz;
+      if (dot > bestDot) {
+        bestDot = dot;
+        best = i;
+      }
+    }
+    return best;
+  }, []);
+
+  const basePos = radius - TILE_DEPTH * 0.5;
+
+  // Initialize instanced mesh
   useEffect(() => {
     const mesh = meshRef.current;
+    const glow = glowRef.current;
+    const colorOverlay = colorRef.current;
     if (!mesh) return;
+
+    mesh.frustumCulled = false;
+    if (glow) glow.frustumCulled = false;
+    if (colorOverlay) colorOverlay.frustumCulled = false;
+
     const count = tileCount;
     mesh.count = count;
+    if (glow) glow.count = count;
+    if (colorOverlay) colorOverlay.count = count;
 
-    // Ensure per-instance color buffer exists for setColorAt/vertexColors
-    if (!(mesh as any).instanceColor) {
-      (mesh as any).instanceColor = new THREE.InstancedBufferAttribute(
-        new Float32Array(count * 3),
-        3
-      );
-    }
+    // Ensure instanceColor exists for each instanced mesh
+    const ensureInstanceColor = (m: THREE.InstancedMesh | null) => {
+      if (!m) return;
+      if (!m.instanceColor) {
+        m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3);
+      }
+    };
+    ensureInstanceColor(mesh);
+    ensureInstanceColor(glow);
+    ensureInstanceColor(colorOverlay);
 
-    // attributes for external integrations (kept for compatibility)
     const catAttr = new THREE.InstancedBufferAttribute(new Float32Array(count), 1);
     const compAttr = new THREE.InstancedBufferAttribute(new Float32Array(count), 1);
     const selAttr = new THREE.InstancedBufferAttribute(new Float32Array(count), 1);
 
-    // allocate dirs and pulse params
     baseDirs.current = new Float32Array(count * 3);
     pulsePhase.current = new Float32Array(count);
     pulseSpeed.current = new Float32Array(count);
     pulseAmp.current = new Float32Array(count);
+    prevKRef.current = new Float32Array(count);
+    prevKRef.current.fill(-1);
 
-    // assign category colors and base transforms
+    const outward = new THREE.Vector3();
+
     for (let i = 0; i < count; i++) {
+      // Fibonacci distribution
       const t = i / Math.max(1, count - 1);
       const inc = Math.acos(1 - 2 * t);
       const azi = Math.PI * (1 + Math.sqrt(5)) * i;
@@ -126,28 +207,30 @@ export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallPro
       const y = Math.cos(inc);
       const z = Math.sin(inc) * Math.sin(azi);
 
-      // store base directions (unit)
+      // store base directions
       baseDirs.current[i * 3 + 0] = x;
       baseDirs.current[i * 3 + 1] = y;
       baseDirs.current[i * 3 + 2] = z;
 
-      // initial transform
-      const outward = new THREE.Vector3(x, y, z);
-      dummy.position.copy(outward).normalize().multiplyScalar(radius + 0.03);
+      // initial transform (center on shell)
+      outward.set(x, y, z);
+      dummy.position.copy(outward).normalize().multiplyScalar(basePos);
       dummy.lookAt(outward.clone().multiplyScalar(2));
-      // slight outward to avoid z-fighting
-      dummy.position.addScaledVector(outward, 0.01);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
+      if (glow) glow.setMatrixAt(i, dummy.matrix);
+      if (colorOverlay) colorOverlay.setMatrixAt(i, dummy.matrix);
 
-      // category + instance colors
-      const cat = i % CATEGORY_COUNT;
-      catAttr.setX(i, cat);
+      // category attribute
+      const catIndex = i % CATEGORY_COUNT;
+      catAttr.setX(i, catIndex);
 
-      const baseColor = CATEGORY_PALETTE[cat].clone().multiplyScalar(DARKEN);
-      mesh.setColorAt(i, baseColor);
+      // initial color -> brand base (sRGB)
+      mesh.setColorAt(i, BASE_BALL);
+      if (glow) glow.setColorAt(i, BASE_BALL);
+      if (colorOverlay) colorOverlay.setColorAt(i, BASE_BALL);
 
-      // completeness - later could map to pulse amp/brightness
+      // completeness (unused here but kept for extensibility)
       const completeness = Math.min(1, Math.max(0, Math.random() * 0.85 + 0.05));
       compAttr.setX(i, completeness);
 
@@ -156,12 +239,13 @@ export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallPro
 
       // pulse params
       pulsePhase.current[i] = Math.random() * Math.PI * 2;
-      pulseSpeed.current[i] = 0.6 + Math.random() * 1.0; // 0.6..1.6 Hz-ish
-      // amplitude scaled a bit by completeness so more complete = more subtle
+      pulseSpeed.current[i] = 0.6 + Math.random() * 1.0;
       const amp = 0.05 + Math.random() * 0.13;
       pulseAmp.current[i] = amp * (0.7 + 0.6 * (1 - completeness));
     }
 
+    // Make the per-instance custom attributes available
+    // (shared geometry; one write updates all three instanced meshes)
     mesh.geometry.setAttribute("aCategory", catAttr);
     mesh.geometry.setAttribute("aCompleteness", compAttr);
     mesh.geometry.setAttribute("aSelected", selAttr);
@@ -171,78 +255,120 @@ export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallPro
     compAttr.setUsage(THREE.DynamicDrawUsage);
     selAttr.setUsage(THREE.DynamicDrawUsage);
 
+    // Generous bounding sphere for raycasting
+    mesh.geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), radius + TILE_DEPTH * 0.8);
+
     mesh.instanceMatrix.needsUpdate = true;
-    if ((mesh as any).instanceColor) {
-      (mesh as any).instanceColor.needsUpdate = true;
-    }
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     catAttr.needsUpdate = true;
     compAttr.needsUpdate = true;
     selAttr.needsUpdate = true;
+
+    if (glow) {
+      glow.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      glow.instanceMatrix.needsUpdate = true;
+      if (glow.instanceColor) glow.instanceColor.needsUpdate = true;
+    }
+    if (colorOverlay) {
+      colorOverlay.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      colorOverlay.instanceMatrix.needsUpdate = true;
+      if (colorOverlay.instanceColor) colorOverlay.instanceColor.needsUpdate = true;
+    }
   }, [tileCount, radius]);
 
-  // Utility: safely set instance color and mark update
-  const setInstanceColor = useCallback((i: number, color: THREE.Color) => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    mesh.setColorAt(i, color);
-    (mesh.instanceColor as any).needsUpdate = true;
-  }, []);
-
-  // Utility: restore category color
-  const restoreCategoryColor = useCallback((i: number) => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    const catAttr = mesh.geometry.getAttribute("aCategory") as THREE.InstancedBufferAttribute | null;
-    if (!catAttr) return;
-    const catIndex = Math.floor(catAttr.getX(i)) % CATEGORY_COUNT;
-    const baseColor = CATEGORY_PALETTE[catIndex].clone().multiplyScalar(DARKEN);
-    setInstanceColor(i, baseColor);
-  }, [setInstanceColor]);
-
-  // Animate tiles "alive" and autorotation
+  // Animate alive + rotate
   useFrame((_, delta) => {
     const mesh = meshRef.current;
     if (!mesh) return;
-    const count = mesh.count;
+    const glow = glowRef.current || null;
+    const colorOverlay = colorRef.current || null;
 
     if (autoRotate) {
-      mesh.rotation.y += 0.25 * delta; // ~0.25 rad/s
+      mesh.rotation.y += 0.25 * delta;
+      if (glow) glow.rotation.y = mesh.rotation.y;
+      if (colorOverlay) colorOverlay.rotation.y = mesh.rotation.y;
     }
 
     const dirs = baseDirs.current;
     const phases = pulsePhase.current;
     const speeds = pulseSpeed.current;
     const amps = pulseAmp.current;
+    const prevArr = prevKRef.current;
     if (!dirs || !phases || !speeds || !amps) return;
 
     const time = clock.getElapsedTime();
+    const catAttr = mesh.geometry.getAttribute("aCategory") as THREE.InstancedBufferAttribute | null;
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0, n = mesh.count; i < n; i++) {
       const dx = dirs[i * 3 + 0];
       const dy = dirs[i * 3 + 1];
       const dz = dirs[i * 3 + 2];
-      const outward = new THREE.Vector3(dx, dy, dz);
 
-      // base pulse
+      // base protrusion
       let out = Math.sin(time * speeds[i] + phases[i]) * amps[i];
+      if (hovered === i) out += 0.12;
+      if (selected === i) out += 0.22;
 
-      // gentle hover boost
-      if (hovered === i) out += 0.08;
-
-      // selection boost
-      if (selected === i) out += 0.18;
-
-      dummy.position.copy(outward).multiplyScalar(radius + 0.03 + out);
-      dummy.lookAt(outward.clone().multiplyScalar(2));
-      dummy.position.addScaledVector(outward, 0.01);
+      // position + orientation (center on shell)
+      vOut.set(dx, dy, dz);
+      dummy.position.copy(vOut).multiplyScalar(basePos + out);
+      vTarget.copy(vOut).multiplyScalar(2);
+      dummy.lookAt(vTarget);
+      dummy.scale.setScalar(selected === i ? 1.28 : hovered === i ? 1.16 : 1.0);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
+      if (glow) glow.setMatrixAt(i, dummy.matrix);
+      if (colorOverlay) colorOverlay.setMatrixAt(i, dummy.matrix);
+
+      // color blend from brand base -> category on outward protrusion
+      if (catAttr) {
+        const catIndex = Math.floor(catAttr.getX(i)) % CATEGORY_COUNT;
+        const catColor = CATEGORY_PALETTE[catIndex];
+
+        const outwardOnly = Math.max(0, out);
+        let k = THREE.MathUtils.clamp(outwardOnly / Math.max(0.001, amps[i] * 0.5), 0, 1);
+        if (hovered === i) k = Math.min(1, k + 0.35);
+        if (selected === i) k = Math.min(1, k + 0.6);
+
+        const visibleK = Math.min(1, k * 1.8);
+        const prevK = prevArr ? prevArr[i] : -1;
+        if (!prevArr || Math.abs(prevK - visibleK) > 0.02 || hovered === i || selected === i) {
+          const mixed = BASE_BALL.clone()
+            .lerp(catColor, visibleK)
+            .lerp(new THREE.Color(1, 1, 1), 0.12 * visibleK);
+
+          mesh.setColorAt(i, mixed);
+          if (glow) glow.setColorAt(i, mixed);
+
+          if (colorOverlay) {
+            // vivid tint color
+            const overlayColor = catColor.clone().multiplyScalar(Math.max(0.35, visibleK));
+            colorOverlay.setColorAt(i, overlayColor);
+
+            // push overlay outward a hair to avoid any z-fighting
+            vNudge.copy(vOut).multiplyScalar(0.03 + 0.06 * visibleK);
+            overlayDummy.position.copy(dummy.position).add(vNudge);
+            overlayDummy.quaternion.copy(dummy.quaternion);
+            const baseScale = selected === i ? 1.28 : hovered === i ? 1.16 : 1.0;
+            overlayDummy.scale.setScalar(baseScale * (1.02 + 0.08 * visibleK));
+            overlayDummy.updateMatrix();
+            colorOverlay.setMatrixAt(i, overlayDummy.matrix);
+          }
+
+          if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+          if (glow && glow.instanceColor) glow.instanceColor.needsUpdate = true;
+          if (colorOverlay && colorOverlay.instanceColor) colorOverlay.instanceColor.needsUpdate = true;
+          if (prevArr) prevArr[i] = visibleK;
+        }
+      }
     }
 
     mesh.instanceMatrix.needsUpdate = true;
+    if (glow) glow.instanceMatrix.needsUpdate = true;
+    if (colorOverlay) colorOverlay.instanceMatrix.needsUpdate = true;
   });
 
-  // Update selection attribute + visual color highlight
+  // Selection attribute (compatibility)
   const updateSelectedAttr = useCallback((index: number, val: number) => {
     const mesh = meshRef.current;
     if (!mesh) return;
@@ -252,125 +378,119 @@ export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallPro
     selAttr.needsUpdate = true;
   }, []);
 
-  const highlightInstance = useCallback((i: number, factor = 1.25) => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    const catAttr = mesh.geometry.getAttribute("aCategory") as THREE.InstancedBufferAttribute | null;
-    if (!catAttr) return;
-    const catIndex = Math.floor(catAttr.getX(i)) % CATEGORY_COUNT;
-    const base = CATEGORY_PALETTE[catIndex];
-    const c = base.clone().multiplyScalar(factor);
-    setInstanceColor(i, c);
-  }, [setInstanceColor]);
-
   // Pointer handlers (throttled)
   const lastPointer = useRef(0);
-  const onPointerMove = useCallback((e: PointerEvent) => {
-    const now = performance.now();
-    if (now - lastPointer.current < 33) return;
-    lastPointer.current = now;
+  const onPointerMove = useCallback(
+    (e: PointerEvent) => {
+      const now = performance.now();
+      if (now - lastPointer.current < 33) return;
+      lastPointer.current = now;
 
-    const rect = gl.domElement.getBoundingClientRect();
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      const rect = gl.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObject(mesh) as Array<THREE.Intersection & { instanceId?: number }>;
+      const mesh = meshRef.current;
+      if (!mesh) return;
+      raycaster.setFromCamera(pointer, camera);
 
-    if (hits.length > 0 && typeof hits[0].instanceId === "number") {
-      const id = hits[0].instanceId!;
-
-      // restore previous hover color
-      if (lastHoverRef.current !== null && lastHoverRef.current !== id) {
-        restoreCategoryColor(lastHoverRef.current);
-      }
-
-      if (lastHoverRef.current !== id) {
-        highlightInstance(id, 1.5);
-        lastHoverRef.current = id;
-      }
-
-      setHovered((prev) => {
-        if (prev !== id) {
-          updateSelectedAttr(id, 1);
-          try {
-            window.dispatchEvent(new CustomEvent("legaci:tileHover", { detail: { instanceId: id } }));
-          } catch {}
-          return id;
+      const hits = raycaster.intersectObject(mesh, false) as Array<THREE.Intersection & { instanceId?: number }>;
+      let id: number | null = null;
+      if (hits.length > 0 && typeof hits[0].instanceId === "number") {
+        id = hits[0].instanceId!;
+      } else {
+        if (raycaster.ray.intersectSphere(pickSphere, vTarget)) {
+          vLocal.copy(vTarget);
+          mesh.worldToLocal(vLocal);
+          const dir = vLocal.normalize();
+          const nearest = getClosestIndex(dir);
+          if (nearest !== null) id = nearest;
         }
-        return prev;
-      });
-      return;
-    }
-
-    // nothing hovered
-    if (lastHoverRef.current !== null) {
-      restoreCategoryColor(lastHoverRef.current);
-      lastHoverRef.current = null;
-    }
-    setHovered((prev) => {
-      if (prev !== null) updateSelectedAttr(prev, 0);
-      try {
-        window.dispatchEvent(new CustomEvent("legaci:tileHover", { detail: { instanceId: null } }));
-      } catch {}
-      return null;
-    });
-  }, [camera, gl.domElement, pointer, raycaster, updateSelectedAttr, highlightInstance, restoreCategoryColor]);
-
-  const onPointerDown = useCallback((e: PointerEvent) => {
-    const rect = gl.domElement.getBoundingClientRect();
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    const mesh = meshRef.current;
-    if (!mesh) return;
-    raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObject(mesh) as Array<THREE.Intersection & { instanceId?: number }>;
-    if (hits.length > 0) {
-      const id = hits[0].instanceId;
-      if (typeof id === "number") {
-        setSelected((prev) => {
-          // restore previous selection color
-          if (lastSelectRef.current !== null && lastSelectRef.current !== id) {
-            restoreCategoryColor(lastSelectRef.current);
-          }
-
-          const next = prev === id ? null : id;
-          if (prev !== null) updateSelectedAttr(prev, 0);
-          if (next !== null) {
-            updateSelectedAttr(next, 1.5);
-            setAutoRotate(false); // stop autorotation on selection
-            lastSelectRef.current = next;
-
-            // amplify the selected color
-            highlightInstance(next, 1.8);
-
-            // Emit event with category info and color for landing overlay
-            const catAttr = mesh.geometry.getAttribute("aCategory") as THREE.InstancedBufferAttribute | null;
-            let categoryIndex = 0;
-            let category = "Unknown";
-            if (catAttr) {
-              categoryIndex = Math.floor(catAttr.getX(next)) % CATEGORY_COUNT;
-              category = CATEGORY_NAMES[categoryIndex];
-            }
-            const colorHex = "#" + CATEGORY_PALETTE[categoryIndex].getHexString();
-            window.dispatchEvent(
-              new CustomEvent("legaci:tileSelect", {
-                detail: { instanceId: next, category, categoryIndex, colorHex },
-              })
-            );
-          } else {
-            // deselected
-            lastSelectRef.current = null;
-          }
-          return next;
-        });
       }
-    }
-  }, [camera, gl.domElement, pointer, raycaster, updateSelectedAttr, highlightInstance, restoreCategoryColor]);
 
-  // Attach DOM listeners to the canvas
+      if (id !== null) {
+        lastHoverRef.current = id;
+        setHovered((prev) => {
+          if (prev !== id) {
+            updateSelectedAttr(id, 1);
+            try {
+              window.dispatchEvent(new CustomEvent("legaci:tileHover", { detail: { instanceId: id } }));
+            } catch {}
+            return id;
+          }
+          return prev;
+        });
+        return;
+      }
+
+      if (lastHoverRef.current !== null) lastHoverRef.current = null;
+      setHovered((prev) => {
+        if (prev !== null) updateSelectedAttr(prev, 0);
+        try {
+          window.dispatchEvent(new CustomEvent("legaci:tileHover", { detail: { instanceId: null } }));
+        } catch {}
+        return null;
+      });
+    },
+    [camera, gl.domElement, pointer, raycaster, pickSphere, getClosestIndex, updateSelectedAttr]
+  );
+
+  const onPointerDown = useCallback(
+    (e: PointerEvent) => {
+      const rect = gl.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      const mesh = meshRef.current;
+      if (!mesh) return;
+      raycaster.setFromCamera(pointer, camera);
+
+      const hits = raycaster.intersectObject(mesh, false) as Array<THREE.Intersection & { instanceId?: number }>;
+      let id: number | null = null;
+      if (hits.length > 0 && typeof hits[0].instanceId === "number") {
+        id = hits[0].instanceId!;
+      } else {
+        if (raycaster.ray.intersectSphere(pickSphere, vTarget)) {
+          vLocal.copy(vTarget);
+          mesh.worldToLocal(vLocal);
+          const dir = vLocal.normalize();
+          const nearest = getClosestIndex(dir);
+          if (nearest !== null) id = nearest;
+        }
+      }
+      if (id === null) return;
+
+      setSelected((prev) => {
+        const next = prev === id ? null : id;
+        if (prev !== null) updateSelectedAttr(prev, 0);
+        if (next !== null) {
+          updateSelectedAttr(next, 1.5);
+          setAutoRotate(false);
+          lastSelectRef.current = next;
+
+          const catAttr = mesh.geometry.getAttribute("aCategory") as THREE.InstancedBufferAttribute | null;
+          let categoryIndex = 0;
+          let category = "Unknown";
+          if (catAttr) {
+            categoryIndex = Math.floor(catAttr.getX(next)) % CATEGORY_COUNT;
+            category = CATEGORY_NAMES[categoryIndex];
+          }
+          const colorHex = "#" + CATEGORY_PALETTE[categoryIndex].getHexString();
+          window.dispatchEvent(
+            new CustomEvent("legaci:tileSelect", {
+              detail: { instanceId: next, category, categoryIndex, colorHex },
+            })
+          );
+        } else {
+          lastSelectRef.current = null;
+        }
+        return next;
+      });
+    },
+    [camera, gl.domElement, pointer, raycaster, pickSphere, getClosestIndex, updateSelectedAttr]
+  );
+
+  // Attach canvas listeners
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.style.touchAction = "none";
@@ -382,57 +502,21 @@ export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallPro
     };
   }, [gl.domElement, onPointerMove, onPointerDown]);
 
-  // External updates (kept for compatibility)
+  // External control: resume autorotation
   useEffect(() => {
-    function onTraitUpdated(e: CustomEvent) {
-      const detail = e.detail ?? {};
-      const { category, completeness, instanceId } = detail as {
-        category?: string;
-        completeness?: number;
-        instanceId?: number;
-      };
-      const mesh = meshRef.current;
-      if (!mesh) return;
-      const catAttr = mesh.geometry.getAttribute("aCategory") as THREE.InstancedBufferAttribute | null;
-      const compAttr = mesh.geometry.getAttribute("aCompleteness") as THREE.InstancedBufferAttribute | null;
-      if (!catAttr || !compAttr) return;
-
-      if (typeof instanceId === "number") {
-        compAttr.setX(instanceId, typeof completeness === "number" ? completeness : compAttr.getX(instanceId));
-        compAttr.needsUpdate = true;
-        mesh.instanceMatrix.needsUpdate = true;
-        return;
-      }
-
-      if (typeof category === "string") {
-        const list = CATEGORY_NAMES;
-        const catIndex = list.indexOf(category);
-        if (catIndex === -1) return;
-        for (let i = 0; i < mesh.count; i++) {
-          const instCat = Math.floor(catAttr.getX(i));
-          if (instCat === catIndex) {
-            if (typeof completeness === "number") compAttr.setX(i, completeness);
-          }
-        }
-        compAttr.needsUpdate = true;
-        mesh.instanceMatrix.needsUpdate = true;
-      }
-    }
-
-    window.addEventListener("legaci:traitUpdated", onTraitUpdated as EventListener);
-    return () => window.removeEventListener("legaci:traitUpdated", onTraitUpdated as EventListener);
-  }, []);
-
-  // External control: resume autorotation from UI
-  useEffect(() => {
-    function onResumeAutoRotate() {
+    function onResume() {
       setAutoRotate(true);
     }
-    window.addEventListener("legaci:resumeAutoRotate", onResumeAutoRotate as EventListener);
-    return () => window.removeEventListener("legaci:resumeAutoRotate", onResumeAutoRotate as EventListener);
+    window.addEventListener("legaci:resumeAutoRotate", onResume as EventListener);
+    return () => window.removeEventListener("legaci:resumeAutoRotate", onResume as EventListener);
   }, []);
 
   return (
-    <instancedMesh ref={meshRef} args={[geom, material, tileCount]} castShadow receiveShadow />
+    <group>
+      <instancedMesh ref={meshRef} args={[geom, material, tileCount]} castShadow receiveShadow />
+      {/* Draw the additive tint last and slightly above the base */}
+      <instancedMesh ref={colorRef} args={[geom, colorMaterial, tileCount]} renderOrder={10} />
+      <instancedMesh ref={glowRef} args={[geom, glowMaterial, tileCount]} renderOrder={11} />
+    </group>
   );
 }
