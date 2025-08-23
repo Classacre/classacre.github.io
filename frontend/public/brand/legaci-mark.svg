@@ -1,3 +1,108 @@
-<svg width="50" height="50">
-  <text x="10" y="30" font-family="Arial" font-size="20">L</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Legaci Mark • Simple Digital Brain -->
+<!-- File: frontend/public/brand/legaci-mark.svg -->
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Legaci digital brain mark">
+  <defs>
+    <!-- Brand gradient -->
+    <linearGradient id="g-brand" x1="24" y1="24" x2="232" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6B63FF"/>
+      <stop offset="0.5" stop-color="#00C2C7"/>
+      <stop offset="1" stop-color="#E254FF"/>
+    </linearGradient>
+
+    <!-- Subtle glow for nodes -->
+    <filter id="f-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft inner shadow -->
+    <filter id="f-inner" x="-30%" y="-30%" width="160%" height="160%">
+      <feOffset dx="0" dy="1"/>
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0   0 0 0 0.25 0"/>
+    </filter>
+
+    <!-- Node gradient -->
+    <radialGradient id="g-node" cx="50%" cy="50%" r="60%">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#B8B8FF"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Dark rounded canvas -->
+  <rect x="8" y="8" width="240" height="240" rx="28" fill="#0B0F14"/>
+  <rect x="8" y="8" width="240" height="240" rx="28" fill="url(#g-brand)" opacity="0.06"/>
+
+  <!-- Brain outline (stylized) -->
+  <path d="
+    M86,66
+    C74,66 64,76 64,88
+    C52,92 44,104 44,118
+    C44,134 56,148 72,150
+
+    M170,66
+    C182,66 192,76 192,88
+    C204,92 212,104 212,118
+    C212,134 200,148 184,150
+
+    M88,68
+    C120,52 136,52 168,68
+    C186,76 200,94 200,116
+    C200,152 168,176 128,176
+    C88,176 56,152 56,116
+    C56,96 68,80 88,68
+  "
+    stroke="url(#g-brand)"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+    filter="url(#f-inner)"
+  />
+
+  <!-- Network links -->
+  <g stroke="url(#g-brand)" stroke-width="3" stroke-linecap="round" opacity="0.9">
+    <!-- left cluster -->
+    <path d="M90 104 L112 96"/>
+    <path d="M90 104 L102 122"/>
+    <path d="M112 96 L128 112"/>
+    <path d="M102 122 L128 112"/>
+    <!-- right cluster -->
+    <path d="M144 112 L166 102"/>
+    <path d="M166 102 L182 120"/>
+    <path d="M144 112 L162 130"/>
+    <path d="M162 130 L182 120"/>
+    <!-- cross bridge -->
+    <path d="M128 112 L144 112"/>
+    <!-- lower links -->
+    <path d="M110 148 L128 132"/>
+    <path d="M146 148 L128 132"/>
+  </g>
+
+  <!-- Nodes -->
+  <g filter="url(#f-glow)">
+    <!-- left cluster nodes -->
+    <circle cx="90" cy="104" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="112" cy="96" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="102" cy="122" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="128" cy="112" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+
+    <!-- right cluster nodes -->
+    <circle cx="144" cy="112" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="166" cy="102" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="182" cy="120" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="162" cy="130" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+
+    <!-- lower nodes -->
+    <circle cx="110" cy="148" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+    <circle cx="146" cy="148" r="5.2" fill="url(#g-node)" stroke="url(#g-brand)" stroke-width="2"/>
+  </g>
+
+  <!-- Subtle top-corner highlight -->
+  <ellipse cx="64" cy="40" rx="42" ry="18" fill="#FFFFFF" opacity="0.05"/>
 </svg>

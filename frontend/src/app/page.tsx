@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DiscoBallCanvas from "../components/DiscoBallCanvas";
 import "../app/globals.css";
@@ -16,6 +16,25 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Selected tile info from DiscoBall
+  const [selectedTile, setSelectedTile] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  useEffect(() => {
+    function onTileSelect(e: Event) {
+      const detail = (e as CustomEvent<Record<string, unknown>>).detail ?? {};
+      const id = typeof detail?.instanceId === "number" ? (detail.instanceId as number) : null;
+      const cat = typeof detail?.category === "string" ? (detail.category as string) : null;
+      const color = typeof detail?.colorHex === "string" ? (detail.colorHex as string) : null;
+      setSelectedTile(id);
+      setSelectedCategory(cat);
+      setSelectedColor(color);
+    }
+    window.addEventListener("legaci:tileSelect", onTileSelect as EventListener);
+    return () => window.removeEventListener("legaci:tileSelect", onTileSelect as EventListener);
+  }, []);
 
   async function handleLogin() {
     if (!email) {
@@ -119,6 +138,39 @@ export default function Home() {
             <DiscoBallCanvas />
             <div className="stage-overlay">
               <div className="stage-badge">Interactive memory globe</div>
+
+              {selectedTile !== null && (
+                <div style={{ pointerEvents: "auto", marginLeft: "auto" }}>
+                  <div className="login-card" style={{ minWidth: 240, borderRadius: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                      <span
+                        aria-hidden
+                        style={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: 999,
+                          background: selectedColor || "#ffffff",
+                          boxShadow: "0 0 12px rgba(255,255,255,0.25)",
+                          border: "1px solid rgba(255,255,255,0.35)",
+                        }}
+                      />
+                      <div style={{ fontWeight: 800, fontSize: "0.95rem" }}>
+                        {selectedCategory || "Trait"} • #{selectedTile}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                      <button
+                        className="cta ghost"
+                        onClick={() => {
+                          window.dispatchEvent(new CustomEvent("legaci:resumeAutoRotate"));
+                        }}
+                      >
+                        Resume
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>
