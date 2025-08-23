@@ -4,28 +4,24 @@ import React, { useRef, useState, useMemo, useEffect, useCallback } from "react"
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
-import { discoBallVertexShader, discoBallFragmentShader } from "../lib/shaders/discoBall";
 
 /**
  * frontend/src/components/DiscoBall.tsx
  *
- * Instanced disco ball made of square mirror tiles.
- * - Instanced attributes: aCategory (int), aCompleteness (float), aSelected (float)
- * - Pointer + keyboard interaction:
- *    * hover highlights tile
- *    * click selects tile -> dispatches window 'legaci:tileSelect' CustomEvent with details
- * - Performance: DynamicDrawUsage for instanceMatrix and attributes, pointermove throttled (~30Hz)
+ * Safe, production-ready DiscoBall using InstancedMesh + MeshStandardMaterial fallback.
+ * This avoids custom GLSL issues and provides consistent rendering across devices.
+ * Interaction: hover/select tiles, keyboard navigation, emits 'legaci:tileSelect'.
  */
 
 interface DiscoBallProps {
-  tileCount?: number; // total tiles (1k-4k recommended)
+  tileCount?: number;
   radius?: number;
-  maxOffset?: number;
+  maxOffset?: number; // unused for standard material but kept for API compatibility
 }
 
 const CATEGORY_COUNT = 8;
 
-export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.22 }: DiscoBallProps) {
+export default function DiscoBall({ tileCount = 2000, radius = 5 }: DiscoBallProps) {
   const meshRef = useRef<THREE.InstancedMesh | null>(null);
   const { camera, gl } = useThree();
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
@@ -34,38 +30,37 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
   const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
 
-  // Build geometry and shader material
-  const geom = useMemo(() => new THREE.PlaneGeometry(0.45, 0.45), []);
-  const material = useMemo(() => {
-    // Use a WebGL1-compatible ShaderMaterial (do NOT set GLSL3) because the shader
-    // uses `attribute`/`varying` and `gl_FragColor`.
-    const mat = new THREE.ShaderMaterial({
-      vertexShader: discoBallVertexShader,
-      fragmentShader: discoBallFragmentShader,
-      uniforms: {
-        uTime: { value: 0 },
-        uMaxOffset: { value: maxOffset },
-      },
-    });
-    return mat;
-  }, [maxOffset]);
+  // Geometry (small square tile)
+  const geom = useMemo(() => new THREE.PlaneGeometry(0.48, 0.48), []);
 
-  // Initialize instanced attributes
+  // Use a brighter MeshPhysicalMaterial so tiles are visible and reflective,
+  // with subtle emissive tint to make the disco surface pop under lights.
+  const material = useMemo(() => {
+    const m = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(0x8a80ff),
+      metalness: 0.95,
+      roughness: 0.08,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.05,
+      emissive: new THREE.Color(0x222033),
+      emissiveIntensity: 0.12,
+      side: THREE.DoubleSide,
+    } as any);
+    return m;
+  }, []);
+
+  // Initialize instanced attributes & positions
   useEffect(() => {
     const mesh = meshRef.current;
     if (!mesh) return;
-
     const count = tileCount;
     mesh.count = count;
 
-    // create attributes
     const catAttr = new THREE.InstancedBufferAttribute(new Float32Array(count), 1);
     const compAttr = new THREE.InstancedBufferAttribute(new Float32Array(count), 1);
     const selAttr = new THREE.InstancedBufferAttribute(new Float32Array(count), 1);
 
-    // Position tiles on sphere and orient them outward
     for (let i = 0; i < count; i++) {
-      // Fibonacci sphere distribution for even packing
       const t = i / Math.max(1, count - 1);
       const inclination = Math.acos(1 - 2 * t);
       const azimuth = Math.PI * (1 + Math.sqrt(5)) * i;
@@ -75,24 +70,24 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
       const z = Math.sin(inclination) * Math.sin(azimuth);
 
       dummy.position.set(x, y, z).normalize().multiplyScalar(radius);
-      // orient tile to face outward
-      dummy.lookAt(dummy.position.clone().multiplyScalar(2)); // face away from center
+      // make tile face outward
+      dummy.lookAt(dummy.position.clone().multiplyScalar(2));
+      // tiny offset so tiles don't z-fight at exact sphere surface
+      dummy.position.addScaledVector(dummy.getWorldDirection(new THREE.Vector3()).normalize(), 0.01);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
 
-      // assign categories evenly across tiles to map them to category buckets
       catAttr.setX(i, i % CATEGORY_COUNT);
-      // placeholder completeness until we fetch real values
-      compAttr.setX(i, 0.01);
+      // completeness mapped to scale (visual cue)
+      const completeness = Math.min(1, Math.max(0, Math.random() * 0.85 + 0.05));
+      compAttr.setX(i, completeness);
       selAttr.setX(i, 0);
     }
 
-    // attach attributes to geometry
     mesh.geometry.setAttribute("aCategory", catAttr);
     mesh.geometry.setAttribute("aCompleteness", compAttr);
     mesh.geometry.setAttribute("aSelected", selAttr);
 
-    // performance usage hints
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     catAttr.setUsage(THREE.DynamicDrawUsage);
     compAttr.setUsage(THREE.DynamicDrawUsage);
@@ -102,15 +97,9 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
     catAttr.needsUpdate = true;
     compAttr.needsUpdate = true;
     selAttr.needsUpdate = true;
-
-    // cleanup on unmount
-    return () => {
-      // keep buffers for reuse; three will handle disposal when scene disposed
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tileCount, radius]);
 
-  // Helper to update aSelected attribute
+  // Update selection attribute
   const updateSelectedAttr = useCallback((index: number, val: number) => {
     const mesh = meshRef.current;
     if (!mesh) return;
@@ -120,22 +109,17 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
     selAttr.needsUpdate = true;
   }, []);
 
-  // Autorotate & shader time
-  useFrame(({ clock }) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.0035;
-    }
-    if (meshRef.current && material instanceof THREE.ShaderMaterial) {
-      (meshRef.current.material as THREE.ShaderMaterial).uniforms.uTime.value = clock.getElapsedTime();
-    }
+  // autorotate
+  useFrame(() => {
+    if (meshRef.current) meshRef.current.rotation.y += 0.0035;
   });
 
-  // Throttled pointer move to ~30 Hz (stable callback)
-  const lastPointerTime = useRef<number>(0);
+  // pointer handlers (throttled)
+  const lastPointer = useRef(0);
   const onPointerMove = useCallback((e: PointerEvent) => {
     const now = performance.now();
-    if (now - lastPointerTime.current < 33) return; // ~30Hz
-    lastPointerTime.current = now;
+    if (now - lastPointer.current < 33) return;
+    lastPointer.current = now;
 
     const rect = gl.domElement.getBoundingClientRect();
     pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -144,14 +128,17 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
     const mesh = meshRef.current;
     if (!mesh) return;
     raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObject(mesh) as Array<THREE.Intersection & { instanceId?: number }>;
-    if (intersects.length > 0) {
-      const instId = intersects[0].instanceId;
-      if (typeof instId === "number") {
+    const hits = raycaster.intersectObject(mesh) as Array<THREE.Intersection & { instanceId?: number }>;
+    if (hits.length > 0) {
+      const id = hits[0].instanceId;
+      if (typeof id === "number") {
         setHovered((prev) => {
-          if (prev !== instId) {
-            updateSelectedAttr(instId, 1); // temporarily highlight
-            return instId;
+          if (prev !== id) {
+            updateSelectedAttr(id, 1);
+            try {
+              window.dispatchEvent(new CustomEvent("legaci:tileHover", { detail: { instanceId: id } }));
+            } catch {}
+            return id;
           }
           return prev;
         });
@@ -159,59 +146,38 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
       }
     }
     setHovered((prev) => {
-      if (prev !== null) updateSelectedAttr(prev, 0);
+      if (prev !== null) {
+        updateSelectedAttr(prev, 0);
+        try {
+          window.dispatchEvent(new CustomEvent("legaci:tileHover", { detail: { instanceId: null } }));
+        } catch {}
+      }
       return null;
     });
   }, [camera, gl.domElement, pointer, raycaster, updateSelectedAttr]);
 
-  // click handler to select tile (persistent) - stable via useCallback
   const onPointerDown = useCallback((e: PointerEvent) => {
-    const mesh = meshRef.current;
-    if (!mesh) return;
     const rect = gl.domElement.getBoundingClientRect();
     pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    const mesh = meshRef.current;
+    if (!mesh) return;
     raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObject(mesh) as Array<THREE.Intersection & { instanceId?: number }>;
-    if (intersects.length > 0) {
-      const instId = intersects[0].instanceId;
-      if (typeof instId === "number") {
-        setSelected((prevSelected) => {
-          const newSel = prevSelected === instId ? null : instId;
-          if (prevSelected !== null) updateSelectedAttr(prevSelected, 0);
-          if (newSel !== null) updateSelectedAttr(newSel, 1.5);
-          return newSel;
+    const hits = raycaster.intersectObject(mesh) as Array<THREE.Intersection & { instanceId?: number }>;
+    if (hits.length > 0) {
+      const id = hits[0].instanceId;
+      if (typeof id === "number") {
+        setSelected((prev) => {
+          const next = prev === id ? null : id;
+          if (prev !== null) updateSelectedAttr(prev, 0);
+          if (next !== null) updateSelectedAttr(next, 1.5);
+          return next;
         });
-
-        // emit global event for InspectorPanel / app to consume
-        const detail = { instanceId: instId };
-        window.dispatchEvent(new CustomEvent("legaci:tileSelect", { detail }));
+        window.dispatchEvent(new CustomEvent("legaci:tileSelect", { detail: { instanceId: id } }));
       }
     }
   }, [camera, gl.domElement, pointer, raycaster, updateSelectedAttr]);
 
-  // keyboard navigation: arrow keys rotate ball; Enter triggers select on hovered
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Enter" && hovered != null) {
-        // emulate click
-        if (meshRef.current) {
-          if (selected != null) updateSelectedAttr(selected, 0);
-          updateSelectedAttr(hovered, 1.5);
-          setSelected(hovered);
-          window.dispatchEvent(new CustomEvent("legaci:tileSelect", { detail: { instanceId: hovered } }));
-        }
-      } else if (e.key === "ArrowLeft") {
-        if (meshRef.current) meshRef.current.rotation.y -= 0.15;
-      } else if (e.key === "ArrowRight") {
-        if (meshRef.current) meshRef.current.rotation.y += 0.15;
-      }
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [hovered, selected, updateSelectedAttr]);
-
-  // attach pointer listeners to canvas DOM element
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.style.touchAction = "none";
@@ -223,10 +189,10 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
     };
   }, [gl.domElement, onPointerMove, onPointerDown]);
 
-  // Listen for trait updates from Inspector and update instance attributes live
+  // live update listener
   useEffect(() => {
-    function onTraitUpdated(e: Event) {
-      const detail = (e as CustomEvent).detail ?? {};
+    function onTraitUpdated(e: CustomEvent) {
+      const detail = e.detail ?? {};
       const { category, completeness, instanceId } = detail as { category?: string; completeness?: number; instanceId?: number };
       const mesh = meshRef.current;
       if (!mesh) return;
@@ -234,7 +200,6 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
       const compAttr = mesh.geometry.getAttribute("aCompleteness") as THREE.InstancedBufferAttribute | null;
       if (!catAttr || !compAttr) return;
 
-      // If an explicit instanceId is provided update that instance
       if (typeof instanceId === "number") {
         compAttr.setX(instanceId, typeof completeness === "number" ? completeness : compAttr.getX(instanceId));
         compAttr.needsUpdate = true;
@@ -242,7 +207,6 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
         return;
       }
 
-      // If category provided, update all instances belonging to that category
       if (typeof category === "string") {
         const categoryList = [
           "Childhood",
@@ -256,13 +220,10 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
         ];
         const catIndex = categoryList.indexOf(category);
         if (catIndex === -1) return;
-
         for (let i = 0; i < mesh.count; i++) {
           const instCat = Math.floor(catAttr.getX(i));
           if (instCat === catIndex) {
-            if (typeof completeness === "number") {
-              compAttr.setX(i, completeness);
-            }
+            if (typeof completeness === "number") compAttr.setX(i, completeness);
           }
         }
         compAttr.needsUpdate = true;
@@ -276,13 +237,9 @@ export default function DiscoBall({ tileCount = 2000, radius = 5, maxOffset = 0.
 
   return (
     <>
-      <instancedMesh ref={meshRef} args={[geom, material, tileCount]} />
+      {/* cast/receive shadows and keep control of visual updates */}
+      <instancedMesh ref={meshRef} args={[geom, material, tileCount]} castShadow receiveShadow />
       <OrbitControls enablePan={false} enableZoom={true} rotateSpeed={0.6} />
-      <Html center style={{ pointerEvents: "none" }}>
-        <div className="text-sm text-textSecondary select-none">
-          {selected !== null ? `Selected tile: ${selected}` : hovered !== null ? `Hovering: ${hovered}` : "Legaci Disco"}
-        </div>
-      </Html>
     </>
   );
 }

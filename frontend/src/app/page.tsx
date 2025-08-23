@@ -1,123 +1,132 @@
 "use client";
 
 import React, { useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import DiscoBall from "../components/DiscoBall";
+import { motion } from "framer-motion";
+import DiscoBallCanvas from "../components/DiscoBallCanvas";
+import "../app/globals.css";
 
+/**
+ * Ground-up landing page remake
+ * - Full-viewport, two-column layout (no vertical growth)
+ * - Vivid brand gradient, motion CTAs
+ * - Right: fixed-height canvas stage with overlays (no layout shift)
+ * - Login CTA (email + passkey trigger)
+ */
 export default function Home() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async () => {
+  async function handleLogin() {
     if (!email) {
       setError("Please enter your email");
       return;
     }
-
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch("/api/auth/login-passkey", {
+      const res = await fetch("/api/auth/login-passkey", {
         method: "POST",
-        body: JSON.stringify({ email }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.message || "Authentication failed");
-      }
-
-      console.log("Login successful");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      if (!data?.success) throw new Error(data?.message || "Authentication failed");
+      // TODO: handle verification step and then redirect
+      console.log("Login request created");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-bg text-textPrimary">
-      <div className="container mx-auto p-4">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-center mb-2">
-            Welcome to Legaci
-          </h1>
-          <p className="text-lg text-center text-textSecondary">
-            Your story, in motion
+    <div className="landing-root">
+      <main className="landing-viewport">
+        {/* Left column: brand + message + CTA */}
+        <section className="landing-left">
+          <motion.div
+            className="brand-stack"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <img
+              src="/brand/legaci-mark.svg"
+              alt="Legaci mark"
+              className="brand-logo"
+              draggable={false}
+            />
+            <h1 className="brand-heading">Legaci</h1>
+            <p className="brand-sub">Capture what matters. Remember better.</p>
+          </motion.div>
+
+          <p className="brand-lead">
+            A modern, privacy-first memory companion. Explore your story on a living, colorful 3D
+            globe. Sign in securely with a passkey, add traits and moments, and see your progress
+            come to life.
           </p>
-        </header>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-800 text-textPrimary rounded-md">
-            {error}
-          </div>
-        )}
-
-        <div className="mb-8">
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-textSecondary mb-1"
+          <div className="cta-row">
+            <motion.button
+              className="cta primary"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                const el = document.getElementById("email");
+                if (el) (el as HTMLInputElement).focus();
+              }}
             >
+              Get started
+            </motion.button>
+
+            <motion.button
+              className="cta ghost"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => alert("Demo coming soon")}
+            >
+              View demo
+            </motion.button>
+          </div>
+
+          <div className="login-card">
+            <label htmlFor="email" className="login-label">
               Email
             </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-surface text-textPrimary px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter your email"
-            />
+            <div className="login-row">
+              <input
+                id="email"
+                type="email"
+                value={email}
+                placeholder="you@domain.com"
+                className="login-input"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button className="login-btn" onClick={handleLogin} disabled={loading}>
+                {loading ? "Authenticating..." : "Sign in"}
+              </button>
+            </div>
+            {error ? <div className="login-error">{error}</div> : null}
           </div>
-          <button
-            className="bg-primary text-textPrimary px-4 py-2 rounded w-full"
-            onClick={handleLogin}
-            disabled={loading || !email}
-          >
-            {loading ? "Authenticating..." : "Login with Passkey"}
-          </button>
-        </div>
+        </section>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Left panel */}
-          <div className="w-full md:w-1/3 bg-surface p-4 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Agent Chat</h2>
-            <p className="text-textSecondary mb-4">
-              Interactive chat with AI to fill gaps in your personality profile.
-            </p>
-            <div className="h-64 bg-surface rounded p-4">
-              <p className="text-center">Chat interface will be implemented here</p>
+        {/* Right column: fixed, full-viewport stage (no vertical growth) */}
+        <section className="landing-right">
+          <div className="canvas-stage">
+            <DiscoBallCanvas />
+            <div className="stage-overlay">
+              <div className="stage-badge">Interactive memory globe</div>
             </div>
           </div>
+        </section>
+      </main>
 
-          {/* Center panel */}
-          <div className="w-full md:w-3/5 flex justify-center items-center bg-surface p-4 rounded-lg">
-            <Canvas>
-              <DiscoBall />
-            </Canvas>
-          </div>
-
-          {/* Right panel */}
-          <div className="w-full md:w-1/3 bg-surface p-4 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Inspector</h2>
-            <p className="text-textSecondary mb-4">
-              Detailed view of selected traits and actions.
-            </p>
-            <div className="h-64 bg-surface rounded p-4">
-              <p className="text-center">Inspector panel will be implemented here</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <footer className="landing-footer">
+        Built with privacy-first defaults • © {new Date().getFullYear()} Legaci
+      </footer>
     </div>
   );
 }
