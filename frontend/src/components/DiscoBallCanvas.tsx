@@ -18,30 +18,33 @@ const DiscoBallCanvas = () => {
         alpha: true,
         outputColorSpace: THREE.SRGBColorSpace,
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.15,
+        toneMappingExposure: 0.9, // darker overall
       }}
       onCreated={({ gl }) => {
-        // Set renderer flags that aren't typed on the `gl` prop
-        // (safe across current three versions)
         (gl as any).physicallyCorrectLights = true;
       }}
       style={{ background: "transparent" }}
     >
-      <hemisphereLight color={0x8aa7ff} groundColor={0x6a3a5a} intensity={0.6} />
-      <ambientLight intensity={0.25} />
+      {/* darker lighting setup */}
+      <hemisphereLight color={0x6b86ff} groundColor={0x2a1f32} intensity={0.35} />
+      <ambientLight intensity={0.15} />
+
       <directionalLight
         position={[6, 10, 6]}
-        intensity={2.2}
+        intensity={1.2}
         color={0xffffff}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <pointLight position={[8, 8, 6]} intensity={1.3} color={0xffe4a3} />
-      <pointLight position={[-6, -8, 4]} intensity={0.9} color={0x9be8ff} />
-      <pointLight position={[0, 6, 10]} intensity={1.0} color={0xff88ff} />
+      <pointLight position={[8, 8, 6]} intensity={0.7} color={0xffe4a3} />
+      <pointLight position={[-6, -8, 4]} intensity={0.55} color={0x9be8ff} />
+      <pointLight position={[0, 6, 10]} intensity={0.6} color={0xff88ff} />
+
       <Environment preset="city" />
+
       <DiscoBall />
+
       <OrbitControls enablePan={false} enableZoom={true} rotateSpeed={0.6} />
     </Canvas>
   );
