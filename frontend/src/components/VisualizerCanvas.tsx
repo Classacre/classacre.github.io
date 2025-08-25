@@ -214,7 +214,10 @@ export default function VisualizerCanvas({
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
 
-    analyser.getByteFrequencyData(dataArray);
+    // Some TS DOM lib versions type Uint8Array with ArrayBuffer-like generics (e.g. SharedArrayBuffer).
+    // Cast through unknown to the exact Uint8Array<ArrayBuffer> expected by getByteFrequencyData
+    // to avoid incompatible-generic errors while leaving runtime behavior unchanged.
+    analyser.getByteFrequencyData(dataArray as unknown as Uint8Array<ArrayBuffer>);
 
     // center
     const cx = w / 2;

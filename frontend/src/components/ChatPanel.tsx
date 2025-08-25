@@ -77,7 +77,26 @@ export default function ChatPanel() {
                 const jsonPart = combined.slice(TOOL_PREFIX.length, newlineIdx);
                 try {
                   const parsed = JSON.parse(jsonPart);
-                  setToolResults(parsed.toolResults ?? parsed);
+                  const tools = parsed.toolResults ?? parsed;
+                  setToolResults(tools);
+                  // Dispatch events so other UI (DiscoBall, inspector) can react in real-time
+                  try {
+                    (tools as any[]).forEach((t) => {
+                      if (!t || !t.tool) return;
+                      if (t.tool === "upsert_trait") {
+                        // trait upsert happened server-side — notify UI
+                        window.dispatchEvent(new CustomEvent("legaci:traitUpsert", { detail: t }));
+                      } else if (t.tool === "log_source") {
+                        window.dispatchEvent(new CustomEvent("legaci:sourceLogged", { detail: t }));
+                      } else if (t.tool === "request_followups") {
+                        window.dispatchEvent(new CustomEvent("legaci:requestFollowups", { detail: t }));
+                      } else {
+                        window.dispatchEvent(new CustomEvent("legaci:toolResult", { detail: t }));
+                      }
+                    });
+                  } catch (e) {
+                    console.warn("Failed to dispatch tool events", e);
+                  }
                 } catch (e) {
                   console.warn("Failed to parse TOOL_RESULTS JSON", e);
                 }

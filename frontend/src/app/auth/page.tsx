@@ -10,6 +10,29 @@ export default function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Helpers for base64url <-> ArrayBuffer conversions
+  function base64UrlToBuffer(base64Url: string) {
+    const pad = base64Url.length % 4;
+    let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    if (pad === 2) base64 += "==";
+    else if (pad === 3) base64 += "=";
+    const binary = atob(base64);
+    const len = binary.length;
+    const buf = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      buf[i] = binary.charCodeAt(i);
+    }
+    return buf.buffer;
+  }
+
+  function bufferToBase64Url(buffer: ArrayBuffer | Uint8Array) {
+    const bytes = buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : buffer;
+    let binary = "";
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    const b64 = btoa(binary);
+    return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
   async function handleAction() {
     if (!email) {
       setError("Please enter your email");
@@ -17,19 +40,107 @@ export default function AuthPage() {
     }
     setBusy(true);
     setError(null);
+
     try {
-      const endpoint = mode === "signup" ? "/api/auth/register-passkey" : "/api/auth/login-passkey";
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      if (!res.ok) throw new Error(await res.text());
-      // In a real flow we'd follow with navigator.credentials (WebAuthn)
-      // and then verify via the corresponding /verify endpoints.
-      console.log(`${mode} request created`);
+      if (mode === "signup") {
+        // Request registration options from server
+        const res = await fetch("/api/auth/register-passkey", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        if (!res.ok) throw new Error((await res.text()) || "Failed to start registration");
+        const body = await res.json();
+        const options = body.registrationOptions;
+
+        // Prepare publicKey options for navigator.credentials.create
+        const publicKey: any = { ...options };
+        publicKey.challenge = base64UrlToBuffer(options.challenge);
+        if (options.user && options.user.id) publicKey.user.id = base64UrlToBuffer(options.user.id);
+        if (options.excludeCredentials && Array.isArray(options.excludeCredentials)) {
+          publicKey.excludeCredentials = options.excludeCredentials.map((c: any) => ({
+            id: base64UrlToBuffer(c.id),
+            type: c.type,
+            transports: c.transports,
+          }));
+        }
+
+        // Ask user device to create credential
+        const cred: any = await navigator.credentials.create({ publicKey });
+        if (!cred) throw new Error("Credential creation was not completed");
+
+        const attestationResponse = cred.response as any;
+        const payload = {
+          email,
+          id: cred.id,
+          rawId: bufferToBase64Url(cred.rawId),
+          type: cred.type,
+          clientDataJSON: bufferToBase64Url(attestationResponse.clientDataJSON),
+          attestationObject: bufferToBase64Url(attestationResponse.attestationObject),
+          // send original challenge so server can verify if needed
+          challenge: options.challenge,
+        };
+
+        // Verify registration on server
+        const verifyRes = await fetch("/api/auth/register-passkey/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!verifyRes.ok) throw new Error((await verifyRes.text()) || "Registration verification failed");
+        const verifyBody = await verifyRes.json();
+        console.log("Registration complete", verifyBody);
+        // Redirect or update UI
+        window.location.href = "/";
+      } else {
+        // Login flow
+        const res = await fetch("/api/auth/login-passkey", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        if (!res.ok) throw new Error((await res.text()) || "Failed to start authentication");
+        const body = await res.json();
+        const options = body.authenticationOptions ?? body;
+
+        const publicKey: any = { ...options };
+        publicKey.challenge = base64UrlToBuffer(options.challenge);
+        if (options.allowCredentials && Array.isArray(options.allowCredentials)) {
+          publicKey.allowCredentials = options.allowCredentials.map((c: any) => ({
+            id: base64UrlToBuffer(c.id),
+            type: c.type,
+            transports: c.transports,
+          }));
+        }
+
+        const assertion: any = await navigator.credentials.get({ publicKey });
+        if (!assertion) throw new Error("Authentication was not completed");
+
+        const authResp = assertion.response as any;
+        const payload = {
+          email,
+          id: assertion.id,
+          rawId: bufferToBase64Url(assertion.rawId),
+          type: assertion.type,
+          clientDataJSON: bufferToBase64Url(authResp.clientDataJSON),
+          authenticatorData: bufferToBase64Url(authResp.authenticatorData),
+          signature: bufferToBase64Url(authResp.signature),
+          userHandle: authResp.userHandle ? bufferToBase64Url(authResp.userHandle) : null,
+          challenge: options.challenge,
+        };
+
+        const verifyRes = await fetch("/api/auth/login-passkey/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!verifyRes.ok) throw new Error((await verifyRes.text()) || "Authentication verification failed");
+        const verifyBody = await verifyRes.json();
+        console.log("Login complete", verifyBody);
+        window.location.href = "/";
+      }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unknown error");
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
       setBusy(false);
     }

@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         clientDataJSON,
         attestationObject,
       },
-      challenge
+      expectedChallenge
     );
 
     if (!verificationResult.success) {
@@ -66,8 +66,8 @@ export async function POST(request: Request) {
 
     await prisma.sessions.create({
       data: {
-        userId: user.id,
-        hashedToken,
+        user_id: user.id,
+        hashed_token: hashedToken,
         user_agent: request.headers.get('user-agent') || 'unknown',
         ip_hash: request.headers.get('x-forwarded-for') || 'unknown',
         expires_at: expiresAt,

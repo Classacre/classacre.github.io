@@ -31,7 +31,7 @@ export async function registerPasskey(email: string) {
   if (!user) throw new Error('User not found');
 
   const existingCredentials = await prisma.credentials.findMany({
-    where: { userId: user.id },
+    where: { user_id: user.id },
   });
 
   const options = generateRegistrationOptions({
@@ -112,7 +112,7 @@ export async function verifyPasskeyRegistration(email: string, registrationRespo
 
   await prisma.credentials.create({
     data: {
-      userId: user.id,
+      user_id: user.id,
       webauthn_credential_id: credentialIdBase64 || '',
       public_key: publicKeyStr || '',
       sign_count: counter,
@@ -128,7 +128,7 @@ export async function loginPasskey(email: string) {
   if (!user) throw new Error('User not found');
 
   const existingCredentials = await prisma.credentials.findMany({
-    where: { userId: user.id },
+    where: { user_id: user.id },
   });
 
   const options = generateAuthenticationOptions({
@@ -156,7 +156,7 @@ export async function verifyPasskeyLogin(email: string, authenticationResponse: 
   const credId = authenticationResponse?.id || authenticationResponse?.rawId || '';
   const credential = await prisma.credentials.findFirst({
     where: {
-      userId: user.id,
+      user_id: user.id,
       webauthn_credential_id: credId,
     },
   });

@@ -92,7 +92,8 @@ export async function POST(req: Request) {
         try {
           if (toolResults.length > 0) {
             const meta = JSON.stringify({ toolResults });
-            controller.enqueue(encoder.encode(`[TOOL_RESULTS]${meta}\n`));
+            // Emit a robust prefix line for parsers, include a blank line after meta
+            controller.enqueue(encoder.encode(`[TOOL_RESULTS]${meta}\n\n`));
           }
           const chunkSize = 256;
           for (let i = 0; i < assistantText.length; i += chunkSize) {
@@ -105,9 +106,13 @@ export async function POST(req: Request) {
         }
       },
     });
-
+    
     return new Response(stream, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no"
+      },
     });
   } catch (err: any) {
     console.error("[chat/route] error", err);

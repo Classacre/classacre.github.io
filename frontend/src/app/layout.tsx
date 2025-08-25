@@ -13,8 +13,31 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Legaci - Your story, in motion",
-  description: "A personal AI assistant to model your personality and memories",
+  title: "Legaci — Your story, in motion.",
+  description: "Legaci — a privacy-first memory companion that models your personality and memories.",
+  themeColor: "#5B5BD6",
+  icons: {
+    icon: [
+      { url: '/brand/legaci-mark.svg' },
+      { url: '/brand/legaci-wordmark.svg' }
+    ],
+    apple: [{ url: '/brand/legaci-mark.svg' }]
+  },
+  openGraph: {
+    title: "Legaci — Your story, in motion.",
+    description: "Legaci — a privacy-first memory companion that models your personality and memories.",
+    siteName: "Legaci",
+    images: [
+      {
+        url: "/brand/legaci-preview.svg",
+        width: 1200,
+        height: 630,
+        alt: "Legaci — Your story, in motion."
+      }
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

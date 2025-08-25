@@ -49,6 +49,10 @@ export default function InspectorPanel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Sources shown for the selected category (lightweight metadata only)
+  const [sources, setSources] = useState<{ id: string; type: string; title: string; created_at: string }[]>([]);
+  const [loadingSources, setLoadingSources] = useState(false);
+
   const [editing, setEditing] = useState<Trait | null>(null);
   const [newTraitKey, setNewTraitKey] = useState("");
   const [newTraitValue, setNewTraitValue] = useState("");
@@ -72,34 +76,59 @@ export default function InspectorPanel() {
     return () => window.removeEventListener("legaci:tileSelect", onSelect as EventListener);
   }, []);
 
-  // Fetch traits for selectedCategory
+  // Fetch traits and sources for selectedCategory
   useEffect(() => {
     let mounted = true;
-    async function load() {
+
+    async function loadTraitsAndSources() {
       if (!selectedCategory) {
         setTraits([]);
+        setSources([]);
         return;
       }
+
       setLoading(true);
+      setLoadingSources(true);
       setError(null);
+
       try {
-        const res = await fetch(`/api/traits?category=${encodeURIComponent(selectedCategory)}`);
-        if (!res.ok) throw new Error("Failed to fetch traits");
-        const body = await res.json();
-        const t = (body.traits ?? []) as Trait[];
-        if (!mounted) return;
-        setTraits(t);
+        // traits
+        const tRes = await fetch(`/api/traits?category=${encodeURIComponent(selectedCategory)}`);
+        if (!tRes.ok) throw new Error("Failed to fetch traits");
+        const tBody = await tRes.json();
+        const t = (tBody.traits ?? []) as Trait[];
+        if (mounted) setTraits(t);
       } catch (err: unknown) {
-        console.error("InspectorPanel load error", err);
-        if (!mounted) return;
-        const msg = err instanceof Error ? err.message : String(err);
-        setError(msg);
-        setTraits([]);
+        console.error("InspectorPanel load traits error", err);
+        if (mounted) {
+          const msg = err instanceof Error ? err.message : String(err);
+          setError(msg);
+          setTraits([]);
+        }
       } finally {
         if (mounted) setLoading(false);
       }
+
+      try {
+        // lightweight sources metadata
+        const sRes = await fetch(`/api/sources/list?category=${encodeURIComponent(selectedCategory)}`);
+        if (!sRes.ok) {
+          // don't surface a hard error for missing sources endpoint; just empty
+          setSources([]);
+        } else {
+          const sBody = await sRes.json();
+          if (mounted) setSources(sBody.sources ?? []);
+        }
+      } catch (err: unknown) {
+        console.warn("InspectorPanel load sources error", err);
+        if (mounted) setSources([]);
+      } finally {
+        if (mounted) setLoadingSources(false);
+      }
     }
-    load();
+
+    loadTraitsAndSources();
+
     return () => {
       mounted = false;
     };
@@ -200,6 +229,77 @@ export default function InspectorPanel() {
     }
   }
 
+  // Open a lightweight viewer for a source (fetch metadata). Content remains encrypted server-side.
+  async function viewSource(id: string) {
+    try {
+      const res = await fetch(`/api/sources/get?id=${encodeURIComponent(id)}`);
+      if (!res.ok) {
+        const text = await res.text().catch(() => "Failed to fetch");
+        alert(`Failed to load source: ${text}`);
+        return;
+      }
+      const body = await res.json();
+      const pretty = JSON.stringify(body.source ?? body, null, 2);
+      // open in new window as text
+      const w = window.open("", "_blank", "noopener,noreferrer");
+      if (w) {
+        w.document.title = `Source ${id}`;
+        const pre = w.document.createElement("pre");
+        pre.style.whiteSpace = "pre-wrap";
+        pre.style.fontFamily = "monospace";
+        pre.textContent = pretty;
+        w.document.body.appendChild(pre);
+      } else {
+        alert(pretty);
+      }
+    } catch (e) {
+      console.warn("viewSource error", e);
+      alert("Failed to open source");
+    }
+  }
+
+  // Quick log a source using prompt dialogs (small UX, avoids extra state).
+  async function logSource() {
+    try {
+      const type = window.prompt("Source type (survey, chat, file, link)", "file");
+      if (!type) return;
+      const title = window.prompt("Title for source", "Untitled source");
+      if (!title) return;
+      const content = window.prompt("Paste plaintext content (will be encrypted before storage)");
+      if (!content) return;
+
+      const payload = { type, title, content };
+      const res = await fetch("/api/sources/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error || "Failed to log source");
+      }
+      const body = await res.json();
+      // refresh source list if a category is selected
+      if (selectedCategory) {
+        try {
+          const sRes = await fetch(`/api/sources/list?category=${encodeURIComponent(selectedCategory)}`);
+          if (sRes.ok) {
+            const sBody = await sRes.json();
+            setSources(sBody.sources ?? []);
+          }
+        } catch {}
+      }
+      // emit event so UI can react
+      try {
+        window.dispatchEvent(new CustomEvent("legaci:sourceLogged", { detail: { source: body.source } }));
+      } catch {}
+      alert("Source logged");
+    } catch (err: unknown) {
+      console.error("logSource error", err);
+      alert("Failed to log source");
+    }
+  }
+
   return (
     <aside
       aria-labelledby="inspector-title"
@@ -248,6 +348,33 @@ export default function InspectorPanel() {
                 ))}
               </ul>
             )}
+          </div>
+
+          <div className="mt-3">
+            <h3 className="text-sm font-semibold">Sources</h3>
+            {loadingSources ? (
+              <div className="text-textSecondary">Loading sources…</div>
+            ) : sources.length === 0 ? (
+              <div className="text-textSecondary text-sm">No sources found for this category.</div>
+            ) : (
+              <ul className="space-y-2">
+                {sources.map((s) => (
+                  <li key={s.id} className="p-2 bg-surface/40 rounded-md flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium">{s.title}</div>
+                      <div className="text-xs text-textSecondary">{s.type} • {new Date(s.created_at).toLocaleString()}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button className="text-xs px-2 py-1 rounded bg-primary text-white" onClick={() => viewSource(s.id)}>View</button>
+                      <button className="text-xs px-2 py-1 rounded bg-accent text-white" onClick={() => { try { navigator.clipboard?.writeText(s.id); alert('Source id copied'); } catch { viewSource(s.id); } }}>Copy ID</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="mt-2">
+              <button className="px-3 py-1 rounded bg-accent text-white text-sm" onClick={logSource}>Log source</button>
+            </div>
           </div>
 
           <div className="mt-3">

@@ -1,13 +1,15 @@
 /**
-* backend/src/lib/crypto.ts
-*
-* Field-level AES‑GCM helpers and small binary helpers used elsewhere.
-* - Uses a server master key from process.env.FIELD_ENCRYPTION_KEY (hex, 32 bytes).
-* - Exports encryptAesGcm / decryptAesGcm which include authTag in output.
-* - Exports base64ToBuffer / bufferToBase64 helpers used by WebAuthn flows.
-*
-* IMPORTANT: In production the master key should be provided by a KMS and rotated.
-*/
+ * backend/src/lib/crypto.ts
+ *
+ * Field-level AES‑GCM helpers and small binary helpers used elsewhere.
+ * - Uses a server master key from process.env.FIELD_ENCRYPTION_KEY (hex, 32 bytes).
+ * - Exports encryptAesGcm / decryptAesGcm which include authTag in output.
+ * - Exports base64ToBuffer / bufferToBase64 helpers used by WebAuthn flows.
+ *
+ * Additionally provides envelope helpers encrypt/decryptEnvelope that store ciphertext+tag as hex.
+ *
+ * IMPORTANT: In production the master key should be provided by a KMS and rotated.
+ */
 import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
 
 const ALGO = 'aes-256-gcm';
@@ -25,8 +27,8 @@ function getMasterKey(): Buffer {
 }
 
 /**
-* Encrypt plaintext -> returns base64 strings for components.
-*/
+ * Encrypt plaintext -> returns base64 strings for components.
+ */
 export async function encryptAesGcm(plaintext: string): Promise<{
  iv: string; // base64
  ciphertext: string; // base64
@@ -45,8 +47,8 @@ export async function encryptAesGcm(plaintext: string): Promise<{
 }
 
 /**
-* Decrypt components (base64) -> plaintext
-*/
+ * Decrypt components (base64) -> plaintext
+ */
 export async function decryptAesGcm(ivB64: string, ciphertextB64: string, tagB64: string): Promise<string> {
  const key = getMasterKey();
  const iv = Buffer.from(ivB64, 'base64');
@@ -59,10 +61,38 @@ export async function decryptAesGcm(ivB64: string, ciphertextB64: string, tagB64
 }
 
 /**
-* Helpers for WebAuthn / binary conversions
-*/
+ * Convenience envelope helpers used by API routes.
+ *
+ * encrypt(plaintext) -> { iv: base64, encryptedData: hex } where encryptedData is ciphertext||tag in hex
+ * decryptEnvelope(ivBase64, encryptedHex) -> plaintext
+ */
+export async function encrypt(plaintext: string): Promise<{ iv: string; encryptedData: string }> {
+  const key = getMasterKey();
+  const iv = randomBytes(IV_BYTES);
+  const cipher = createCipheriv(ALGO, key, iv, { authTagLength: TAG_BYTES });
+  const ciphertext = Buffer.concat([cipher.update(Buffer.from(plaintext, 'utf8')), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  const combined = Buffer.concat([ciphertext, tag]).toString('hex');
+  return { iv: iv.toString('base64'), encryptedData: combined };
+}
+
+export async function decryptEnvelope(ivB64: string, encryptedHex: string): Promise<string> {
+  const key = getMasterKey();
+  const iv = Buffer.from(ivB64, 'base64');
+  const data = Buffer.from(encryptedHex, 'hex');
+  if (data.length < TAG_BYTES) throw new Error('Invalid encrypted data');
+  const ciphertext = data.slice(0, data.length - TAG_BYTES);
+  const tag = data.slice(data.length - TAG_BYTES);
+  const decipher = createDecipheriv(ALGO, key, iv, { authTagLength: TAG_BYTES });
+  decipher.setAuthTag(tag);
+  const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+  return plaintext.toString('utf8');
+}
+
+/**
+ * Helpers for WebAuthn / binary conversions
+ */
 export function base64ToBuffer(b64: string): Buffer {
- // Accept URL-safe base64 as well
  b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
  const pad = b64.length % 4;
  if (pad === 2) b64 += '==';
