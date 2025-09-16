@@ -10,7 +10,7 @@
  */
 
 import { getPrisma } from "./prisma";
-import { encryptAesGcm } from "./crypto";
+import { encrypt } from "./crypto";
 
 export async function upsertTrait({
   userId,
@@ -30,9 +30,9 @@ export async function upsertTrait({
   provenance?: string;
 }) {
   const prisma = await getPrisma();
-  // Store value_json directly (Postgres JSONB). We still produce an encrypted envelope for audit.
+  // Encrypt value_json into an AES-GCM envelope stored in JSONB
   const payload = JSON.stringify(value_json);
-  const { iv, ciphertext, tag } = await encryptAesGcm(payload);
+  const { iv, encryptedData } = await encrypt(payload);
 
   const trait = await prisma.traits.upsert({
     where: {
@@ -43,7 +43,7 @@ export async function upsertTrait({
       },
     },
     update: {
-      value_json: value_json,
+      value_json: { iv, ciphertext: encryptedData } as any,
       confidence,
       completeness,
       provenance,
@@ -52,14 +52,14 @@ export async function upsertTrait({
       user_id: userId,
       category,
       key,
-      value_json: value_json,
+      value_json: { iv, ciphertext: encryptedData } as any,
       confidence,
       completeness,
       provenance,
     },
   });
 
-  return { success: true, traitId: trait.id, encrypted: { iv, ciphertext, tag } };
+  return { success: true, traitId: trait.id, envelope: { iv, ciphertext: encryptedData } };
 }
 
 export async function logSource({
@@ -74,18 +74,18 @@ export async function logSource({
   content: string;
 }) {
   const prisma = await getPrisma();
-  const { iv, ciphertext, tag } = await encryptAesGcm(content);
-  // Store ciphertext bytes in content_encrypted (bytea)
+  const { iv, encryptedData } = await encrypt(content);
+  // Store ciphertext+tag bytes (hex -> bytes) in content_encrypted (bytea)
   const source = await prisma.sources.create({
     data: {
       user_id: userId,
       type,
       title,
-      content_encrypted: Buffer.from(ciphertext, "base64"),
+      content_encrypted: Buffer.from(encryptedData, "hex"),
       iv,
     },
   });
-  return { success: true, sourceId: source.id, meta: { iv, tag } };
+  return { success: true, sourceId: source.id, meta: { iv } };
 }
 
 export async function requestFollowups({ userId, maxQuestions = 3 }: { userId: string; maxQuestions?: number }) {

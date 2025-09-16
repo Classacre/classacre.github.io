@@ -2,6 +2,7 @@
 import { getPrisma } from '../../../../lib/prisma';
 import { z } from 'zod';
 import { encrypt } from '../../../../lib/crypto';
+import { requireSession } from '../../../../lib/session';
 
 const BodySchema = z.object({
   type: z.string(),
@@ -12,8 +13,8 @@ const BodySchema = z.object({
 export async function POST(request: Request) {
   try {
     const prisma = await getPrisma();
-     // TODO: Get userId from session
-    const userId = "testUserId";
+    const { session } = await requireSession(request as any);
+    const userId: string = (session as any).user_id;
     const { type, title, content } = BodySchema.parse(await request.json());
 
     const { iv, encryptedData } = await encrypt(content);

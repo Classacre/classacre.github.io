@@ -17,6 +17,11 @@ export async function POST(request: Request) {
       challenge,
     } = await request.json();
 
+    // Read short-lived challenge from HttpOnly cookie; fallback to provided body value
+    const cookieHeader = request.headers.get('cookie') || '';
+    const cookieMatch = cookieHeader.match(/webauthn_challenge=([^;]+)/);
+    const expectedChallenge = cookieMatch ? cookieMatch[1] : challenge;
+
     const verification = await verifyPasskeyLogin(email, {
       id,
       rawId,
@@ -24,7 +29,7 @@ export async function POST(request: Request) {
       type,
       authenticatorAttachment,
       clientDataJSON,
-    }, challenge);
+    }, expectedChallenge);
 
     if (!verification.success) {
       return new Response(JSON.stringify({ error: 'Failed to verify authentication' }), {
@@ -50,8 +55,8 @@ export async function POST(request: Request) {
 
     await prisma.sessions.create({
       data: {
-        userId: user.id,
-        hashedToken: hashedToken,
+        user_id: user.id,
+        hashed_token: hashedToken,
         user_agent: request.headers.get('user-agent') || 'unknown',
         ip_hash: request.headers.get('x-forwarded-for') || 'unknown',
         expires_at: expiresAt,

@@ -10,14 +10,15 @@
 
 import { getPrisma } from '../../../../lib/prisma';
 import { NextResponse } from 'next/server';
+import { requireSession } from '../../../../lib/session';
 
 export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   try {
     const prisma = await getPrisma();
-    // TODO: derive userId from session
-    const userId = 'testUserId';
+    const { session } = await requireSession(request as any);
+    const userId: string = (session as any).user_id;
 
     const url = new URL(request.url);
     const category = url.searchParams.get('category');

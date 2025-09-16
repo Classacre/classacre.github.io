@@ -153,11 +153,25 @@ export async function verifyPasskeyLogin(email: string, authenticationResponse: 
   const user = await prisma.users.findUnique({ where: { email } });
   if (!user) throw new Error('User not found');
 
-  const credId = authenticationResponse?.id || authenticationResponse?.rawId || '';
+  // Normalize the incoming credential id to standard base64 to match stored DB records
+  let normalizedCredIdB64 = '';
+  try {
+    const raw = authenticationResponse?.id || authenticationResponse?.rawId || '';
+    if (typeof raw === 'string') {
+      // Accept base64 or base64url and canonicalize to standard base64
+      const buf = base64ToBuffer(raw);
+      normalizedCredIdB64 = bufferToBase64(Buffer.from(buf));
+    } else if (raw && (raw as any).byteLength) {
+      normalizedCredIdB64 = bufferToBase64(Buffer.from(raw as ArrayBuffer));
+    }
+  } catch {
+    // best-effort; keep empty and rely on DB search below to fail fast
+  }
+
   const credential = await prisma.credentials.findFirst({
     where: {
       user_id: user.id,
-      webauthn_credential_id: credId,
+      ...(normalizedCredIdB64 ? { webauthn_credential_id: normalizedCredIdB64 } : {}),
     },
   });
 
@@ -169,10 +183,9 @@ export async function verifyPasskeyLogin(email: string, authenticationResponse: 
     expectedChallenge,
     expectedOrigin: ORIGIN,
     expectedRPID: RP_ID,
-    // The library may accept an 'authenticator' shape; include when available.
-    // Provide raw forms from DB (public key stored as base64) where possible.
+    // Provide raw forms from DB (public key stored as base64)
     authenticator: {
-      credentialPublicKey: credential.public_key || '',
+      credentialPublicKey: base64ToBuffer(credential.public_key || ''),
       credentialID: base64ToBuffer(credential.webauthn_credential_id || ''),
       counter: Number(credential.sign_count || 0),
     } as any,

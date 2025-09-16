@@ -3,14 +3,15 @@ import { getPrisma } from '../../../../lib/prisma';
 import OpenAI from 'openai';
 import * as fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { encrypt } from '../../../../../src/lib/crypto';
+import { encrypt } from '../../../../lib/crypto';
+import { requireSession } from '../../../../lib/session';
 
 export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
-    // TODO: Get userId from session
-    const userId = "testUserId";
+   const { session } = await requireSession(req as any);
+   const userId: string = (session as any).user_id;
     
     const prisma = await getPrisma();
     const formData = await req.formData();

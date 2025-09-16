@@ -57,33 +57,34 @@ model profiles {
 }
 
 model traits {
-  id          String   @id @default(uuid())
-  user_id     String
-  category    String
-  key         String
-  value_json  Json
-  confidence  Float
+  id           String   @id @default(uuid())
+  user_id      String
+  category     String
+  key          String
+  value_json   Json
+  confidence   Float
   completeness Float
-  provenance  String
-  updated_at  DateTime @updatedAt
-  user        users    @relation(fields: [user_id], references: [id])
-  sources     sources? @relation(fields: [source_id], references: [id])
-  source_id   String?
+  provenance   String
+  updated_at   DateTime @updatedAt
+  source_id    String?
+  user         users    @relation(fields: [user_id], references: [id])
+  sources      sources? @relation(fields: [source_id], references: [id])
 
   @@index([user_id])
+  @@unique([user_id, category, key], name: "user_id_category_key")
 }
 
 model sources {
-  id              String   @id @default(uuid())
-  user_id         String
-  type            SourceType
-  title           String
+  id                String   @id @default(uuid())
+  user_id           String
+  type              SourceType
+  title             String
   content_encrypted Bytes
-  iv              String @default("")
-  created_at      DateTime @default(now())
-  user            users    @relation(fields: [user_id], references: [id])
-  traits          traits[]
-  embeddings embeddings[]
+  iv                String   @default("")
+  created_at        DateTime @default(now())
+  user              users    @relation(fields: [user_id], references: [id])
+  traits            traits[]
+  embeddings        embeddings[]
 
   @@index([user_id])
 }
@@ -96,14 +97,14 @@ enum SourceType {
 }
 
 model messages {
-  id              String   @id @default(uuid())
-  user_id         String
-  role            RoleType
+  id                String   @id @default(uuid())
+  user_id           String
+  role              RoleType
   content_encrypted Bytes
-  iv              String @default("")
-  audio_url       String?
-  created_at      DateTime @default(now())
-  user            users    @relation(fields: [user_id], references: [id])
+  iv                String   @default("")
+  audio_url         String?
+  created_at        DateTime @default(now())
+  user              users    @relation(fields: [user_id], references: [id])
 
   @@index([user_id])
 }

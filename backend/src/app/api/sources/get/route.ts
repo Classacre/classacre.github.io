@@ -10,6 +10,7 @@
 
 import { getPrisma } from '../../../../lib/prisma';
 import { NextResponse } from 'next/server';
+import { requireSession } from '../../../../lib/session';
 
 export const runtime = 'nodejs';
 
@@ -22,8 +23,8 @@ export async function GET(request: Request) {
       return new Response(JSON.stringify({ error: 'Missing id parameter' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // TODO: derive userId from session
-    const userId = 'testUserId';
+    const { session } = await requireSession(request as any);
+    const userId: string = (session as any).user_id;
 
     const src = await prisma.sources.findFirst({
       where: { id, user_id: userId },

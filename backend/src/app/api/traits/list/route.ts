@@ -1,14 +1,16 @@
 // backend/src/app/api/traits/list/route.ts
- import { getPrisma } from '../../../../lib/prisma';
- import { NextResponse } from 'next/server';
+import { getPrisma } from '../../../../lib/prisma';
+import { NextResponse } from 'next/server';
+import { decryptEnvelope } from '../../../../lib/crypto';
+import { requireSession } from '../../../../lib/session';
  
  export const runtime = 'nodejs';
  
- export async function GET() {
+export async function GET(request: Request) {
    try {
-     const prisma = await getPrisma();
-     // TODO: replace testUserId with real user id from auth/session
-     const userId = "testUserId";
+    const prisma = await getPrisma();
+    const { session } = await requireSession(request as any);
+    const userId: string = (session as any).user_id;
  
      const rows = await prisma.traits.findMany({
        where: { user_id: userId },
@@ -34,26 +36,47 @@
        s.avgConfidence = s.count ? s.avgConfidence / s.count : 0;
      }
  
-     // Return traits as-is. Some traits in this codebase are stored encrypted;
-     // decryption would require knowing the exact envelope format (iv/tag/ciphertext).
-     // For now return the value_json field (may be plaintext JSON or an encrypted string).
-     const traits = rows.map((r) => ({
-       id: r.id,
-       category: r.category,
-       key: r.key,
-       value_json: r.value_json,
-       confidence: r.confidence,
-       completeness: r.completeness,
-       provenance: r.provenance,
-       updated_at: r.updated_at,
-     }));
+     // Attempt to decrypt envelope-shaped value_json entries.
+     const traits = await Promise.all(
+       rows.map(async (r: any) => {
+         let value: any = r.value_json;
+ 
+         try {
+           if (value && typeof value === 'object' && 'iv' in value && 'ciphertext' in value) {
+             // decryptEnvelope expects (ivBase64, encryptedHex)
+             const plain = await decryptEnvelope(String(value.iv), String(value.ciphertext));
+             try {
+               value = JSON.parse(plain);
+             } catch {
+               value = plain;
+             }
+           }
+         } catch (e) {
+           // if decryption fails, leave the envelope as-is but don't throw
+           console.warn('Failed to decrypt trait', r.id, e);
+         }
+ 
+         return {
+           id: r.id,
+           category: r.category,
+           key: r.key,
+           value_json: value,
+           confidence: r.confidence,
+           completeness: r.completeness,
+           provenance: r.provenance,
+           updated_at: r.updated_at,
+         };
+       })
+     );
  
      return NextResponse.json({ ok: true, traits, summary });
-   } catch (err: any) {
-     console.error('[traits/list] error', err);
-     return new Response(JSON.stringify({ error: err?.message || 'Failed to list traits' }), {
-       status: 500,
-       headers: { 'Content-Type': 'application/json' },
-     });
-   }
- }
+  } catch (err: any) {
+    console.error('[traits/list] error', err);
+    const status = err?.message === 'Unauthorized' ? 401 : 500;
+    const msg = err?.message === 'Unauthorized' ? 'Unauthorized' : (err?.message || 'Failed to list traits');
+    return new Response(JSON.stringify({ error: msg }), {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}

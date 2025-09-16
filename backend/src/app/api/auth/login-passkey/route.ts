@@ -8,14 +8,24 @@ export async function POST(request: Request) {
     const prisma = await getPrisma();
     const { email } = await request.json();
 
+    // Generate authentication options from helper (may include challenge)
     const options = await loginPasskey(email);
-    const challenge = randomBytes(32).toString('hex');
+    const challenge = (options as any)?.challenge ?? randomBytes(32).toString('hex');
+
+    // Store short-lived challenge in an HttpOnly cookie for verification step
+    const maxAge = 5 * 60; // 5 minutes
+    const secureFlag = process.env.NODE_ENV === 'production' ? 'Secure; ' : '';
+    const challengeCookie = `webauthn_challenge=${challenge}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=${maxAge}`;
+
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/json');
+    headers.append('Set-Cookie', challengeCookie);
 
     return new Response(
-      JSON.stringify({ challenge, authenticationOptions: options }),
+      JSON.stringify({ challenge: 'stored-in-cookie', authenticationOptions: options }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers,
       },
     );
   } catch (error) {

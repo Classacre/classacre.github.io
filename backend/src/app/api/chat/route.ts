@@ -12,6 +12,7 @@
  */
 import { z } from "zod";
 import openai from "../../../lib/openrouter";
+import { requireSession } from "../../../lib/session";
 
 export const runtime = "nodejs";
 
@@ -31,17 +32,25 @@ export async function POST(req: Request) {
     const body = await req.json();
     const parsed = BodySchema.parse(body);
 
-    const systemPrompt = "You are Legaci, a warm, privacy-first assistant. Answer concisely.";
+    // Require auth; derive user id for tools and retrieval
+    const { session, user } = await requireSession(req as any);
+    const userId: string = (session as any)?.user_id || (user as any)?.id;
+
+    const systemPrompt =
+      "You are Legaci — warm, respectful, privacy‑first. Keep answers concise and clear. " +
+      "Only request sensitive info with explicit consent. Prefer follow‑ups when context is sparse.";
 
     const modelMessages = [
       { role: "system", content: systemPrompt },
       ...parsed.messages.map((m: any) => ({ role: m.role, content: String(m.content) })),
     ];
 
-    const model = process.env.CHAT_MODEL || "gpt-4o-mini";
-    const completion = await openai.chat.completions.create({
+    // Default per requirements: Anthropic Sonnet via OpenRouter; configurable via CHAT_MODEL
+    const model = process.env.CHAT_MODEL || "anthropic/claude-3.5-sonnet";
+    const completion = await (openai as any).chat.completions.create({
       model,
       messages: modelMessages,
+      // Could set stream: true later; for now we chunk the full text into a ReadableStream
     });
 
     const assistantText =
@@ -68,14 +77,16 @@ export async function POST(req: Request) {
       const tools = await import("../../../lib/tools");
       for (const c of calls) {
         try {
+          // Enforce current user id; ignore any userId passed from the model
+          const payload = { ...(c.payload || {}), userId };
           if (c.name === "upsert_trait") {
-            const r = await tools.upsertTrait(c.payload);
+            const r = await (tools as any).upsertTrait(payload);
             toolResults.push({ tool: c.name, result: r });
           } else if (c.name === "log_source") {
-            const r = await tools.logSource(c.payload);
+            const r = await (tools as any).logSource(payload);
             toolResults.push({ tool: c.name, result: r });
           } else if (c.name === "request_followups") {
-            const r = await tools.requestFollowups(c.payload);
+            const r = await (tools as any).requestFollowups(payload);
             toolResults.push({ tool: c.name, result: r });
           } else {
             toolResults.push({ tool: c.name, error: "unknown tool" });
@@ -116,8 +127,9 @@ export async function POST(req: Request) {
     });
   } catch (err: any) {
     console.error("[chat/route] error", err);
+    const status = err?.message === "Unauthorized" ? 401 : 500;
     return new Response(JSON.stringify({ error: err?.message ?? "Failed" }), {
-      status: 500,
+      status,
       headers: { "Content-Type": "application/json" },
     });
   }
