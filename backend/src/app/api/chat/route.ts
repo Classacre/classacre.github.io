@@ -13,6 +13,9 @@
 import { z } from "zod";
 import openai from "../../../lib/openrouter";
 import { requireSession } from "../../../lib/session";
+import { createEmbeddings } from "../../../lib/embeddings";
+import { searchVectors } from "../../../lib/qdrant";
+import { getPrisma } from "../../../lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -36,12 +39,59 @@ export async function POST(req: Request) {
     const { session, user } = await requireSession(req as any);
     const userId: string = (session as any)?.user_id || (user as any)?.id;
 
+    // Build retrieval context from last user message
+    let retrievalBlock = "";
+    let contextMeta: Array<{ source_id: string; title: string; type: string; category?: string; score: number }> = [];
+    try {
+      const lastUser = [...parsed.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+      const queryText = String(lastUser || "").slice(0, 4000).trim();
+      if (queryText) {
+        const embeds = await createEmbeddings(queryText);
+        const vector = embeds?.[0];
+        if (Array.isArray(vector) && vector.length) {
+          const filter: any = { must: [{ key: "user_id", match: { value: userId } }] };
+          const results: any = await searchVectors({ vector, topK: 6, filter });
+          const hits: Array<any> = Array.isArray(results) ? results : (results?.result ?? []);
+          if (hits?.length) {
+            const prisma = await getPrisma();
+            const sourceIds = Array.from(new Set(hits.map((h: any) => h?.payload?.source_id))).filter(Boolean);
+            const titleMap: Record<string, { title: string; type: string }> = {};
+            if (sourceIds.length) {
+              const rows = await prisma.sources.findMany({
+                where: { id: { in: sourceIds } },
+                select: { id: true, title: true, type: true },
+              });
+              for (const r of rows) titleMap[r.id] = { title: r.title, type: r.type as any };
+            }
+            const lines: string[] = [];
+            contextMeta = hits.map((h: any) => {
+              const p = h?.payload ?? {};
+              const sid = String(p?.source_id ?? "");
+              const t = titleMap[sid]?.title ?? (p?.title ?? p?.source_title ?? "Source");
+              const ty = titleMap[sid]?.type ?? "";
+              const cat = p?.category ?? "";
+              const sc = Number(h?.score ?? 0);
+              lines.push(`- [${t}]${cat ? ` (${cat})` : ""} • score=${sc.toFixed(3)}`);
+              return { source_id: sid, title: t, type: ty, category: cat || undefined, score: sc };
+            });
+            retrievalBlock =
+              "Retrieved context (top matches):\n" +
+              lines.join("\n") +
+              "\nUse these references to answer. If insufficient, ask a brief follow‑up.\n";
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("[chat/retrieval] failed", e);
+    }
+
     const systemPrompt =
       "You are Legaci — warm, respectful, privacy‑first. Keep answers concise and clear. " +
       "Only request sensitive info with explicit consent. Prefer follow‑ups when context is sparse.";
 
     const modelMessages = [
       { role: "system", content: systemPrompt },
+      ...(retrievalBlock ? [{ role: "system", content: retrievalBlock }] : []),
       ...parsed.messages.map((m: any) => ({ role: m.role, content: String(m.content) })),
     ];
 
@@ -101,9 +151,13 @@ export async function POST(req: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          // Emit retrieval context first for richer UX panels
+          if (Array.isArray(contextMeta) && contextMeta.length > 0) {
+            const cmeta = JSON.stringify({ context: contextMeta });
+            controller.enqueue(encoder.encode(`[CONTEXT]${cmeta}\n\n`));
+          }
           if (toolResults.length > 0) {
             const meta = JSON.stringify({ toolResults });
-            // Emit a robust prefix line for parsers, include a blank line after meta
             controller.enqueue(encoder.encode(`[TOOL_RESULTS]${meta}\n\n`));
           }
           const chunkSize = 256;

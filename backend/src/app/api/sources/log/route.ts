@@ -3,6 +3,7 @@ import { getPrisma } from '../../../../lib/prisma';
 import { z } from 'zod';
 import { encrypt } from '../../../../lib/crypto';
 import { requireSession } from '../../../../lib/session';
+import { enqueueEmbeddings } from '../../../../lib/jobs';
 
 const BodySchema = z.object({
   type: z.string(),
@@ -29,7 +30,15 @@ export async function POST(request: Request) {
       },
     });
 
-    return new Response(JSON.stringify({ message: 'Source logged successfully', source }), {
+    // Enqueue embeddings job for this plaintext content
+    const enqueue = await enqueueEmbeddings({
+      sourceId: source.id,
+      userId,
+      text: content,
+      category: type,
+    });
+
+    return new Response(JSON.stringify({ message: 'Source logged successfully', source, embeddingJob: enqueue }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

@@ -5,6 +5,7 @@ import * as fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { encrypt } from '../../../../lib/crypto';
 import { requireSession } from '../../../../lib/session';
+import { enqueueEmbeddings } from '../../../../lib/jobs';
 
 export const runtime = 'nodejs';
 
@@ -65,7 +66,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return new Response(JSON.stringify({ source, transcription: transcription.text }), {
+    // Enqueue embeddings job with plaintext chunks (not persisted)
+    const enqueue = await enqueueEmbeddings({
+      sourceId: source.id,
+      userId,
+      text: transcription.text,
+      category: 'file',
+    });
+
+    return new Response(JSON.stringify({ source, transcription: transcription.text, embeddingJob: enqueue }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

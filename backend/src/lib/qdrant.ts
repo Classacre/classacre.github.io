@@ -15,6 +15,7 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 const QDRANT_URL = process.env.QDRANT_URL || "";
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY || "";
 const COLLECTION = process.env.QDRANT_COLLECTION || "legaci_vectors";
+const VECTOR_SIZE = Number(process.env.QDRANT_VECTOR_SIZE || 1536);
 
 const client = new QdrantClient({
   url: QDRANT_URL,
@@ -26,11 +27,10 @@ export async function ensureCollection() {
     const info = await client.getCollections();
     const exists = (info.collections || []).some((c: any) => c.name === COLLECTION);
     if (!exists) {
-      await client.createCollection({
-        collection_name: COLLECTION,
+      await client.createCollection(COLLECTION, {
         vectors: {
+          size: VECTOR_SIZE,
           distance: "Cosine",
-          size: 1536, // default embedding size - adjust to your embedding model
         },
       });
     }
@@ -45,15 +45,13 @@ export async function ensureCollection() {
  */
 export async function upsertVectors(points: { id: string; vector: number[]; payload?: Record<string, any> }[]) {
   await ensureCollection();
-  const upsertBody = {
-    collection_name: COLLECTION,
+  return client.upsert(COLLECTION, {
     points: points.map((p) => ({
       id: p.id,
       vector: p.vector,
       payload: p.payload ?? {},
     })),
-  };
-  return client.upsert(upsertBody);
+  });
 }
 
 /**
@@ -70,8 +68,7 @@ export async function searchVectors({
   filter?: any;
 }) {
   await ensureCollection();
-  return client.search({
-    collection_name: COLLECTION,
+  return client.search(COLLECTION, {
     vector,
     limit: topK,
     filter,
