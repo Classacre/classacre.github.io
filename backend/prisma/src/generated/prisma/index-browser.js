@@ -123,6 +123,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.UsersScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  password_hash: 'password_hash',
   created_at: 'created_at'
 };
 
@@ -206,6 +207,16 @@ exports.Prisma.Voice_profilesScalarFieldEnum = {
   sample_meta: 'sample_meta'
 };
 
+exports.Prisma.Oauth_accountsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  provider: 'provider',
+  provider_user_id: 'provider_user_id',
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  created_at: 'created_at'
+};
+
 exports.Prisma.Embedding_jobsScalarFieldEnum = {
   id: 'id',
   job_id: 'job_id',
@@ -269,6 +280,7 @@ exports.Prisma.ModelName = {
   messages: 'messages',
   embeddings: 'embeddings',
   voice_profiles: 'voice_profiles',
+  oauth_accounts: 'oauth_accounts',
   embedding_jobs: 'embedding_jobs'
 };
 

@@ -11,6 +11,7 @@ datasource db {
 model users {
   id             String           @id @default(uuid())
   email          String           @unique
+  password_hash  String?
   created_at     DateTime         @default(now())
   credentials    credentials[]
   sessions       sessions[]
@@ -19,6 +20,7 @@ model users {
   sources        sources[]
   messages       messages[]
   voice_profiles voice_profiles[]
+  oauth_accounts oauth_accounts[]
 }
 
 model credentials {
@@ -66,10 +68,11 @@ model traits {
   completeness Float
   provenance   String
   updated_at   DateTime @updatedAt
+  source_id    String?
   user         users    @relation(fields: [user_id], references: [id])
   sources      sources? @relation(fields: [source_id], references: [id])
-  source_id    String?
 
+  @@unique([user_id, category, key], name: "user_id_category_key")
   @@index([user_id])
 }
 
@@ -137,6 +140,20 @@ model voice_profiles {
   sample_meta       Json?
   user              users     @relation(fields: [user_id], references: [id])
 
+  @@index([user_id])
+}
+
+model oauth_accounts {
+  id               String   @id @default(uuid())
+  user_id          String
+  provider         String
+  provider_user_id String
+  access_token     String?
+  refresh_token    String?
+  created_at       DateTime @default(now())
+  user             users    @relation(fields: [user_id], references: [id])
+
+  @@unique([provider, provider_user_id], name: "provider_user_unique")
   @@index([user_id])
 }
 

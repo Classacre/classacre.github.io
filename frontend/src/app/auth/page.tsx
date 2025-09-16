@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("signup");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [useEmailPassword, setUseEmailPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,6 +44,21 @@ export default function AuthPage() {
     setError(null);
 
     try {
+      if (useEmailPassword) {
+        if (!password) {
+          throw new Error("Please enter your password");
+        }
+        const url = mode === "signup" ? "/api/auth/email/register" : "/api/auth/email/login";
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) throw new Error((await res.text()) || `Email ${mode} failed`);
+        window.location.href = "/";
+        return;
+      }
+
       if (mode === "signup") {
         // Request registration options from server
         const res = await fetch("/api/auth/register-passkey", {
@@ -93,7 +110,7 @@ export default function AuthPage() {
         // Redirect or update UI
         window.location.href = "/";
       } else {
-        // Login flow
+        // Login flow (passkey)
         const res = await fetch("/api/auth/login-passkey", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -269,6 +286,102 @@ export default function AuthPage() {
               {busy ? "Processing..." : mode === "signup" ? "Sign up" : "Log in"}
             </button>
           </div>
+          {/* OAuth providers */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <button
+              className="cta ghost"
+              onClick={() => {
+                window.location.href = "/api/auth/oauth/google";
+              }}
+              disabled={busy}
+            >
+              Continue with Google
+            </button>
+            <button
+              className="cta ghost"
+              onClick={() => {
+                window.location.href = "/api/auth/oauth/github";
+              }}
+              disabled={busy}
+            >
+              Continue with GitHub
+            </button>
+            <button
+              className="cta ghost"
+              onClick={() => {
+                window.location.href = "/api/auth/oauth/microsoft";
+              }}
+              disabled={busy}
+            >
+              Continue with Microsoft
+            </button>
+          </div>
+
+          {/* Toggle for email + password auth */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+            <input
+              id="useEmailPwd"
+              type="checkbox"
+              checked={useEmailPassword}
+              onChange={(e) => setUseEmailPassword(e.target.checked)}
+            />
+            <label htmlFor="useEmailPwd" className="login-label" style={{ margin: 0 }}>
+              Use email + password instead of passkey
+            </label>
+          </div>
+
+          {/* Password field when email+password is enabled */}
+          {useEmailPassword ? (
+            <div style={{ marginTop: 8, display: "grid", gap: 8 }}>
+              <label htmlFor="password" className="login-label" style={{ color: "var(--textSecondary, #9CA3AF)" }}>
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                placeholder="••••••••"
+                onChange={(e) => setPassword(e.target.value)}
+                style={{
+                  background: "rgba(8,10,18,0.5)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  color: "#E5E7EB",
+                }}
+              />
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  className="cta primary"
+                  onClick={handleAction}
+                  disabled={busy}
+                >
+                  {busy ? "Processing..." : mode === "signup" ? "Create account" : "Sign in"}
+                </button>
+                <button
+                  className="cta ghost"
+                  onClick={() => setUseEmailPassword(false)}
+                  disabled={busy}
+                >
+                  Use passkey instead
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {/* OAuth providers */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
+            <button
+              className="cta ghost"
+              onClick={() => {
+                window.location.href = "/api/auth/oauth/google";
+              }}
+              disabled={busy}
+            >
+              Continue with Google
+            </button>
+          </div>
+
           {error ? (
             <div style={{ color: "#ff8a8a", fontSize: "0.9rem" }}>{error}</div>
           ) : null}

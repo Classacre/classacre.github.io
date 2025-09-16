@@ -59,6 +59,11 @@ export type embeddings = $Result.DefaultSelection<Prisma.$embeddingsPayload>
  */
 export type voice_profiles = $Result.DefaultSelection<Prisma.$voice_profilesPayload>
 /**
+ * Model oauth_accounts
+ * 
+ */
+export type oauth_accounts = $Result.DefaultSelection<Prisma.$oauth_accountsPayload>
+/**
  * Model embedding_jobs
  * 
  */
@@ -310,6 +315,16 @@ export class PrismaClient<
     * ```
     */
   get voice_profiles(): Prisma.voice_profilesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.oauth_accounts`: Exposes CRUD operations for the **oauth_accounts** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Oauth_accounts
+    * const oauth_accounts = await prisma.oauth_accounts.findMany()
+    * ```
+    */
+  get oauth_accounts(): Prisma.oauth_accountsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.embedding_jobs`: Exposes CRUD operations for the **embedding_jobs** model.
@@ -769,6 +784,7 @@ export namespace Prisma {
     messages: 'messages',
     embeddings: 'embeddings',
     voice_profiles: 'voice_profiles',
+    oauth_accounts: 'oauth_accounts',
     embedding_jobs: 'embedding_jobs'
   };
 
@@ -788,7 +804,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "credentials" | "sessions" | "profiles" | "traits" | "sources" | "messages" | "embeddings" | "voice_profiles" | "embedding_jobs"
+      modelProps: "users" | "credentials" | "sessions" | "profiles" | "traits" | "sources" | "messages" | "embeddings" | "voice_profiles" | "oauth_accounts" | "embedding_jobs"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1458,6 +1474,80 @@ export namespace Prisma {
           }
         }
       }
+      oauth_accounts: {
+        payload: Prisma.$oauth_accountsPayload<ExtArgs>
+        fields: Prisma.oauth_accountsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.oauth_accountsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.oauth_accountsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>
+          }
+          findFirst: {
+            args: Prisma.oauth_accountsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.oauth_accountsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>
+          }
+          findMany: {
+            args: Prisma.oauth_accountsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>[]
+          }
+          create: {
+            args: Prisma.oauth_accountsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>
+          }
+          createMany: {
+            args: Prisma.oauth_accountsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.oauth_accountsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>[]
+          }
+          delete: {
+            args: Prisma.oauth_accountsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>
+          }
+          update: {
+            args: Prisma.oauth_accountsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>
+          }
+          deleteMany: {
+            args: Prisma.oauth_accountsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.oauth_accountsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.oauth_accountsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>[]
+          }
+          upsert: {
+            args: Prisma.oauth_accountsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$oauth_accountsPayload>
+          }
+          aggregate: {
+            args: Prisma.Oauth_accountsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOauth_accounts>
+          }
+          groupBy: {
+            args: Prisma.oauth_accountsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Oauth_accountsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.oauth_accountsCountArgs<ExtArgs>
+            result: $Utils.Optional<Oauth_accountsCountAggregateOutputType> | number
+          }
+        }
+      }
       embedding_jobs: {
         payload: Prisma.$embedding_jobsPayload<ExtArgs>
         fields: Prisma.embedding_jobsFieldRefs
@@ -1633,6 +1723,7 @@ export namespace Prisma {
     messages?: messagesOmit
     embeddings?: embeddingsOmit
     voice_profiles?: voice_profilesOmit
+    oauth_accounts?: oauth_accountsOmit
     embedding_jobs?: embedding_jobsOmit
   }
 
@@ -1739,6 +1830,7 @@ export namespace Prisma {
     sources: number
     messages: number
     voice_profiles: number
+    oauth_accounts: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1748,6 +1840,7 @@ export namespace Prisma {
     sources?: boolean | UsersCountOutputTypeCountSourcesArgs
     messages?: boolean | UsersCountOutputTypeCountMessagesArgs
     voice_profiles?: boolean | UsersCountOutputTypeCountVoice_profilesArgs
+    oauth_accounts?: boolean | UsersCountOutputTypeCountOauth_accountsArgs
   }
 
   // Custom InputTypes
@@ -1801,6 +1894,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountVoice_profilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: voice_profilesWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountOauth_accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: oauth_accountsWhereInput
   }
 
 
@@ -1861,18 +1961,21 @@ export namespace Prisma {
   export type UsersMinAggregateOutputType = {
     id: string | null
     email: string | null
+    password_hash: string | null
     created_at: Date | null
   }
 
   export type UsersMaxAggregateOutputType = {
     id: string | null
     email: string | null
+    password_hash: string | null
     created_at: Date | null
   }
 
   export type UsersCountAggregateOutputType = {
     id: number
     email: number
+    password_hash: number
     created_at: number
     _all: number
   }
@@ -1881,18 +1984,21 @@ export namespace Prisma {
   export type UsersMinAggregateInputType = {
     id?: true
     email?: true
+    password_hash?: true
     created_at?: true
   }
 
   export type UsersMaxAggregateInputType = {
     id?: true
     email?: true
+    password_hash?: true
     created_at?: true
   }
 
   export type UsersCountAggregateInputType = {
     id?: true
     email?: true
+    password_hash?: true
     created_at?: true
     _all?: true
   }
@@ -1972,6 +2078,7 @@ export namespace Prisma {
   export type UsersGroupByOutputType = {
     id: string
     email: string
+    password_hash: string | null
     created_at: Date
     _count: UsersCountAggregateOutputType | null
     _min: UsersMinAggregateOutputType | null
@@ -1995,6 +2102,7 @@ export namespace Prisma {
   export type usersSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    password_hash?: boolean
     created_at?: boolean
     credentials?: boolean | users$credentialsArgs<ExtArgs>
     sessions?: boolean | users$sessionsArgs<ExtArgs>
@@ -2003,28 +2111,32 @@ export namespace Prisma {
     sources?: boolean | users$sourcesArgs<ExtArgs>
     messages?: boolean | users$messagesArgs<ExtArgs>
     voice_profiles?: boolean | users$voice_profilesArgs<ExtArgs>
+    oauth_accounts?: boolean | users$oauth_accountsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
   export type usersSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    password_hash?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type usersSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    password_hash?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type usersSelectScalar = {
     id?: boolean
     email?: boolean
+    password_hash?: boolean
     created_at?: boolean
   }
 
-  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "created_at", ExtArgs["result"]["users"]>
+  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "created_at", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     credentials?: boolean | users$credentialsArgs<ExtArgs>
     sessions?: boolean | users$sessionsArgs<ExtArgs>
@@ -2033,6 +2145,7 @@ export namespace Prisma {
     sources?: boolean | users$sourcesArgs<ExtArgs>
     messages?: boolean | users$messagesArgs<ExtArgs>
     voice_profiles?: boolean | users$voice_profilesArgs<ExtArgs>
+    oauth_accounts?: boolean | users$oauth_accountsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type usersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2048,10 +2161,12 @@ export namespace Prisma {
       sources: Prisma.$sourcesPayload<ExtArgs>[]
       messages: Prisma.$messagesPayload<ExtArgs>[]
       voice_profiles: Prisma.$voice_profilesPayload<ExtArgs>[]
+      oauth_accounts: Prisma.$oauth_accountsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string
+      password_hash: string | null
       created_at: Date
     }, ExtArgs["result"]["users"]>
     composites: {}
@@ -2454,6 +2569,7 @@ export namespace Prisma {
     sources<T extends users$sourcesArgs<ExtArgs> = {}>(args?: Subset<T, users$sourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sourcesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messages<T extends users$messagesArgs<ExtArgs> = {}>(args?: Subset<T, users$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$messagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     voice_profiles<T extends users$voice_profilesArgs<ExtArgs> = {}>(args?: Subset<T, users$voice_profilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$voice_profilesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    oauth_accounts<T extends users$oauth_accountsArgs<ExtArgs> = {}>(args?: Subset<T, users$oauth_accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2485,6 +2601,7 @@ export namespace Prisma {
   interface usersFieldRefs {
     readonly id: FieldRef<"users", 'String'>
     readonly email: FieldRef<"users", 'String'>
+    readonly password_hash: FieldRef<"users", 'String'>
     readonly created_at: FieldRef<"users", 'DateTime'>
   }
     
@@ -3034,6 +3151,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Voice_profilesScalarFieldEnum | Voice_profilesScalarFieldEnum[]
+  }
+
+  /**
+   * users.oauth_accounts
+   */
+  export type users$oauth_accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    where?: oauth_accountsWhereInput
+    orderBy?: oauth_accountsOrderByWithRelationInput | oauth_accountsOrderByWithRelationInput[]
+    cursor?: oauth_accountsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Oauth_accountsScalarFieldEnum | Oauth_accountsScalarFieldEnum[]
   }
 
   /**
@@ -11873,6 +12014,1090 @@ export namespace Prisma {
 
 
   /**
+   * Model oauth_accounts
+   */
+
+  export type AggregateOauth_accounts = {
+    _count: Oauth_accountsCountAggregateOutputType | null
+    _min: Oauth_accountsMinAggregateOutputType | null
+    _max: Oauth_accountsMaxAggregateOutputType | null
+  }
+
+  export type Oauth_accountsMinAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    provider: string | null
+    provider_user_id: string | null
+    access_token: string | null
+    refresh_token: string | null
+    created_at: Date | null
+  }
+
+  export type Oauth_accountsMaxAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    provider: string | null
+    provider_user_id: string | null
+    access_token: string | null
+    refresh_token: string | null
+    created_at: Date | null
+  }
+
+  export type Oauth_accountsCountAggregateOutputType = {
+    id: number
+    user_id: number
+    provider: number
+    provider_user_id: number
+    access_token: number
+    refresh_token: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type Oauth_accountsMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    provider?: true
+    provider_user_id?: true
+    access_token?: true
+    refresh_token?: true
+    created_at?: true
+  }
+
+  export type Oauth_accountsMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    provider?: true
+    provider_user_id?: true
+    access_token?: true
+    refresh_token?: true
+    created_at?: true
+  }
+
+  export type Oauth_accountsCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    provider?: true
+    provider_user_id?: true
+    access_token?: true
+    refresh_token?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type Oauth_accountsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which oauth_accounts to aggregate.
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of oauth_accounts to fetch.
+     */
+    orderBy?: oauth_accountsOrderByWithRelationInput | oauth_accountsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: oauth_accountsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` oauth_accounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` oauth_accounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned oauth_accounts
+    **/
+    _count?: true | Oauth_accountsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Oauth_accountsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Oauth_accountsMaxAggregateInputType
+  }
+
+  export type GetOauth_accountsAggregateType<T extends Oauth_accountsAggregateArgs> = {
+        [P in keyof T & keyof AggregateOauth_accounts]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOauth_accounts[P]>
+      : GetScalarType<T[P], AggregateOauth_accounts[P]>
+  }
+
+
+
+
+  export type oauth_accountsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: oauth_accountsWhereInput
+    orderBy?: oauth_accountsOrderByWithAggregationInput | oauth_accountsOrderByWithAggregationInput[]
+    by: Oauth_accountsScalarFieldEnum[] | Oauth_accountsScalarFieldEnum
+    having?: oauth_accountsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Oauth_accountsCountAggregateInputType | true
+    _min?: Oauth_accountsMinAggregateInputType
+    _max?: Oauth_accountsMaxAggregateInputType
+  }
+
+  export type Oauth_accountsGroupByOutputType = {
+    id: string
+    user_id: string
+    provider: string
+    provider_user_id: string
+    access_token: string | null
+    refresh_token: string | null
+    created_at: Date
+    _count: Oauth_accountsCountAggregateOutputType | null
+    _min: Oauth_accountsMinAggregateOutputType | null
+    _max: Oauth_accountsMaxAggregateOutputType | null
+  }
+
+  type GetOauth_accountsGroupByPayload<T extends oauth_accountsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Oauth_accountsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Oauth_accountsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Oauth_accountsGroupByOutputType[P]>
+            : GetScalarType<T[P], Oauth_accountsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type oauth_accountsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    provider?: boolean
+    provider_user_id?: boolean
+    access_token?: boolean
+    refresh_token?: boolean
+    created_at?: boolean
+    user?: boolean | usersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["oauth_accounts"]>
+
+  export type oauth_accountsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    provider?: boolean
+    provider_user_id?: boolean
+    access_token?: boolean
+    refresh_token?: boolean
+    created_at?: boolean
+    user?: boolean | usersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["oauth_accounts"]>
+
+  export type oauth_accountsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    provider?: boolean
+    provider_user_id?: boolean
+    access_token?: boolean
+    refresh_token?: boolean
+    created_at?: boolean
+    user?: boolean | usersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["oauth_accounts"]>
+
+  export type oauth_accountsSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    provider?: boolean
+    provider_user_id?: boolean
+    access_token?: boolean
+    refresh_token?: boolean
+    created_at?: boolean
+  }
+
+  export type oauth_accountsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "provider" | "provider_user_id" | "access_token" | "refresh_token" | "created_at", ExtArgs["result"]["oauth_accounts"]>
+  export type oauth_accountsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | usersDefaultArgs<ExtArgs>
+  }
+  export type oauth_accountsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | usersDefaultArgs<ExtArgs>
+  }
+  export type oauth_accountsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | usersDefaultArgs<ExtArgs>
+  }
+
+  export type $oauth_accountsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "oauth_accounts"
+    objects: {
+      user: Prisma.$usersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      user_id: string
+      provider: string
+      provider_user_id: string
+      access_token: string | null
+      refresh_token: string | null
+      created_at: Date
+    }, ExtArgs["result"]["oauth_accounts"]>
+    composites: {}
+  }
+
+  type oauth_accountsGetPayload<S extends boolean | null | undefined | oauth_accountsDefaultArgs> = $Result.GetResult<Prisma.$oauth_accountsPayload, S>
+
+  type oauth_accountsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<oauth_accountsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Oauth_accountsCountAggregateInputType | true
+    }
+
+  export interface oauth_accountsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['oauth_accounts'], meta: { name: 'oauth_accounts' } }
+    /**
+     * Find zero or one Oauth_accounts that matches the filter.
+     * @param {oauth_accountsFindUniqueArgs} args - Arguments to find a Oauth_accounts
+     * @example
+     * // Get one Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends oauth_accountsFindUniqueArgs>(args: SelectSubset<T, oauth_accountsFindUniqueArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Oauth_accounts that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {oauth_accountsFindUniqueOrThrowArgs} args - Arguments to find a Oauth_accounts
+     * @example
+     * // Get one Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends oauth_accountsFindUniqueOrThrowArgs>(args: SelectSubset<T, oauth_accountsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Oauth_accounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {oauth_accountsFindFirstArgs} args - Arguments to find a Oauth_accounts
+     * @example
+     * // Get one Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends oauth_accountsFindFirstArgs>(args?: SelectSubset<T, oauth_accountsFindFirstArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Oauth_accounts that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {oauth_accountsFindFirstOrThrowArgs} args - Arguments to find a Oauth_accounts
+     * @example
+     * // Get one Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends oauth_accountsFindFirstOrThrowArgs>(args?: SelectSubset<T, oauth_accountsFindFirstOrThrowArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Oauth_accounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {oauth_accountsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.findMany()
+     * 
+     * // Get first 10 Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const oauth_accountsWithIdOnly = await prisma.oauth_accounts.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends oauth_accountsFindManyArgs>(args?: SelectSubset<T, oauth_accountsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Oauth_accounts.
+     * @param {oauth_accountsCreateArgs} args - Arguments to create a Oauth_accounts.
+     * @example
+     * // Create one Oauth_accounts
+     * const Oauth_accounts = await prisma.oauth_accounts.create({
+     *   data: {
+     *     // ... data to create a Oauth_accounts
+     *   }
+     * })
+     * 
+     */
+    create<T extends oauth_accountsCreateArgs>(args: SelectSubset<T, oauth_accountsCreateArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Oauth_accounts.
+     * @param {oauth_accountsCreateManyArgs} args - Arguments to create many Oauth_accounts.
+     * @example
+     * // Create many Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends oauth_accountsCreateManyArgs>(args?: SelectSubset<T, oauth_accountsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Oauth_accounts and returns the data saved in the database.
+     * @param {oauth_accountsCreateManyAndReturnArgs} args - Arguments to create many Oauth_accounts.
+     * @example
+     * // Create many Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Oauth_accounts and only return the `id`
+     * const oauth_accountsWithIdOnly = await prisma.oauth_accounts.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends oauth_accountsCreateManyAndReturnArgs>(args?: SelectSubset<T, oauth_accountsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Oauth_accounts.
+     * @param {oauth_accountsDeleteArgs} args - Arguments to delete one Oauth_accounts.
+     * @example
+     * // Delete one Oauth_accounts
+     * const Oauth_accounts = await prisma.oauth_accounts.delete({
+     *   where: {
+     *     // ... filter to delete one Oauth_accounts
+     *   }
+     * })
+     * 
+     */
+    delete<T extends oauth_accountsDeleteArgs>(args: SelectSubset<T, oauth_accountsDeleteArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Oauth_accounts.
+     * @param {oauth_accountsUpdateArgs} args - Arguments to update one Oauth_accounts.
+     * @example
+     * // Update one Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends oauth_accountsUpdateArgs>(args: SelectSubset<T, oauth_accountsUpdateArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Oauth_accounts.
+     * @param {oauth_accountsDeleteManyArgs} args - Arguments to filter Oauth_accounts to delete.
+     * @example
+     * // Delete a few Oauth_accounts
+     * const { count } = await prisma.oauth_accounts.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends oauth_accountsDeleteManyArgs>(args?: SelectSubset<T, oauth_accountsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Oauth_accounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {oauth_accountsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends oauth_accountsUpdateManyArgs>(args: SelectSubset<T, oauth_accountsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Oauth_accounts and returns the data updated in the database.
+     * @param {oauth_accountsUpdateManyAndReturnArgs} args - Arguments to update many Oauth_accounts.
+     * @example
+     * // Update many Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Oauth_accounts and only return the `id`
+     * const oauth_accountsWithIdOnly = await prisma.oauth_accounts.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends oauth_accountsUpdateManyAndReturnArgs>(args: SelectSubset<T, oauth_accountsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Oauth_accounts.
+     * @param {oauth_accountsUpsertArgs} args - Arguments to update or create a Oauth_accounts.
+     * @example
+     * // Update or create a Oauth_accounts
+     * const oauth_accounts = await prisma.oauth_accounts.upsert({
+     *   create: {
+     *     // ... data to create a Oauth_accounts
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Oauth_accounts we want to update
+     *   }
+     * })
+     */
+    upsert<T extends oauth_accountsUpsertArgs>(args: SelectSubset<T, oauth_accountsUpsertArgs<ExtArgs>>): Prisma__oauth_accountsClient<$Result.GetResult<Prisma.$oauth_accountsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Oauth_accounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {oauth_accountsCountArgs} args - Arguments to filter Oauth_accounts to count.
+     * @example
+     * // Count the number of Oauth_accounts
+     * const count = await prisma.oauth_accounts.count({
+     *   where: {
+     *     // ... the filter for the Oauth_accounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends oauth_accountsCountArgs>(
+      args?: Subset<T, oauth_accountsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Oauth_accountsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Oauth_accounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Oauth_accountsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Oauth_accountsAggregateArgs>(args: Subset<T, Oauth_accountsAggregateArgs>): Prisma.PrismaPromise<GetOauth_accountsAggregateType<T>>
+
+    /**
+     * Group by Oauth_accounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {oauth_accountsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends oauth_accountsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: oauth_accountsGroupByArgs['orderBy'] }
+        : { orderBy?: oauth_accountsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, oauth_accountsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOauth_accountsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the oauth_accounts model
+   */
+  readonly fields: oauth_accountsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for oauth_accounts.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__oauth_accountsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the oauth_accounts model
+   */
+  interface oauth_accountsFieldRefs {
+    readonly id: FieldRef<"oauth_accounts", 'String'>
+    readonly user_id: FieldRef<"oauth_accounts", 'String'>
+    readonly provider: FieldRef<"oauth_accounts", 'String'>
+    readonly provider_user_id: FieldRef<"oauth_accounts", 'String'>
+    readonly access_token: FieldRef<"oauth_accounts", 'String'>
+    readonly refresh_token: FieldRef<"oauth_accounts", 'String'>
+    readonly created_at: FieldRef<"oauth_accounts", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * oauth_accounts findUnique
+   */
+  export type oauth_accountsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * Filter, which oauth_accounts to fetch.
+     */
+    where: oauth_accountsWhereUniqueInput
+  }
+
+  /**
+   * oauth_accounts findUniqueOrThrow
+   */
+  export type oauth_accountsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * Filter, which oauth_accounts to fetch.
+     */
+    where: oauth_accountsWhereUniqueInput
+  }
+
+  /**
+   * oauth_accounts findFirst
+   */
+  export type oauth_accountsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * Filter, which oauth_accounts to fetch.
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of oauth_accounts to fetch.
+     */
+    orderBy?: oauth_accountsOrderByWithRelationInput | oauth_accountsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for oauth_accounts.
+     */
+    cursor?: oauth_accountsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` oauth_accounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` oauth_accounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of oauth_accounts.
+     */
+    distinct?: Oauth_accountsScalarFieldEnum | Oauth_accountsScalarFieldEnum[]
+  }
+
+  /**
+   * oauth_accounts findFirstOrThrow
+   */
+  export type oauth_accountsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * Filter, which oauth_accounts to fetch.
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of oauth_accounts to fetch.
+     */
+    orderBy?: oauth_accountsOrderByWithRelationInput | oauth_accountsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for oauth_accounts.
+     */
+    cursor?: oauth_accountsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` oauth_accounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` oauth_accounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of oauth_accounts.
+     */
+    distinct?: Oauth_accountsScalarFieldEnum | Oauth_accountsScalarFieldEnum[]
+  }
+
+  /**
+   * oauth_accounts findMany
+   */
+  export type oauth_accountsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * Filter, which oauth_accounts to fetch.
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of oauth_accounts to fetch.
+     */
+    orderBy?: oauth_accountsOrderByWithRelationInput | oauth_accountsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing oauth_accounts.
+     */
+    cursor?: oauth_accountsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` oauth_accounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` oauth_accounts.
+     */
+    skip?: number
+    distinct?: Oauth_accountsScalarFieldEnum | Oauth_accountsScalarFieldEnum[]
+  }
+
+  /**
+   * oauth_accounts create
+   */
+  export type oauth_accountsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a oauth_accounts.
+     */
+    data: XOR<oauth_accountsCreateInput, oauth_accountsUncheckedCreateInput>
+  }
+
+  /**
+   * oauth_accounts createMany
+   */
+  export type oauth_accountsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many oauth_accounts.
+     */
+    data: oauth_accountsCreateManyInput | oauth_accountsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * oauth_accounts createManyAndReturn
+   */
+  export type oauth_accountsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * The data used to create many oauth_accounts.
+     */
+    data: oauth_accountsCreateManyInput | oauth_accountsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * oauth_accounts update
+   */
+  export type oauth_accountsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a oauth_accounts.
+     */
+    data: XOR<oauth_accountsUpdateInput, oauth_accountsUncheckedUpdateInput>
+    /**
+     * Choose, which oauth_accounts to update.
+     */
+    where: oauth_accountsWhereUniqueInput
+  }
+
+  /**
+   * oauth_accounts updateMany
+   */
+  export type oauth_accountsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update oauth_accounts.
+     */
+    data: XOR<oauth_accountsUpdateManyMutationInput, oauth_accountsUncheckedUpdateManyInput>
+    /**
+     * Filter which oauth_accounts to update
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * Limit how many oauth_accounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * oauth_accounts updateManyAndReturn
+   */
+  export type oauth_accountsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * The data used to update oauth_accounts.
+     */
+    data: XOR<oauth_accountsUpdateManyMutationInput, oauth_accountsUncheckedUpdateManyInput>
+    /**
+     * Filter which oauth_accounts to update
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * Limit how many oauth_accounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * oauth_accounts upsert
+   */
+  export type oauth_accountsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the oauth_accounts to update in case it exists.
+     */
+    where: oauth_accountsWhereUniqueInput
+    /**
+     * In case the oauth_accounts found by the `where` argument doesn't exist, create a new oauth_accounts with this data.
+     */
+    create: XOR<oauth_accountsCreateInput, oauth_accountsUncheckedCreateInput>
+    /**
+     * In case the oauth_accounts was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<oauth_accountsUpdateInput, oauth_accountsUncheckedUpdateInput>
+  }
+
+  /**
+   * oauth_accounts delete
+   */
+  export type oauth_accountsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+    /**
+     * Filter which oauth_accounts to delete.
+     */
+    where: oauth_accountsWhereUniqueInput
+  }
+
+  /**
+   * oauth_accounts deleteMany
+   */
+  export type oauth_accountsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which oauth_accounts to delete
+     */
+    where?: oauth_accountsWhereInput
+    /**
+     * Limit how many oauth_accounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * oauth_accounts without action
+   */
+  export type oauth_accountsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the oauth_accounts
+     */
+    select?: oauth_accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the oauth_accounts
+     */
+    omit?: oauth_accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: oauth_accountsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model embedding_jobs
    */
 
@@ -12919,6 +14144,7 @@ export namespace Prisma {
   export const UsersScalarFieldEnum: {
     id: 'id',
     email: 'email',
+    password_hash: 'password_hash',
     created_at: 'created_at'
   };
 
@@ -13027,6 +14253,19 @@ export namespace Prisma {
   };
 
   export type Voice_profilesScalarFieldEnum = (typeof Voice_profilesScalarFieldEnum)[keyof typeof Voice_profilesScalarFieldEnum]
+
+
+  export const Oauth_accountsScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    provider: 'provider',
+    provider_user_id: 'provider_user_id',
+    access_token: 'access_token',
+    refresh_token: 'refresh_token',
+    created_at: 'created_at'
+  };
+
+  export type Oauth_accountsScalarFieldEnum = (typeof Oauth_accountsScalarFieldEnum)[keyof typeof Oauth_accountsScalarFieldEnum]
 
 
   export const Embedding_jobsScalarFieldEnum: {
@@ -13217,6 +14456,7 @@ export namespace Prisma {
     NOT?: usersWhereInput | usersWhereInput[]
     id?: StringFilter<"users"> | string
     email?: StringFilter<"users"> | string
+    password_hash?: StringNullableFilter<"users"> | string | null
     created_at?: DateTimeFilter<"users"> | Date | string
     credentials?: CredentialsListRelationFilter
     sessions?: SessionsListRelationFilter
@@ -13225,11 +14465,13 @@ export namespace Prisma {
     sources?: SourcesListRelationFilter
     messages?: MessagesListRelationFilter
     voice_profiles?: Voice_profilesListRelationFilter
+    oauth_accounts?: Oauth_accountsListRelationFilter
   }
 
   export type usersOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
+    password_hash?: SortOrderInput | SortOrder
     created_at?: SortOrder
     credentials?: credentialsOrderByRelationAggregateInput
     sessions?: sessionsOrderByRelationAggregateInput
@@ -13238,6 +14480,7 @@ export namespace Prisma {
     sources?: sourcesOrderByRelationAggregateInput
     messages?: messagesOrderByRelationAggregateInput
     voice_profiles?: voice_profilesOrderByRelationAggregateInput
+    oauth_accounts?: oauth_accountsOrderByRelationAggregateInput
   }
 
   export type usersWhereUniqueInput = Prisma.AtLeast<{
@@ -13246,6 +14489,7 @@ export namespace Prisma {
     AND?: usersWhereInput | usersWhereInput[]
     OR?: usersWhereInput[]
     NOT?: usersWhereInput | usersWhereInput[]
+    password_hash?: StringNullableFilter<"users"> | string | null
     created_at?: DateTimeFilter<"users"> | Date | string
     credentials?: CredentialsListRelationFilter
     sessions?: SessionsListRelationFilter
@@ -13254,11 +14498,13 @@ export namespace Prisma {
     sources?: SourcesListRelationFilter
     messages?: MessagesListRelationFilter
     voice_profiles?: Voice_profilesListRelationFilter
+    oauth_accounts?: Oauth_accountsListRelationFilter
   }, "id" | "email">
 
   export type usersOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
+    password_hash?: SortOrderInput | SortOrder
     created_at?: SortOrder
     _count?: usersCountOrderByAggregateInput
     _max?: usersMaxOrderByAggregateInput
@@ -13271,6 +14517,7 @@ export namespace Prisma {
     NOT?: usersScalarWhereWithAggregatesInput | usersScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"users"> | string
     email?: StringWithAggregatesFilter<"users"> | string
+    password_hash?: StringNullableWithAggregatesFilter<"users"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"users"> | Date | string
   }
 
@@ -13496,6 +14743,7 @@ export namespace Prisma {
 
   export type traitsWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    user_id_category_key?: traitsUser_id_category_keyCompoundUniqueInput
     AND?: traitsWhereInput | traitsWhereInput[]
     OR?: traitsWhereInput[]
     NOT?: traitsWhereInput | traitsWhereInput[]
@@ -13510,7 +14758,7 @@ export namespace Prisma {
     source_id?: StringNullableFilter<"traits"> | string | null
     user?: XOR<UsersScalarRelationFilter, usersWhereInput>
     sources?: XOR<SourcesNullableScalarRelationFilter, sourcesWhereInput> | null
-  }, "id">
+  }, "id" | "user_id_category_key">
 
   export type traitsOrderByWithAggregationInput = {
     id?: SortOrder
@@ -13807,6 +15055,72 @@ export namespace Prisma {
     sample_meta?: JsonNullableWithAggregatesFilter<"voice_profiles">
   }
 
+  export type oauth_accountsWhereInput = {
+    AND?: oauth_accountsWhereInput | oauth_accountsWhereInput[]
+    OR?: oauth_accountsWhereInput[]
+    NOT?: oauth_accountsWhereInput | oauth_accountsWhereInput[]
+    id?: StringFilter<"oauth_accounts"> | string
+    user_id?: StringFilter<"oauth_accounts"> | string
+    provider?: StringFilter<"oauth_accounts"> | string
+    provider_user_id?: StringFilter<"oauth_accounts"> | string
+    access_token?: StringNullableFilter<"oauth_accounts"> | string | null
+    refresh_token?: StringNullableFilter<"oauth_accounts"> | string | null
+    created_at?: DateTimeFilter<"oauth_accounts"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, usersWhereInput>
+  }
+
+  export type oauth_accountsOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    provider?: SortOrder
+    provider_user_id?: SortOrder
+    access_token?: SortOrderInput | SortOrder
+    refresh_token?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    user?: usersOrderByWithRelationInput
+  }
+
+  export type oauth_accountsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    provider_user_unique?: oauth_accountsProvider_user_uniqueCompoundUniqueInput
+    AND?: oauth_accountsWhereInput | oauth_accountsWhereInput[]
+    OR?: oauth_accountsWhereInput[]
+    NOT?: oauth_accountsWhereInput | oauth_accountsWhereInput[]
+    user_id?: StringFilter<"oauth_accounts"> | string
+    provider?: StringFilter<"oauth_accounts"> | string
+    provider_user_id?: StringFilter<"oauth_accounts"> | string
+    access_token?: StringNullableFilter<"oauth_accounts"> | string | null
+    refresh_token?: StringNullableFilter<"oauth_accounts"> | string | null
+    created_at?: DateTimeFilter<"oauth_accounts"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, usersWhereInput>
+  }, "id" | "provider_user_unique">
+
+  export type oauth_accountsOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    provider?: SortOrder
+    provider_user_id?: SortOrder
+    access_token?: SortOrderInput | SortOrder
+    refresh_token?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: oauth_accountsCountOrderByAggregateInput
+    _max?: oauth_accountsMaxOrderByAggregateInput
+    _min?: oauth_accountsMinOrderByAggregateInput
+  }
+
+  export type oauth_accountsScalarWhereWithAggregatesInput = {
+    AND?: oauth_accountsScalarWhereWithAggregatesInput | oauth_accountsScalarWhereWithAggregatesInput[]
+    OR?: oauth_accountsScalarWhereWithAggregatesInput[]
+    NOT?: oauth_accountsScalarWhereWithAggregatesInput | oauth_accountsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"oauth_accounts"> | string
+    user_id?: StringWithAggregatesFilter<"oauth_accounts"> | string
+    provider?: StringWithAggregatesFilter<"oauth_accounts"> | string
+    provider_user_id?: StringWithAggregatesFilter<"oauth_accounts"> | string
+    access_token?: StringNullableWithAggregatesFilter<"oauth_accounts"> | string | null
+    refresh_token?: StringNullableWithAggregatesFilter<"oauth_accounts"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"oauth_accounts"> | Date | string
+  }
+
   export type embedding_jobsWhereInput = {
     AND?: embedding_jobsWhereInput | embedding_jobsWhereInput[]
     OR?: embedding_jobsWhereInput[]
@@ -13877,6 +15191,7 @@ export namespace Prisma {
   export type usersCreateInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     sessions?: sessionsCreateNestedManyWithoutUserInput
@@ -13885,11 +15200,13 @@ export namespace Prisma {
     sources?: sourcesCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
@@ -13898,11 +15215,13 @@ export namespace Prisma {
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     sessions?: sessionsUpdateManyWithoutUserNestedInput
@@ -13911,11 +15230,13 @@ export namespace Prisma {
     sources?: sourcesUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
@@ -13924,23 +15245,27 @@ export namespace Prisma {
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type usersCreateManyInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
   }
 
   export type usersUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type usersUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14503,6 +15828,75 @@ export namespace Prisma {
     sample_meta?: NullableJsonNullValueInput | InputJsonValue
   }
 
+  export type oauth_accountsCreateInput = {
+    id?: string
+    provider: string
+    provider_user_id: string
+    access_token?: string | null
+    refresh_token?: string | null
+    created_at?: Date | string
+    user: usersCreateNestedOneWithoutOauth_accountsInput
+  }
+
+  export type oauth_accountsUncheckedCreateInput = {
+    id?: string
+    user_id: string
+    provider: string
+    provider_user_id: string
+    access_token?: string | null
+    refresh_token?: string | null
+    created_at?: Date | string
+  }
+
+  export type oauth_accountsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: usersUpdateOneRequiredWithoutOauth_accountsNestedInput
+  }
+
+  export type oauth_accountsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type oauth_accountsCreateManyInput = {
+    id?: string
+    user_id: string
+    provider: string
+    provider_user_id: string
+    access_token?: string | null
+    refresh_token?: string | null
+    created_at?: Date | string
+  }
+
+  export type oauth_accountsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type oauth_accountsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type embedding_jobsCreateInput = {
     id?: string
     job_id: string
@@ -14595,6 +15989,21 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -14647,6 +16056,17 @@ export namespace Prisma {
     none?: voice_profilesWhereInput
   }
 
+  export type Oauth_accountsListRelationFilter = {
+    every?: oauth_accountsWhereInput
+    some?: oauth_accountsWhereInput
+    none?: oauth_accountsWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type credentialsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -14671,21 +16091,28 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type oauth_accountsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type usersCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    password_hash?: SortOrder
     created_at?: SortOrder
   }
 
   export type usersMaxOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    password_hash?: SortOrder
     created_at?: SortOrder
   }
 
   export type usersMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    password_hash?: SortOrder
     created_at?: SortOrder
   }
 
@@ -14705,6 +16132,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -14799,11 +16244,6 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type sessionsCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
@@ -14851,21 +16291,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type profilesCountOrderByAggregateInput = {
     user_id?: SortOrder
     display_name?: SortOrder
@@ -14888,24 +16313,6 @@ export namespace Prisma {
     timezone?: SortOrder
     theme_color?: SortOrder
     updated_at?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -14945,6 +16352,12 @@ export namespace Prisma {
   export type SourcesNullableScalarRelationFilter = {
     is?: sourcesWhereInput | null
     isNot?: sourcesWhereInput | null
+  }
+
+  export type traitsUser_id_category_keyCompoundUniqueInput = {
+    user_id: string
+    category: string
+    key: string
   }
 
   export type traitsCountOrderByAggregateInput = {
@@ -15264,6 +16677,41 @@ export namespace Prisma {
     consent_signed_at?: SortOrder
   }
 
+  export type oauth_accountsProvider_user_uniqueCompoundUniqueInput = {
+    provider: string
+    provider_user_id: string
+  }
+
+  export type oauth_accountsCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    provider?: SortOrder
+    provider_user_id?: SortOrder
+    access_token?: SortOrder
+    refresh_token?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type oauth_accountsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    provider?: SortOrder
+    provider_user_id?: SortOrder
+    access_token?: SortOrder
+    refresh_token?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type oauth_accountsMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    provider?: SortOrder
+    provider_user_id?: SortOrder
+    access_token?: SortOrder
+    refresh_token?: SortOrder
+    created_at?: SortOrder
+  }
+
   export type embedding_jobsCountOrderByAggregateInput = {
     id?: SortOrder
     job_id?: SortOrder
@@ -15343,6 +16791,13 @@ export namespace Prisma {
     connect?: voice_profilesWhereUniqueInput | voice_profilesWhereUniqueInput[]
   }
 
+  export type oauth_accountsCreateNestedManyWithoutUserInput = {
+    create?: XOR<oauth_accountsCreateWithoutUserInput, oauth_accountsUncheckedCreateWithoutUserInput> | oauth_accountsCreateWithoutUserInput[] | oauth_accountsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: oauth_accountsCreateOrConnectWithoutUserInput | oauth_accountsCreateOrConnectWithoutUserInput[]
+    createMany?: oauth_accountsCreateManyUserInputEnvelope
+    connect?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+  }
+
   export type credentialsUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<credentialsCreateWithoutUserInput, credentialsUncheckedCreateWithoutUserInput> | credentialsCreateWithoutUserInput[] | credentialsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: credentialsCreateOrConnectWithoutUserInput | credentialsCreateOrConnectWithoutUserInput[]
@@ -15391,8 +16846,19 @@ export namespace Prisma {
     connect?: voice_profilesWhereUniqueInput | voice_profilesWhereUniqueInput[]
   }
 
+  export type oauth_accountsUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<oauth_accountsCreateWithoutUserInput, oauth_accountsUncheckedCreateWithoutUserInput> | oauth_accountsCreateWithoutUserInput[] | oauth_accountsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: oauth_accountsCreateOrConnectWithoutUserInput | oauth_accountsCreateOrConnectWithoutUserInput[]
+    createMany?: oauth_accountsCreateManyUserInputEnvelope
+    connect?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -15493,6 +16959,20 @@ export namespace Prisma {
     deleteMany?: voice_profilesScalarWhereInput | voice_profilesScalarWhereInput[]
   }
 
+  export type oauth_accountsUpdateManyWithoutUserNestedInput = {
+    create?: XOR<oauth_accountsCreateWithoutUserInput, oauth_accountsUncheckedCreateWithoutUserInput> | oauth_accountsCreateWithoutUserInput[] | oauth_accountsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: oauth_accountsCreateOrConnectWithoutUserInput | oauth_accountsCreateOrConnectWithoutUserInput[]
+    upsert?: oauth_accountsUpsertWithWhereUniqueWithoutUserInput | oauth_accountsUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: oauth_accountsCreateManyUserInputEnvelope
+    set?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    disconnect?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    delete?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    connect?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    update?: oauth_accountsUpdateWithWhereUniqueWithoutUserInput | oauth_accountsUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: oauth_accountsUpdateManyWithWhereWithoutUserInput | oauth_accountsUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: oauth_accountsScalarWhereInput | oauth_accountsScalarWhereInput[]
+  }
+
   export type credentialsUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<credentialsCreateWithoutUserInput, credentialsUncheckedCreateWithoutUserInput> | credentialsCreateWithoutUserInput[] | credentialsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: credentialsCreateOrConnectWithoutUserInput | credentialsCreateOrConnectWithoutUserInput[]
@@ -15587,6 +17067,20 @@ export namespace Prisma {
     deleteMany?: voice_profilesScalarWhereInput | voice_profilesScalarWhereInput[]
   }
 
+  export type oauth_accountsUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<oauth_accountsCreateWithoutUserInput, oauth_accountsUncheckedCreateWithoutUserInput> | oauth_accountsCreateWithoutUserInput[] | oauth_accountsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: oauth_accountsCreateOrConnectWithoutUserInput | oauth_accountsCreateOrConnectWithoutUserInput[]
+    upsert?: oauth_accountsUpsertWithWhereUniqueWithoutUserInput | oauth_accountsUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: oauth_accountsCreateManyUserInputEnvelope
+    set?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    disconnect?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    delete?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    connect?: oauth_accountsWhereUniqueInput | oauth_accountsWhereUniqueInput[]
+    update?: oauth_accountsUpdateWithWhereUniqueWithoutUserInput | oauth_accountsUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: oauth_accountsUpdateManyWithWhereWithoutUserInput | oauth_accountsUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: oauth_accountsScalarWhereInput | oauth_accountsScalarWhereInput[]
+  }
+
   export type usersCreateNestedOneWithoutCredentialsInput = {
     create?: XOR<usersCreateWithoutCredentialsInput, usersUncheckedCreateWithoutCredentialsInput>
     connectOrCreate?: usersCreateOrConnectWithoutCredentialsInput
@@ -15631,10 +17125,6 @@ export namespace Prisma {
     create?: XOR<usersCreateWithoutProfilesInput, usersUncheckedCreateWithoutProfilesInput>
     connectOrCreate?: usersCreateOrConnectWithoutProfilesInput
     connect?: usersWhereUniqueInput
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type usersUpdateOneRequiredWithoutProfilesNestedInput = {
@@ -15835,6 +17325,20 @@ export namespace Prisma {
     update?: XOR<XOR<usersUpdateToOneWithWhereWithoutVoice_profilesInput, usersUpdateWithoutVoice_profilesInput>, usersUncheckedUpdateWithoutVoice_profilesInput>
   }
 
+  export type usersCreateNestedOneWithoutOauth_accountsInput = {
+    create?: XOR<usersCreateWithoutOauth_accountsInput, usersUncheckedCreateWithoutOauth_accountsInput>
+    connectOrCreate?: usersCreateOrConnectWithoutOauth_accountsInput
+    connect?: usersWhereUniqueInput
+  }
+
+  export type usersUpdateOneRequiredWithoutOauth_accountsNestedInput = {
+    create?: XOR<usersCreateWithoutOauth_accountsInput, usersUncheckedCreateWithoutOauth_accountsInput>
+    connectOrCreate?: usersCreateOrConnectWithoutOauth_accountsInput
+    upsert?: usersUpsertWithoutOauth_accountsInput
+    connect?: usersWhereUniqueInput
+    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutOauth_accountsInput, usersUpdateWithoutOauth_accountsInput>, usersUncheckedUpdateWithoutOauth_accountsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15847,6 +17351,20 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -15886,6 +17404,34 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -15952,48 +17498,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -16304,6 +17808,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type oauth_accountsCreateWithoutUserInput = {
+    id?: string
+    provider: string
+    provider_user_id: string
+    access_token?: string | null
+    refresh_token?: string | null
+    created_at?: Date | string
+  }
+
+  export type oauth_accountsUncheckedCreateWithoutUserInput = {
+    id?: string
+    provider: string
+    provider_user_id: string
+    access_token?: string | null
+    refresh_token?: string | null
+    created_at?: Date | string
+  }
+
+  export type oauth_accountsCreateOrConnectWithoutUserInput = {
+    where: oauth_accountsWhereUniqueInput
+    create: XOR<oauth_accountsCreateWithoutUserInput, oauth_accountsUncheckedCreateWithoutUserInput>
+  }
+
+  export type oauth_accountsCreateManyUserInputEnvelope = {
+    data: oauth_accountsCreateManyUserInput | oauth_accountsCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type credentialsUpsertWithWhereUniqueWithoutUserInput = {
     where: credentialsWhereUniqueInput
     update: XOR<credentialsUpdateWithoutUserInput, credentialsUncheckedUpdateWithoutUserInput>
@@ -16505,9 +18037,39 @@ export namespace Prisma {
     sample_meta?: JsonNullableFilter<"voice_profiles">
   }
 
+  export type oauth_accountsUpsertWithWhereUniqueWithoutUserInput = {
+    where: oauth_accountsWhereUniqueInput
+    update: XOR<oauth_accountsUpdateWithoutUserInput, oauth_accountsUncheckedUpdateWithoutUserInput>
+    create: XOR<oauth_accountsCreateWithoutUserInput, oauth_accountsUncheckedCreateWithoutUserInput>
+  }
+
+  export type oauth_accountsUpdateWithWhereUniqueWithoutUserInput = {
+    where: oauth_accountsWhereUniqueInput
+    data: XOR<oauth_accountsUpdateWithoutUserInput, oauth_accountsUncheckedUpdateWithoutUserInput>
+  }
+
+  export type oauth_accountsUpdateManyWithWhereWithoutUserInput = {
+    where: oauth_accountsScalarWhereInput
+    data: XOR<oauth_accountsUpdateManyMutationInput, oauth_accountsUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type oauth_accountsScalarWhereInput = {
+    AND?: oauth_accountsScalarWhereInput | oauth_accountsScalarWhereInput[]
+    OR?: oauth_accountsScalarWhereInput[]
+    NOT?: oauth_accountsScalarWhereInput | oauth_accountsScalarWhereInput[]
+    id?: StringFilter<"oauth_accounts"> | string
+    user_id?: StringFilter<"oauth_accounts"> | string
+    provider?: StringFilter<"oauth_accounts"> | string
+    provider_user_id?: StringFilter<"oauth_accounts"> | string
+    access_token?: StringNullableFilter<"oauth_accounts"> | string | null
+    refresh_token?: StringNullableFilter<"oauth_accounts"> | string | null
+    created_at?: DateTimeFilter<"oauth_accounts"> | Date | string
+  }
+
   export type usersCreateWithoutCredentialsInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     sessions?: sessionsCreateNestedManyWithoutUserInput
     profiles?: profilesCreateNestedOneWithoutUserInput
@@ -16515,11 +18077,13 @@ export namespace Prisma {
     sources?: sourcesCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutCredentialsInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
     profiles?: profilesUncheckedCreateNestedOneWithoutUserInput
@@ -16527,6 +18091,7 @@ export namespace Prisma {
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutCredentialsInput = {
@@ -16548,6 +18113,7 @@ export namespace Prisma {
   export type usersUpdateWithoutCredentialsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: sessionsUpdateManyWithoutUserNestedInput
     profiles?: profilesUpdateOneWithoutUserNestedInput
@@ -16555,11 +18121,13 @@ export namespace Prisma {
     sources?: sourcesUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutCredentialsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
     profiles?: profilesUncheckedUpdateOneWithoutUserNestedInput
@@ -16567,11 +18135,13 @@ export namespace Prisma {
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type usersCreateWithoutSessionsInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     profiles?: profilesCreateNestedOneWithoutUserInput
@@ -16579,11 +18149,13 @@ export namespace Prisma {
     sources?: sourcesCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutSessionsInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     profiles?: profilesUncheckedCreateNestedOneWithoutUserInput
@@ -16591,6 +18163,7 @@ export namespace Prisma {
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutSessionsInput = {
@@ -16612,6 +18185,7 @@ export namespace Prisma {
   export type usersUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     profiles?: profilesUpdateOneWithoutUserNestedInput
@@ -16619,11 +18193,13 @@ export namespace Prisma {
     sources?: sourcesUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     profiles?: profilesUncheckedUpdateOneWithoutUserNestedInput
@@ -16631,11 +18207,13 @@ export namespace Prisma {
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type usersCreateWithoutProfilesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     sessions?: sessionsCreateNestedManyWithoutUserInput
@@ -16643,11 +18221,13 @@ export namespace Prisma {
     sources?: sourcesCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutProfilesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
@@ -16655,6 +18235,7 @@ export namespace Prisma {
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutProfilesInput = {
@@ -16676,6 +18257,7 @@ export namespace Prisma {
   export type usersUpdateWithoutProfilesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     sessions?: sessionsUpdateManyWithoutUserNestedInput
@@ -16683,11 +18265,13 @@ export namespace Prisma {
     sources?: sourcesUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutProfilesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
@@ -16695,11 +18279,13 @@ export namespace Prisma {
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type usersCreateWithoutTraitsInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     sessions?: sessionsCreateNestedManyWithoutUserInput
@@ -16707,11 +18293,13 @@ export namespace Prisma {
     sources?: sourcesCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutTraitsInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
@@ -16719,6 +18307,7 @@ export namespace Prisma {
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutTraitsInput = {
@@ -16767,6 +18356,7 @@ export namespace Prisma {
   export type usersUpdateWithoutTraitsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     sessions?: sessionsUpdateManyWithoutUserNestedInput
@@ -16774,11 +18364,13 @@ export namespace Prisma {
     sources?: sourcesUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutTraitsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
@@ -16786,6 +18378,7 @@ export namespace Prisma {
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type sourcesUpsertWithoutTraitsInput = {
@@ -16824,6 +18417,7 @@ export namespace Prisma {
   export type usersCreateWithoutSourcesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     sessions?: sessionsCreateNestedManyWithoutUserInput
@@ -16831,11 +18425,13 @@ export namespace Prisma {
     traits?: traitsCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutSourcesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
@@ -16843,6 +18439,7 @@ export namespace Prisma {
     traits?: traitsUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutSourcesInput = {
@@ -16926,6 +18523,7 @@ export namespace Prisma {
   export type usersUpdateWithoutSourcesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     sessions?: sessionsUpdateManyWithoutUserNestedInput
@@ -16933,11 +18531,13 @@ export namespace Prisma {
     traits?: traitsUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutSourcesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
@@ -16945,6 +18545,7 @@ export namespace Prisma {
     traits?: traitsUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type traitsUpsertWithWhereUniqueWithoutSourcesInput = {
@@ -16995,6 +18596,7 @@ export namespace Prisma {
   export type usersCreateWithoutMessagesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     sessions?: sessionsCreateNestedManyWithoutUserInput
@@ -17002,11 +18604,13 @@ export namespace Prisma {
     traits?: traitsCreateNestedManyWithoutUserInput
     sources?: sourcesCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutMessagesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
@@ -17014,6 +18618,7 @@ export namespace Prisma {
     traits?: traitsUncheckedCreateNestedManyWithoutUserInput
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutMessagesInput = {
@@ -17035,6 +18640,7 @@ export namespace Prisma {
   export type usersUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     sessions?: sessionsUpdateManyWithoutUserNestedInput
@@ -17042,11 +18648,13 @@ export namespace Prisma {
     traits?: traitsUpdateManyWithoutUserNestedInput
     sources?: sourcesUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
@@ -17054,6 +18662,7 @@ export namespace Prisma {
     traits?: traitsUncheckedUpdateManyWithoutUserNestedInput
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type sourcesCreateWithoutEmbeddingsInput = {
@@ -17119,6 +18728,7 @@ export namespace Prisma {
   export type usersCreateWithoutVoice_profilesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsCreateNestedManyWithoutUserInput
     sessions?: sessionsCreateNestedManyWithoutUserInput
@@ -17126,11 +18736,13 @@ export namespace Prisma {
     traits?: traitsCreateNestedManyWithoutUserInput
     sources?: sourcesCreateNestedManyWithoutUserInput
     messages?: messagesCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsCreateNestedManyWithoutUserInput
   }
 
   export type usersUncheckedCreateWithoutVoice_profilesInput = {
     id?: string
     email: string
+    password_hash?: string | null
     created_at?: Date | string
     credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
     sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
@@ -17138,6 +18750,7 @@ export namespace Prisma {
     traits?: traitsUncheckedCreateNestedManyWithoutUserInput
     sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
     messages?: messagesUncheckedCreateNestedManyWithoutUserInput
+    oauth_accounts?: oauth_accountsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type usersCreateOrConnectWithoutVoice_profilesInput = {
@@ -17159,6 +18772,7 @@ export namespace Prisma {
   export type usersUpdateWithoutVoice_profilesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUpdateManyWithoutUserNestedInput
     sessions?: sessionsUpdateManyWithoutUserNestedInput
@@ -17166,11 +18780,13 @@ export namespace Prisma {
     traits?: traitsUpdateManyWithoutUserNestedInput
     sources?: sourcesUpdateManyWithoutUserNestedInput
     messages?: messagesUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUpdateManyWithoutUserNestedInput
   }
 
   export type usersUncheckedUpdateWithoutVoice_profilesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
     sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
@@ -17178,6 +18794,79 @@ export namespace Prisma {
     traits?: traitsUncheckedUpdateManyWithoutUserNestedInput
     sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
     messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
+    oauth_accounts?: oauth_accountsUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type usersCreateWithoutOauth_accountsInput = {
+    id?: string
+    email: string
+    password_hash?: string | null
+    created_at?: Date | string
+    credentials?: credentialsCreateNestedManyWithoutUserInput
+    sessions?: sessionsCreateNestedManyWithoutUserInput
+    profiles?: profilesCreateNestedOneWithoutUserInput
+    traits?: traitsCreateNestedManyWithoutUserInput
+    sources?: sourcesCreateNestedManyWithoutUserInput
+    messages?: messagesCreateNestedManyWithoutUserInput
+    voice_profiles?: voice_profilesCreateNestedManyWithoutUserInput
+  }
+
+  export type usersUncheckedCreateWithoutOauth_accountsInput = {
+    id?: string
+    email: string
+    password_hash?: string | null
+    created_at?: Date | string
+    credentials?: credentialsUncheckedCreateNestedManyWithoutUserInput
+    sessions?: sessionsUncheckedCreateNestedManyWithoutUserInput
+    profiles?: profilesUncheckedCreateNestedOneWithoutUserInput
+    traits?: traitsUncheckedCreateNestedManyWithoutUserInput
+    sources?: sourcesUncheckedCreateNestedManyWithoutUserInput
+    messages?: messagesUncheckedCreateNestedManyWithoutUserInput
+    voice_profiles?: voice_profilesUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type usersCreateOrConnectWithoutOauth_accountsInput = {
+    where: usersWhereUniqueInput
+    create: XOR<usersCreateWithoutOauth_accountsInput, usersUncheckedCreateWithoutOauth_accountsInput>
+  }
+
+  export type usersUpsertWithoutOauth_accountsInput = {
+    update: XOR<usersUpdateWithoutOauth_accountsInput, usersUncheckedUpdateWithoutOauth_accountsInput>
+    create: XOR<usersCreateWithoutOauth_accountsInput, usersUncheckedCreateWithoutOauth_accountsInput>
+    where?: usersWhereInput
+  }
+
+  export type usersUpdateToOneWithWhereWithoutOauth_accountsInput = {
+    where?: usersWhereInput
+    data: XOR<usersUpdateWithoutOauth_accountsInput, usersUncheckedUpdateWithoutOauth_accountsInput>
+  }
+
+  export type usersUpdateWithoutOauth_accountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: credentialsUpdateManyWithoutUserNestedInput
+    sessions?: sessionsUpdateManyWithoutUserNestedInput
+    profiles?: profilesUpdateOneWithoutUserNestedInput
+    traits?: traitsUpdateManyWithoutUserNestedInput
+    sources?: sourcesUpdateManyWithoutUserNestedInput
+    messages?: messagesUpdateManyWithoutUserNestedInput
+    voice_profiles?: voice_profilesUpdateManyWithoutUserNestedInput
+  }
+
+  export type usersUncheckedUpdateWithoutOauth_accountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: credentialsUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: sessionsUncheckedUpdateManyWithoutUserNestedInput
+    profiles?: profilesUncheckedUpdateOneWithoutUserNestedInput
+    traits?: traitsUncheckedUpdateManyWithoutUserNestedInput
+    sources?: sourcesUncheckedUpdateManyWithoutUserNestedInput
+    messages?: messagesUncheckedUpdateManyWithoutUserNestedInput
+    voice_profiles?: voice_profilesUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type credentialsCreateManyUserInput = {
@@ -17234,6 +18923,15 @@ export namespace Prisma {
     voice_id: string
     consent_signed_at?: Date | string | null
     sample_meta?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type oauth_accountsCreateManyUserInput = {
+    id?: string
+    provider: string
+    provider_user_id: string
+    access_token?: string | null
+    refresh_token?: string | null
+    created_at?: Date | string
   }
 
   export type credentialsUpdateWithoutUserInput = {
@@ -17406,6 +19104,33 @@ export namespace Prisma {
     voice_id?: StringFieldUpdateOperationsInput | string
     consent_signed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sample_meta?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type oauth_accountsUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type oauth_accountsUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type oauth_accountsUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    provider_user_id?: StringFieldUpdateOperationsInput | string
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type traitsCreateManySourcesInput = {

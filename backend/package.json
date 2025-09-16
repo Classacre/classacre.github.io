@@ -16,6 +16,7 @@
     "dotenv": "^17.2.1",
     "elevenlabs": "^1.59.0",
     "ioredis": "^5.7.0",
+    "jose": "^5.9.6",
     "next": "15.4.6",
     "openai": "^4.55.0",
     "pg": "^8.16.3",
@@ -23,5 +24,8 @@
     "react-dom": "19.1.0",
     "uuid": "^11.1.0",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "bcryptjs": "^2.4.3"
   }
 }

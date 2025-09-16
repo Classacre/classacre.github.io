@@ -9,16 +9,18 @@ datasource db {
 }
 
 model users {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  created_at DateTime @default(now())
-  credentials credentials[]
-  sessions    sessions[]
-  profiles    profiles?
-  traits     traits[]
-  sources     sources[]
-  messages    messages[]
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password_hash  String?
+  created_at     DateTime @default(now())
+  credentials    credentials[]
+  sessions       sessions[]
+  profiles       profiles?
+  traits         traits[]
+  sources        sources[]
+  messages       messages[]
   voice_profiles voice_profiles[]
+  oauth_accounts oauth_accounts[]
 }
 
 model credentials {
@@ -130,15 +132,29 @@ model embeddings {
 }
 
 model voice_profiles {
-  id              String   @id @default(uuid())
-  user_id         String
-  provider        String
-  voice_id        String
+  id                String   @id @default(uuid())
+  user_id           String
+  provider          String
+  voice_id          String
   consent_signed_at DateTime?
-  sample_meta     Json?
+  sample_meta       Json?
   user users @relation(fields: [user_id], references: [id])
 
   @@index([user_id])
+}
+
+model oauth_accounts {
+  id               String   @id @default(uuid())
+  user_id          String
+  provider         String
+  provider_user_id String
+  access_token     String?
+  refresh_token    String?
+  created_at       DateTime @default(now())
+  user users @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@unique([provider, provider_user_id], name: "provider_user_unique")
 }
 
 model embedding_jobs {
