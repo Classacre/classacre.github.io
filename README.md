@@ -1,204 +1,71 @@
-# Legaci — Your story, in motion.
+# mikamartin — personal site
 
-Production‑grade web app that models a user’s personality and memories, stores context in a vector DB, and presents an interactive 3D disco ball. Privacy‑first, passkey auth, RAG via Qdrant, and optional streaming TTS.
+A Lando Norris-style personal site for Mika Martin Nieuwenhuyzen, hand-rolled
+with plain HTML/CSS/JS. No build step, no framework. Hosted on GitHub Pages.
 
-## Monorepo layout
+Live at https://classacre.github.io/
 
-- backend/ — Next.js 15 App Router APIs, auth, RAG, workers
-- frontend/ — Next.js 15 UI, 3D disco ball (three.js/R3F), chat and inspector
+## Stack
 
-## Prerequisites
+- Vanilla JS + CSS. Libraries loaded from CDN:
+  - [Lenis](https://lenis.darkroom.engineering/) — smooth scroll
+  - [Three.js](https://threejs.org/) — WebGL (depth-map hero portrait, DNA helix)
+- Pages: `index.html` (home), `research/`, `projects/`, `about/`
+- `js/main.js` — shared engine: page transitions ("Load Martin" curtain),
+  marquees, reveals, counters, manifesto word-highlight, horizontal gallery,
+  custom cursor, easter eggs (console log; type A C G T)
+- `js/hero3d.js` — home hero: photo + depth map shader, mouse parallax
+- `js/dna3d.js` — research: procedural DNA helix, scroll-driven
+- `js/pages/*.js` — per-page init/dispose
 
-- Node.js 20+
-- pnpm 8+ (or npm)
-- For local dev with Docker (optional): Docker Desktop
+## Local preview
 
-## Quick start (local development)
-
-1) Install dependencies
-
-```bash
-pnpm -C backend install
-pnpm -C frontend install
+```
+python -m http.server 8000
 ```
 
-2) Create and fill environment file
+then open http://localhost:8000/ (ES modules need a server; file:// won't work).
 
-- Copy backend/.env.example to backend/.env
-- Fill the variables per the sections below. For local-only dev you can start with minimal values.
+---
 
-3) Start local services (optional, if not using managed providers)
+# WHAT TO REPLACE (placeholder inventory)
 
-- Postgres (Docker):
+All imagery in `assets/img/` is generated placeholder art. Replace with real
+files using the **same filename** and everything keeps working. Recommended
+sizes below; the site crops with `object-fit: cover`, so close-enough is fine.
 
-```bash
-docker run --name legaci-pg -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=legaci -p 5432:5432 -d postgres:16
-```
+| File | Used for | Size |
+|---|---|---|
+| `portrait.png` | Home hero (WebGL) + About page photo + gallery | 960×1280 (3:4), portrait orientation |
+| `portrait-depth.png` | Depth map for the hero 3D effect. Grayscale: white = close to camera, black = far. Generate from your portrait with an AI depth tool (e.g. Depth Anything, Marigold) or ask me | 960×1280, must align exactly with `portrait.png` |
+| `card-gel.png` | "In silico" card, gallery, research page | 1200×900 (4:3) |
+| `card-dna.png` | research hover, card hover states | 1200×900 |
+| `card-karate.png` | "In person" card, about hover, gallery | 1200×900 |
+| `card-nodes.png` | BioNodulo canvas shots | 1200×900 |
+| `card-agent.png` | BioNodulo AI agent, gallery | 1200×900 |
+| `card-doi.png` | DOI-to-pipeline feature | 1200×900 |
+| `card-paper.png` | Trends in Genetics publication card (screenshot of the paper page works well) | 1200×900 |
+| `card-multiplayer.png` | BioNodulo multiplayer/MCP | 1200×900 |
+| `card-cloud.png` | BioNodulo cloud runs | 1200×900 |
+| `og.png` | Social share preview image | 1200×630 exactly |
 
-- Qdrant (Docker):
+Not a file, but also replaceable:
 
-```bash
-docker run -p 6333:6333 -p 6334:6334 -d qdrant/qdrant:latest
-```
+- **Signature SVG** — `index.html`, search for `class="sig-wrap"`. The five
+  `<path>` elements draw a fake signature on scroll. Replace the `d` attributes
+  with paths traced from your real signature (keep `viewBox="0 0 700 260"` or
+  adjust the SVG tag too).
+- **Loader/curtain pun** — "Load Martin" lives in `js/main.js` (`curtainHTML`)
+  and the `.loader__tag` div in each HTML file.
+- **Rotating badge text** — hero, `index.html`, the `<textPath>` content.
 
-- Redis (Docker):
+## Text content
 
-```bash
-docker run -p 6379:6379 --name legaci-redis -d redis:7
-```
+All copy is plain HTML in the four pages. Facts live where you'd expect:
+stats in the home `stats` section, timeline in `research/`, work history in
+`about/`. Edit directly; keep the `data-reveal` attributes.
 
-4) Database push (create tables)
+## Deploy
 
-```bash
-cd backend
-npx prisma db push --schema=prisma/schema.prisma
-cd ..
-```
-
-5) Run dev servers
-
-- Backend API (port 3000 by default):
-
-```bash
-pnpm -C backend dev
-```
-
-- Frontend UI (port 3000 or 3001 depending on Next; if port conflicts, pass -p 3001):
-
-```bash
-pnpm -C frontend dev
-```
-
-- Embeddings worker (BullMQ): run with ts-node via npx
-
-```bash
-npx ts-node backend/src/worker/embeddingsWorker.ts
-```
-
-Ensure backend/.env is loaded in your shell before starting the worker (or use dotenvx). On Windows, you can run it in a terminal where you’ve set the env vars or use cross-env.
-
-## Environment variables (backend/.env)
-
-Use backend/.env.example as a reference. Minimal local-only configuration:
-
-```env
-NODE_ENV=development
-NEXTAUTH_URL=http://localhost:3000
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/legaci
-FIELD_ENCRYPTION_KEY=REPLACE_WITH_64_HEX_CHARS
-OPENROUTER_API_KEY=your_openrouter_key
-CHAT_MODEL=anthropic/claude-3.5-sonnet
-EMBEDDING_MODEL=text-embedding-3-large
-QDRANT_URL=http://localhost:6333
-QDRANT_COLLECTION=legaci_vectors
-QDRANT_VECTOR_SIZE=3072
-REDIS_URL=redis://localhost:6379
-RP_NAME=Legaci
-RP_ID=localhost
-```
-
-Generate FIELD_ENCRYPTION_KEY with:
-
-```bash
-openssl rand -hex 32
-```
-
-Important: QDRANT_VECTOR_SIZE must match your embedding model:
-
-- text-embedding-3-large → 3072
-- text-embedding-3-small → 1536
-- voyageai/voyage-2 → 1024
-
-### Provider-specific guidance (production)
-
-1) Postgres (Neon)
-
-- Create a database in Neon
-- Set DATABASE_URL to your Neon connection string (ensure sslmode=require)
-- Run schema: cd backend && npx prisma db push --schema=prisma/schema.prisma
-
-2) Qdrant Cloud
-
-- Create a cluster and an API key
-- Set QDRANT_URL (e.g., https://YOUR-ID.a.qdrant.cloud) and QDRANT_API_KEY
-- Set QDRANT_COLLECTION (e.g., legaci_vectors)
-- Set QDRANT_VECTOR_SIZE to match your embedding model
-
-3) Redis (Upstash)
-
-- Create a Redis database
-- Use the Redis protocol URL (rediss://…); set REDIS_URL to this value
-- Do NOT use UPSTASH_REDIS_REST_URL for BullMQ; it requires Redis protocol
-
-4) OpenRouter (LLM + embeddings)
-
-- Create an API key at https://openrouter.ai
-- Set OPENROUTER_API_KEY
-- Choose models:
-  - CHAT_MODEL, e.g., anthropic/claude-3.5-sonnet or openai/gpt-4.1
-  - EMBEDDING_MODEL, e.g., text-embedding-3-large or voyageai/voyage-2
-
-5) ElevenLabs (TTS)
-
-- Create an API key
-- Set ELEVENLABS_API_KEY and optionally ELEVENLABS_VOICE_ID
-
-6) WebAuthn
-
-- Set NEXTAUTH_URL to your https base URL
-- Set RP_ID to your domain (no scheme), e.g., app.example.com
-- Set RP_NAME to “Legaci” or your product name
-
-7) OAuth providers
-
-- Google:
-  - Authorized redirect URI: <NEXTAUTH_URL>/api/auth/oauth/google/callback
-  - Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
-
-- GitHub:
-  - Authorization callback URL: <NEXTAUTH_URL>/api/auth/oauth/github/callback
-  - Set GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GITHUB_REDIRECT_URI
-
-- Microsoft:
-  - Redirect URI: <NEXTAUTH_URL>/api/auth/oauth/microsoft/callback
-  - Set MS_CLIENT_ID, MS_CLIENT_SECRET, MS_REDIRECT_URI
-
-## Running in production
-
-1) Set all env vars in backend/.env (do not commit)
-
-2) Build and start
-
-```bash
-pnpm -C backend build && pnpm -C backend start
-```
-
-3) Start the embeddings worker
-
-- Option A (ts-node): npx ts-node backend/src/worker/embeddingsWorker.ts
-- Option B (Node, compiled): use a separate build for the worker or tsx
-
-4) Ensure Qdrant collection exists; the app auto-creates it on first upsert/search
-
-5) Configure HTTPS and secure cookies (production sets Secure; SameSite=Strict automatically)
-
-## Security notes
-
-- Never commit backend/.env (repo already ignores it via backend/.gitignore)
-- Use strong FIELD_ENCRYPTION_KEY (32-byte hex), rotate via KMS in real deployments
-- Cookies are HttpOnly and SameSite=Strict; set NEXTAUTH_URL to https origin in production
-
-## Testing
-
-- Basic e2e tests via Playwright are scaffolded at tests/e2e
-- Crypto unit tests can be added under tests/unit
-
-## Troubleshooting
-
-- Qdrant vector size mismatch → set QDRANT_VECTOR_SIZE to match EMBEDDING_MODEL
-- BullMQ not connecting → ensure REDIS_URL uses redis/rediss protocol, not REST
-- Whisper transcription errors → set OPENAI_API_KEY or disable the /api/sources/ingest flow
-
-## License
-
-MIT
+Push to `main`. GitHub Pages serves the repo root (`.nojekyll` is present, so
+no Jekyll processing). That's it.

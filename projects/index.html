@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Mika Martin</title>
+  <meta name="description" content="BioNodulo — a visual canvas for bioinformatics workflows — and AI evaluation work.">
+  <meta property="og:title" content="Projects — Mika Martin">
+  <meta property="og:description" content="BioNodulo and AI evaluation work.">
+  <meta property="og:image" content="/assets/img/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js" } }</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body data-page="projects">
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__pct"><span>0</span>%</div>
+      <div class="loader__tag mono mono--accent">load martin® · sequencing</div>
+    </div>
+  </div>
+
+  <header class="nav">
+    <a class="nav__logo" href="/" aria-label="Mika Martin — home">MM<sup>®</sup></a>
+    <nav class="nav__links" aria-label="Main">
+      <a class="nav__link" href="/" data-nav><span class="nav__idx">01</span> <span class="roll">Home</span></a>
+      <a class="nav__link" href="/research/" data-nav><span class="nav__idx">02</span> <span class="roll">Research</span></a>
+      <a class="nav__link" href="/projects/" data-nav aria-current="page"><span class="nav__idx">03</span> <span class="roll">Projects</span></a>
+      <a class="nav__link" href="/about/" data-nav><span class="nav__idx">04</span> <span class="roll">About</span></a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="hero" style="min-height: 82svh;">
+      <div class="hero__inner">
+        <div class="hero__kicker">
+          <span class="mono mono--accent">BioNodulo + AI evaluation</span>
+          <span class="mono">Shipping since 2024</span>
+        </div>
+        <h1 class="display h-mega hero__title">
+          <span class="line"><span>Pro</span></span>
+          <span class="line"><span class="accent">jects</span></span>
+        </h1>
+        <div class="hero__meta">
+          <p class="lede">One big platform, a few smaller tools, and a side job grading AI agents on their coding.</p>
+          <div class="hero__scroll">
+            <span class="mono">Scroll</span>
+            <span class="bar" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BIO NODULO -->
+    <section class="section">
+      <div class="section__head">
+        <span class="mono">Fig. 01 — BioNodulo</span>
+        <span class="mono">closed alpha · v0.1</span>
+      </div>
+      <div class="split">
+        <div class="split__sticky">
+          <h2 class="display h-big" data-reveal>Visual pipelines, node by node</h2>
+          <p class="body-text" style="margin-top: 1.2rem;" data-reveal>A drag-and-drop canvas where every node wraps a real bioinformatics tool. Runs locally, on HPC, or on cloud. Exports to Nextflow, Snakemake, CWL and Galaxy.</p>
+          <div class="pill-row" style="margin-top: 1.5rem;" data-reveal>
+            <span class="pill pill--accent">943 nodes</span>
+            <span class="pill">51 categories</span>
+            <span class="pill">22 templates</span>
+            <span class="pill">local · HPC · cloud</span>
+          </div>
+          <div style="margin-top: 2rem;" data-reveal>
+            <a class="btn" href="https://bionodulo.com/" target="_blank" rel="noopener"><span class="roll">bionodulo.com</span> &#8599;</a>
+          </div>
+        </div>
+        <div class="cards" style="grid-template-columns: 1fr;">
+          <div class="card" data-reveal>
+            <div class="card__media mask-notch">
+              <img class="img-base" src="/assets/img/card-nodes.png" alt="Node canvas placeholder" loading="lazy">
+              <img class="img-reveal" src="/assets/img/card-dna.png" alt="" aria-hidden="true" loading="lazy">
+            </div>
+            <div class="card__body"><span class="card__title">The canvas</span><span class="card__tag mono mono--accent">core</span></div>
+            <p class="card__desc">Every step visible. Wire tools together, see types and environments at each node, catch mismatches before you run.</p>
+          </div>
+          <div class="card" data-reveal>
+            <div class="card__media mask-arch">
+              <img class="img-base" src="/assets/img/card-agent.png" alt="AI agent placeholder" loading="lazy">
+              <img class="img-reveal" src="/assets/img/card-nodes.png" alt="" aria-hidden="true" loading="lazy">
+            </div>
+            <div class="card__body"><span class="card__title">AI agent</span><span class="card__tag mono mono--accent">built in</span></div>
+            <p class="card__desc">Describe the analysis and watch the graph assemble. It builds, validates, runs and fixes workflows, and reads the logs when something breaks.</p>
+          </div>
+          <div class="card" data-reveal>
+            <div class="card__media mask-blob">
+              <img class="img-base" src="/assets/img/card-doi.png" alt="DOI to pipeline placeholder" loading="lazy">
+              <img class="img-reveal" src="/assets/img/card-paper.png" alt="" aria-hidden="true" loading="lazy">
+            </div>
+            <div class="card__body"><span class="card__title">DOI to pipeline</span><span class="card__tag mono mono--accent">party trick</span></div>
+            <p class="card__desc">Paste a paper's DOI. BioNodulo reads the methods section and suggests a pre-wired workflow that matches it.</p>
+          </div>
+          <div class="card" data-reveal>
+            <div class="card__media mask-notch">
+              <img class="img-base" src="/assets/img/card-multiplayer.png" alt="Multiplayer placeholder" loading="lazy">
+              <img class="img-reveal" src="/assets/img/card-cloud.png" alt="" aria-hidden="true" loading="lazy">
+            </div>
+            <div class="card__body"><span class="card__title">Multiplayer + MCP</span><span class="card__tag mono mono--accent">collab</span></div>
+            <p class="card__desc">Edit the same canvas with your team in real time, or drive the whole editor from Claude, Codex or ChatGPT over MCP.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI EVAL WORK -->
+    <section class="section theme-dark-green">
+      <div class="section__head">
+        <span class="mono">Fig. 02 — Grading the machines</span>
+        <span class="mono">Dec 2025 – now</span>
+      </div>
+      <p class="lede" style="margin-bottom: clamp(2rem, 5vw, 3.5rem);" data-reveal>Between degrees I work as an AI evaluator, reading what coding agents produce and marking where they go wrong. It's the same job as the PhD, done by hand: catching plausible-but-wrong output.</p>
+      <div class="rows">
+        <div class="row" data-reveal>
+          <span class="row__date">2026–</span>
+          <span class="row__title">Mercor — AI Generalist Expert<span class="row__sub">Project Les Artistes Artifacts. Under NDA, so that’s all I can say.</span></span>
+          <span class="row__tag">San Francisco, remote</span>
+        </div>
+        <div class="row" data-reveal>
+          <span class="row__date">2026</span>
+          <span class="row__title">Alignerr — AI Systems Evaluator<span class="row__sub">Tested Claude-based coding systems on real software tasks; structured preference feedback for Anthropic's coding models.</span></span>
+          <span class="row__tag">Remote</span>
+        </div>
+        <div class="row" data-reveal>
+          <span class="row__date">2025–26</span>
+          <span class="row__title">Alignerr — Agentic AI Code Reviewer<span class="row__sub">Reviewed Claude Code agent transcripts against a weakness taxonomy: hallucinations, overengineering, laziness, instruction-following failures.</span></span>
+          <span class="row__tag">Remote</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SMALLER TOOLS -->
+    <section class="section">
+      <div class="section__head">
+        <span class="mono">Fig. 03 — Also in the workshop</span>
+      </div>
+      <div class="rows">
+        <div class="row" data-reveal>
+          <span class="row__date">OSS</span>
+          <span class="row__title">Agentic AI harnesses<span class="row__sub">Open-source tooling for running complex bioinformatics workflows with agents.</span></span>
+          <span class="row__tag">github.com/Classacre</span>
+        </div>
+        <div class="row" data-reveal>
+          <span class="row__date">ML</span>
+          <span class="row__title">Model training<span class="row__sub">LoRAs, hypernetworks and image models, trained at home for fun.</span></span>
+          <span class="row__tag">off hours</span>
+        </div>
+        <div class="row" data-reveal>
+          <span class="row__date">SITE</span>
+          <span class="row__title">This website<span class="row__sub">Hand-rolled HTML, CSS and JavaScript. Lenis smooth scroll, Three.js shaders, no framework. The source is public.</span></span>
+          <span class="row__tag"><a href="https://github.com/Classacre/classacre.github.io" target="_blank" rel="noopener" style="color:var(--accent);">view source</a></span>
+        </div>
+      </div>
+      <div style="margin-top: clamp(2.5rem, 6vh, 4rem);">
+        <a class="biglink" href="/about/" data-nav data-reveal>
+          <span class="biglink__row">
+            <span class="biglink__label">About</span>
+            <span class="biglink__meta">The person behind the nodes &#8599;</span>
+          </span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <a class="footer__cta" href="mailto:nieuwenhuyzenmikamartin@gmail.com">Say <span class="accent">hello</span></a>
+    <div class="footer__grid">
+      <div class="footer__col">
+        <span class="mono">Pages</span>
+        <ul>
+          <li><a href="/" data-nav><span class="roll">Home</span></a></li>
+          <li><a href="/research/" data-nav><span class="roll">Research</span></a></li>
+          <li><a href="/projects/" data-nav><span class="roll">Projects</span></a></li>
+          <li><a href="/about/" data-nav><span class="roll">About</span></a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="mono">Elsewhere</span>
+        <ul>
+          <li><a href="https://github.com/Classacre" target="_blank" rel="noopener"><span class="roll">GitHub</span></a></li>
+          <li><a href="https://www.linkedin.com/in/mika-nieuwenhuyzen/" target="_blank" rel="noopener"><span class="roll">LinkedIn</span></a></li>
+          <li><a href="https://scholar.google.com/citations?user=e35SfMcAAAAJ&hl=en" target="_blank" rel="noopener"><span class="roll">Google Scholar</span></a></li>
+          <li><a href="https://orcid.org/0009-0000-7294-8288" target="_blank" rel="noopener"><span class="roll">ORCID</span></a></li>
+          <li><a href="https://bionodulo.com/" target="_blank" rel="noopener"><span class="roll">BioNodulo</span></a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="mono">Contact</span>
+        <ul>
+          <li><a href="mailto:nieuwenhuyzenmikamartin@gmail.com"><span class="roll">nieuwenhuyzenmikamartin@gmail.com</span></a></li>
+          <li><span class="mono" style="text-transform:none;letter-spacing:0;">Perth, Western Australia</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">&copy; 2026 Mika Martin Nieuwenhuyzen</span>
+      <span class="mono">Built on coffee, 5/5</span>
+      <span class="mono">pssst: type A C G T</span>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research — Mika Martin</title>
+  <meta name="description" content="PhD research on semantic contract typing and provenance for multi-omic workflow composition. UWA, Biocodecs group, ACRTC.">
+  <meta property="og:title" content="Research — Mika Martin">
+  <meta property="og:description" content="Making bioinformatics pipelines fail loudly instead of silently.">
+  <meta property="og:image" content="/assets/img/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js" } }</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body data-page="research">
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__pct"><span>0</span>%</div>
+      <div class="loader__tag mono mono--accent">load martin® · sequencing</div>
+    </div>
+  </div>
+
+  <header class="nav">
+    <a class="nav__logo" href="/" aria-label="Mika Martin — home">MM<sup>®</sup></a>
+    <nav class="nav__links" aria-label="Main">
+      <a class="nav__link" href="/" data-nav><span class="nav__idx">01</span> <span class="roll">Home</span></a>
+      <a class="nav__link" href="/research/" data-nav aria-current="page"><span class="nav__idx">02</span> <span class="roll">Research</span></a>
+      <a class="nav__link" href="/projects/" data-nav><span class="nav__idx">03</span> <span class="roll">Projects</span></a>
+      <a class="nav__link" href="/about/" data-nav><span class="nav__idx">04</span> <span class="roll">About</span></a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="hero" style="min-height: 82svh;">
+      <div class="hero__inner">
+        <div class="hero__kicker">
+          <span class="mono mono--accent">UWA · Biocodecs group · ACRTC</span>
+          <span class="mono">Feb 2027 – mid 2030</span>
+        </div>
+        <h1 class="display h-mega hero__title">
+          <span class="line"><span>Re</span></span>
+          <span class="line"><span class="accent">search</span></span>
+        </h1>
+        <div class="hero__meta">
+          <p class="lede">Semantic contract typing and provenance for multi-omic workflow composition. Or: making pipelines say when they're wrong.</p>
+          <div class="hero__scroll">
+            <span class="mono">Scroll</span>
+            <span class="bar" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DNA SCROLLY — the three aims -->
+    <div class="pin-wrap">
+      <div class="pin-stage">
+        <div data-dna style="position:absolute;inset:0;" aria-hidden="true"></div>
+        <div class="pin-copy">
+          <div class="pin-step">
+            <span class="mono mono--accent">Aim A — Type the tools</span>
+            <h3>Contracts for every node</h3>
+            <p>Each tool declares what it expects and what it produces. Connect two that disagree, say about which genome build they’re using, and the pipeline refuses to run instead of handing you a wrong answer.</p>
+          </div>
+          <div class="pin-step">
+            <span class="mono mono--accent">Aim B — Prove it on real data</span>
+            <h3>Tested in the lab</h3>
+            <p>The system runs on real multi-omic data at the Biocodecs group, with a first-author biology paper on the way. The design keeps data inside its home institution — analysis goes to the data, not the other way round.</p>
+          </div>
+          <div class="pin-step">
+            <span class="mono mono--accent">Aim C — Measure the difference</span>
+            <h3>Count the silent errors</h3>
+            <p>A pre-registered study with about 15 researchers compares three ways of building a pipeline: ad-hoc scripts, the typed graph, and an AI agent. The endpoint that matters: how often each one produces a plausible but wrong result.</p>
+          </div>
+        </div>
+        <div class="pin-progress" aria-hidden="true"><i></i></div>
+      </div>
+    </div>
+
+    <!-- THE PHD -->
+    <section class="section">
+      <div class="section__head">
+        <span class="mono">Fig. 01 — The PhD</span>
+        <span class="mono">Proposal v4, Aug 2026</span>
+      </div>
+      <div class="split">
+        <div class="split__sticky">
+          <h2 class="display h-big" data-reveal>The<br>project</h2>
+          <div class="pill-row" style="margin-top: 1.5rem;" data-reveal>
+            <span class="pill pill--accent">contract typing</span>
+            <span class="pill">provenance</span>
+            <span class="pill">multi-omics</span>
+            <span class="pill">MCP</span>
+            <span class="pill">silent error rate</span>
+          </div>
+        </div>
+        <div>
+          <p class="lede" data-reveal>Bioinformatics pipelines fail silently. Every step runs fine, the logs are clean, and the final answer is still wrong, because two tools quietly disagreed about something, like which version of a genome they were given.</p>
+          <p class="body-text" data-reveal>My PhD builds the layer that catches those mistakes: each tool in a workflow carries a machine-checkable contract, and the workflow records its own provenance as it runs, so a result can be traced back to every decision that produced it.</p>
+          <p class="body-text" data-reveal>The system grows out of BioNodulo, the visual workflow platform I've been building since my masters. The PhD formalises what building it exposed.</p>
+          <div class="rows" style="margin-top: 2.5rem;" data-reveal>
+            <div class="row">
+              <span class="row__date">TITLE</span>
+              <span class="row__title" style="font-size:1rem;">Semantic contract typing and provenance for multi-omic workflow composition</span>
+              <span class="row__tag">UWA</span>
+            </div>
+            <div class="row">
+              <span class="row__date">SUPERV.</span>
+              <span class="row__title" style="font-size:1rem;">Dr Nikolay Shirokikh<span class="row__sub">Biocodecs group, RNA Multi-Omics and Design Lab, ACRTC</span></span>
+              <span class="row__tag">Primary</span>
+            </div>
+            <div class="row">
+              <span class="row__date">CO-SUP.</span>
+              <span class="row__title" style="font-size:1rem;">Dr Alice Cleynen · Prof Archa Fox<span class="row__sub">Biostatistics · RNA biology</span></span>
+              <span class="row__tag">Proposed</span>
+            </div>
+            <div class="row">
+              <span class="row__date">DATES</span>
+              <span class="row__title" style="font-size:1rem;">February 2027 – mid 2030</span>
+              <span class="row__tag">3.5 years</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLICATION -->
+    <section class="section theme-dark-green">
+      <div class="section__head">
+        <span class="mono">Fig. 02 — Published</span>
+        <span class="mono">May 2026</span>
+      </div>
+      <div class="split">
+        <div class="card" data-reveal>
+          <div class="card__media mask-arch">
+            <img class="img-base" src="/assets/img/card-paper.png" alt="Publication placeholder" loading="lazy">
+            <img class="img-reveal" src="/assets/img/card-gel.png" alt="" aria-hidden="true" loading="lazy">
+          </div>
+        </div>
+        <div>
+          <h2 class="display h-mid" data-reveal>Silencing the noise with gene body methylation</h2>
+          <p class="body-text" style="margin-top: 1.2rem;" data-reveal>A Spotlight article in <em>Trends in Genetics</em>, May 2026 issue. Main author, with Joseph B.P. Lloyd. It covers gene body methylation, a mark found on the bodies of genes across plants, animals and more, whose job is still argued about, and the case that it keeps transcription honest.</p>
+          <p class="mono" style="margin-top: 1.5rem; text-transform: none; letter-spacing: 0;" data-reveal>Nieuwenhuyzen M, Lloyd JPB. Trends in Genetics 2026;42(6):484–485.</p>
+          <div style="margin-top: 1.5rem;" data-reveal>
+            <a class="btn" href="https://doi.org/10.1016/j.tig.2026.04.002" target="_blank" rel="noopener"><span class="roll">Read the paper</span> &#8599;</a>
+          </div>
+          <p class="body-text" style="margin-top: 2.5rem;" data-reveal>My masters dissertation worked on the same mark in <em>Arabidopsis thaliana</em>. Scored 80.33, degree with Distinction.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE — calendar analog -->
+    <section class="section">
+      <div class="section__head">
+        <span class="mono">Fig. 03 — The calendar</span>
+        <span class="mono">2020 — 2030</span>
+      </div>
+      <div class="rows">
+        <div class="row" data-reveal><span class="row__date">2020</span><span class="row__title">Bachelor of Biomedicine, UWA<span class="row__sub">Double major: Anatomy &amp; Immunology. Global Excellence Scholarship.</span></span><span class="row__tag">Perth</span></div>
+        <div class="row" data-reveal><span class="row__date">2024</span><span class="row__title">Master of Bioinformatics, UWA<span class="row__sub">Distinction. GPA 6.36/7. Dissertation on gene body methylation in Arabidopsis.</span></span><span class="row__tag">Perth</span></div>
+        <div class="row" data-reveal><span class="row__date">2026</span><span class="row__title">Spotlight in Trends in Genetics<span class="row__sub">Main author. May 2026 issue.</span></span><span class="row__tag">Published</span></div>
+        <div class="row" data-reveal><span class="row__date">2026</span><span class="row__title">Biocodecs group, ACRTC<span class="row__sub">Volunteering in Dr Nikolay Shirokikh's lab while building BioNodulo.</span></span><span class="row__tag">Now</span></div>
+        <div class="row" data-reveal><span class="row__date">2027</span><span class="row__title">PhD begins<span class="row__sub">Semantic contract typing and provenance for multi-omic workflow composition.</span></span><span class="row__tag">February</span></div>
+        <div class="row" data-reveal><span class="row__date">2030</span><span class="row__title">PhD complete<span class="row__sub">If the pipelines cooperate. They will. That’s the point of the project.</span></span><span class="row__tag">Mid-year</span></div>
+      </div>
+      <div style="margin-top: clamp(2.5rem, 6vh, 4rem);">
+        <a class="biglink" href="/projects/" data-nav data-reveal>
+          <span class="biglink__row">
+            <span class="biglink__label">Projects</span>
+            <span class="biglink__meta">BioNodulo &amp; AI work &#8599;</span>
+          </span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <a class="footer__cta" href="mailto:nieuwenhuyzenmikamartin@gmail.com">Say <span class="accent">hello</span></a>
+    <div class="footer__grid">
+      <div class="footer__col">
+        <span class="mono">Pages</span>
+        <ul>
+          <li><a href="/" data-nav><span class="roll">Home</span></a></li>
+          <li><a href="/research/" data-nav><span class="roll">Research</span></a></li>
+          <li><a href="/projects/" data-nav><span class="roll">Projects</span></a></li>
+          <li><a href="/about/" data-nav><span class="roll">About</span></a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="mono">Elsewhere</span>
+        <ul>
+          <li><a href="https://github.com/Classacre" target="_blank" rel="noopener"><span class="roll">GitHub</span></a></li>
+          <li><a href="https://www.linkedin.com/in/mika-nieuwenhuyzen/" target="_blank" rel="noopener"><span class="roll">LinkedIn</span></a></li>
+          <li><a href="https://scholar.google.com/citations?user=e35SfMcAAAAJ&hl=en" target="_blank" rel="noopener"><span class="roll">Google Scholar</span></a></li>
+          <li><a href="https://orcid.org/0009-0000-7294-8288" target="_blank" rel="noopener"><span class="roll">ORCID</span></a></li>
+          <li><a href="https://bionodulo.com/" target="_blank" rel="noopener"><span class="roll">BioNodulo</span></a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="mono">Contact</span>
+        <ul>
+          <li><a href="mailto:nieuwenhuyzenmikamartin@gmail.com"><span class="roll">nieuwenhuyzenmikamartin@gmail.com</span></a></li>
+          <li><span class="mono" style="text-transform:none;letter-spacing:0;">Perth, Western Australia</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">&copy; 2026 Mika Martin Nieuwenhuyzen</span>
+      <span class="mono">Built on coffee, 5/5</span>
+      <span class="mono">pssst: type A C G T</span>
+    </div>
+  </footer>
+
+</body>
+</html>

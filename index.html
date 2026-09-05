@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mika Martin — Bioinformatics</title>
+  <meta name="description" content="Mika Martin Nieuwenhuyzen. Bioinformatics researcher in Perth, WA. Building BioNodulo. PhD candidate at UWA from 2027.">
+  <meta property="og:title" content="Mika Martin — Bioinformatics">
+  <meta property="og:description" content="Bioinformatics researcher. Builder of BioNodulo. PhD candidate, UWA.">
+  <meta property="og:image" content="/assets/img/og.png">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js" } }</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body data-page="home">
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__pct"><span>0</span>%</div>
+      <div class="loader__tag mono mono--accent">load martin® · sequencing</div>
+    </div>
+  </div>
+
+  <header class="nav">
+    <a class="nav__logo" href="/" aria-label="Mika Martin — home">MM<sup>®</sup></a>
+    <nav class="nav__links" aria-label="Main">
+      <a class="nav__link" href="/" data-nav><span class="nav__idx">01</span> <span class="roll">Home</span></a>
+      <a class="nav__link" href="/research/" data-nav><span class="nav__idx">02</span> <span class="roll">Research</span></a>
+      <a class="nav__link" href="/projects/" data-nav><span class="nav__idx">03</span> <span class="roll">Projects</span></a>
+      <a class="nav__link" href="/about/" data-nav><span class="nav__idx">04</span> <span class="roll">About</span></a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HERO — sticky WebGL depth portrait -->
+    <section class="hero">
+      <div class="hero__canvas-wrap" data-hero3d aria-hidden="true"></div>
+      <div class="oval" style="top: calc(var(--nav-h) + 3vh); right: var(--pad);" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <defs><path id="ov" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+          <text><textPath href="#ov">phd candidate 2027 · uwa · acrtc ·&#160;</textPath></text>
+        </svg>
+        <span class="oval__core">&#8595;</span>
+      </div>
+      <div class="hero__inner">
+        <div class="hero__kicker">
+          <span class="mono mono--accent">Perth, Western Australia</span>
+          <span class="mono">Bioinformatics since 2020</span>
+        </div>
+        <h1 class="display h-mega hero__title">
+          <span class="line"><span>Mika</span></span>
+          <span class="line"><span class="accent">Martin</span></span>
+        </h1>
+        <div class="hero__meta">
+          <p class="lede">Bioinformatics researcher. I write software that catches the errors pipelines don't report.</p>
+          <div class="hero__scroll">
+            <span class="mono">Scroll</span>
+            <span class="bar" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee marquee--accent" data-speed="70" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Bioinformatics <i class="dot">&#9679;</i> Multi-omics <i class="dot">&#9679;</i> Agentic AI <i class="dot">&#9679;</i> BioNodulo <i class="dot">&#9679;</i> UWA <i class="dot">&#9679;</i> ACRTC <i class="dot">&#9679;</i> </span>
+        <span>Bioinformatics <i class="dot">&#9679;</i> Multi-omics <i class="dot">&#9679;</i> Agentic AI <i class="dot">&#9679;</i> BioNodulo <i class="dot">&#9679;</i> UWA <i class="dot">&#9679;</i> ACRTC <i class="dot">&#9679;</i> </span>
+      </div>
+    </div>
+
+    <!-- MANIFESTO — scroll word highlight -->
+    <section class="section">
+      <div class="section__head">
+        <span class="mono">Fig. 01 — The short version</span>
+        <span class="mono">MM/26</span>
+      </div>
+      <p class="manifesto" data-reveal>
+        Every program has a solution. The trouble is, pipelines can hand you a wrong answer with a straight face. <u>My work</u> is making them <u>fail loudly</u> instead.
+      </p>
+    </section>
+
+    <!-- STATS -->
+    <section class="section section--tight">
+      <div class="stats">
+        <div class="stat" data-reveal>
+          <div class="stat__num"><span data-count="6.36" data-decimals="2">0</span><sup>/7</sup></div>
+          <div class="stat__label mono">Masters GPA, with distinction</div>
+        </div>
+        <div class="stat" data-reveal data-reveal-delay="80">
+          <div class="stat__num"><span data-count="943">0</span></div>
+          <div class="stat__label mono">Typed tool nodes in BioNodulo</div>
+        </div>
+        <div class="stat" data-reveal data-reveal-delay="160">
+          <div class="stat__num"><span data-count="1">0</span></div>
+          <div class="stat__label mono">Paper in Trends in Genetics</div>
+        </div>
+        <div class="stat" data-reveal data-reveal-delay="240">
+          <div class="stat__num">#<span data-count="9">0</span></div>
+          <div class="stat__label mono">Karate, international ranking</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IN SILICO / IN PERSON — on-track/off-track analog -->
+    <section class="section">
+      <div class="section__head">
+        <span class="mono">Fig. 02 — Two halves</span>
+        <span class="mono">Pick one</span>
+      </div>
+      <div class="cards cards--two">
+        <a class="card" href="/research/" data-nav data-reveal>
+          <span class="card__arrow">&#8599;</span>
+          <div class="card__media mask-arch">
+            <img class="img-base" src="/assets/img/card-gel.png" alt="Abstract gel electrophoresis placeholder" loading="lazy">
+            <img class="img-reveal" src="/assets/img/card-dna.png" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="card__body">
+            <h2 class="card__title display">In silico</h2>
+            <span class="card__tag mono mono--accent">Research</span>
+          </div>
+          <p class="card__desc">The PhD, the paper, and the platform I'm building to make pipelines honest.</p>
+        </a>
+        <a class="card" href="/about/" data-nav data-reveal data-reveal-delay="120">
+          <span class="card__arrow">&#8599;</span>
+          <div class="card__media mask-notch">
+            <img class="img-base" src="/assets/img/card-karate.png" alt="Abstract karate figure placeholder" loading="lazy">
+            <img class="img-reveal" src="/assets/img/card-nodes.png" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="card__body">
+            <h2 class="card__title display">In person</h2>
+            <span class="card__tag mono mono--accent">About</span>
+          </div>
+          <p class="card__desc">Karate, comics, five languages, and a dog who has never read my code.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- HORIZONTAL GALLERY — bg morphs dark to light -->
+    <section class="hgal" data-bg-from="#111112" data-bg-to="#f4f4ed">
+      <div class="hgal__stage">
+        <div class="hgal__head">
+          <span class="mono">Fig. 03 — On record</span>
+        </div>
+        <div class="hgal__track">
+          <figure class="hgal__item">
+            <img src="/assets/img/portrait.png" alt="Portrait placeholder" loading="lazy">
+            <figcaption class="mono">Perth, 2026</figcaption>
+          </figure>
+          <div class="hgal__quote">
+            <p>Simplifying bioinformatics without losing any of the science.</p>
+          </div>
+          <figure class="hgal__item">
+            <img src="/assets/img/card-gel.png" alt="Gel placeholder" loading="lazy">
+            <figcaption class="mono">UWA, 2024</figcaption>
+          </figure>
+          <figure class="hgal__item">
+            <img src="/assets/img/card-nodes.png" alt="Node graph placeholder" loading="lazy">
+            <figcaption class="mono">First pipeline, 2021</figcaption>
+          </figure>
+          <div class="hgal__quote">
+            <p>Every program has a solution. Leave it to me.</p>
+          </div>
+          <figure class="hgal__item">
+            <img src="/assets/img/card-agent.png" alt="AI agent placeholder" loading="lazy">
+            <figcaption class="mono">Biocodecs lab, 2026</figcaption>
+          </figure>
+          <figure class="hgal__item">
+            <img src="/assets/img/card-karate.png" alt="Karate placeholder" loading="lazy">
+            <figcaption class="mono">Surabaya, 2016</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE KIT — helmet hall-of-fame analog, light theme -->
+    <section class="section theme-light">
+      <div class="section__head">
+        <span class="mono">Fig. 04 — The kit</span>
+        <span class="mono">Hover to inspect</span>
+      </div>
+      <div class="tools">
+        <div class="tool" data-reveal><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Python</span></div><div class="tool__body"><span class="tool__name">Python</span><span class="mono">daily driver</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">R</span></div><div class="tool__body"><span class="tool__name">R</span><span class="mono">stats</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#282c20;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">SQL</span></div><div class="tool__body"><span class="tool__name">SQL</span><span class="mono">data</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Linux</span></div><div class="tool__body"><span class="tool__name">Linux</span><span class="mono">home turf</span></div></div>
+        <div class="tool" data-reveal><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Git</span></div><div class="tool__body"><span class="tool__name">Git</span><span class="mono">always</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#282c20;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:1.6rem;">Snakemake</span></div><div class="tool__body"><span class="tool__name">Snakemake</span><span class="mono">workflows</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#111112;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:1.6rem;">Nextflow</span></div><div class="tool__body"><span class="tool__name">Nextflow</span><span class="mono">workflows</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Docker</span></div><div class="tool__body"><span class="tool__name">Docker</span><span class="mono">containers</span></div></div>
+        <div class="tool" data-reveal><div class="tool__media" style="background:#282c20;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">HPC</span></div><div class="tool__body"><span class="tool__name">HPC / Slurm</span><span class="mono">compute</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">MCP</span></div><div class="tool__body"><span class="tool__name">MCP</span><span class="mono">agents</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:1.8rem;">FastAPI</span></div><div class="tool__body"><span class="tool__name">FastAPI</span><span class="mono">backend</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#282c20;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">React</span></div><div class="tool__body"><span class="tool__name">React</span><span class="mono">frontend</span></div></div>
+        <div class="tool" data-reveal><div class="tool__media" style="background:#111112;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:1.8rem;">LoRA</span></div><div class="tool__body"><span class="tool__name">LoRA training</span><span class="mono">off hours</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">VBA</span></div><div class="tool__body"><span class="tool__name">VBA</span><span class="mono">old faithful</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#282c20;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:1.4rem;">Claude Code</span></div><div class="tool__body"><span class="tool__name">Claude Code</span><span class="mono">I grade its homework</span></div></div>
+        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:1.8rem;">Tauri</span></div><div class="tool__body"><span class="tool__name">Tauri</span><span class="mono">desktop</span></div></div>
+      </div>
+    </section>
+
+    <!-- BIO NODULO CALLOUT — store analog -->
+    <section class="section theme-dark-green">
+      <div class="section__head">
+        <span class="mono">Fig. 05 — The main project</span>
+        <span class="mono">bionodulo.com</span>
+      </div>
+      <h2 class="display h-huge" data-reveal>Bio<br>Nodulo</h2>
+      <div class="split" style="margin-top: clamp(2rem, 5vw, 4rem);">
+        <div data-reveal>
+          <p class="lede">A visual canvas for building and running bioinformatics workflows. Drag nodes onto a graph, wire them up, run it on your laptop, a cluster, or the cloud.</p>
+          <p class="body-text" style="margin-top: 1em;">It started as my proof of concept. The PhD exists because of what building it exposed.</p>
+          <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a class="btn" href="/projects/" data-nav><span class="roll">See the project</span> &#8599;</a>
+            <a class="btn" href="https://bionodulo.com/" target="_blank" rel="noopener"><span class="roll">bionodulo.com</span> &#8599;</a>
+          </div>
+        </div>
+        <div class="card" data-reveal data-reveal-delay="120">
+          <div class="card__media mask-notch">
+            <img class="img-base" src="/assets/img/card-nodes.png" alt="BioNodulo node canvas placeholder" loading="lazy">
+            <img class="img-reveal" src="/assets/img/card-agent.png" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="card__body">
+            <span class="card__title">943 nodes, 51 categories</span>
+            <span class="card__tag mono mono--accent">closed alpha</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AFFILIATIONS — partners analog, light -->
+    <section class="section theme-light">
+      <div class="section__head">
+        <span class="mono">Fig. 06 — Affiliations</span>
+      </div>
+      <div class="affils" data-reveal>
+        <span>UWA</span>
+        <span>ACRTC</span>
+        <span>Biocodecs</span>
+        <span>Trends in Genetics</span>
+        <span>Alignerr</span>
+        <span>Mercor</span>
+        <span>UWA AI Club</span>
+      </div>
+    </section>
+
+    <!-- SIGNATURE -->
+    <div class="sig-wrap" data-sig aria-hidden="true">
+      <svg viewBox="0 0 700 260">
+        <path d="M36 208 C 58 130, 84 64, 108 70 C 130 76, 118 168, 142 158 C 164 148, 176 76, 200 78 C 224 80, 214 162, 240 150 C 258 142, 268 122, 288 114 C 312 104, 330 132, 350 120 L 366 96"/>
+        <path d="M352 152 C 364 126, 382 104, 404 100"/>
+        <path d="M388 160 C 396 136, 414 116, 436 116 C 458 116, 452 148, 472 140 C 494 131, 506 104, 530 100 C 558 95, 574 130, 600 118 C 620 109, 634 96, 654 102 C 672 108, 678 124, 664 138 C 648 154, 610 158, 596 146"/>
+        <path d="M330 74 C 334 68, 342 68, 346 74 C 342 80, 334 80, 330 74"/>
+        <path d="M330 190 C 400 176, 500 176, 590 186"/>
+      </svg>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <a class="footer__cta" href="mailto:nieuwenhuyzenmikamartin@gmail.com">Say <span class="accent">hello</span></a>
+    <div class="footer__grid">
+      <div class="footer__col">
+        <span class="mono">Pages</span>
+        <ul>
+          <li><a href="/" data-nav><span class="roll">Home</span></a></li>
+          <li><a href="/research/" data-nav><span class="roll">Research</span></a></li>
+          <li><a href="/projects/" data-nav><span class="roll">Projects</span></a></li>
+          <li><a href="/about/" data-nav><span class="roll">About</span></a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="mono">Elsewhere</span>
+        <ul>
+          <li><a href="https://github.com/Classacre" target="_blank" rel="noopener"><span class="roll">GitHub</span></a></li>
+          <li><a href="https://www.linkedin.com/in/mika-nieuwenhuyzen/" target="_blank" rel="noopener"><span class="roll">LinkedIn</span></a></li>
+          <li><a href="https://scholar.google.com/citations?user=e35SfMcAAAAJ&hl=en" target="_blank" rel="noopener"><span class="roll">Google Scholar</span></a></li>
+          <li><a href="https://orcid.org/0009-0000-7294-8288" target="_blank" rel="noopener"><span class="roll">ORCID</span></a></li>
+          <li><a href="https://bionodulo.com/" target="_blank" rel="noopener"><span class="roll">BioNodulo</span></a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="mono">Contact</span>
+        <ul>
+          <li><a href="mailto:nieuwenhuyzenmikamartin@gmail.com"><span class="roll">nieuwenhuyzenmikamartin@gmail.com</span></a></li>
+          <li><span class="mono" style="text-transform:none;letter-spacing:0;">Perth, Western Australia</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">&copy; 2026 Mika Martin Nieuwenhuyzen</span>
+      <span class="mono">Built on coffee, 5/5</span>
+      <span class="mono">pssst: type A C G T</span>
+    </div>
+  </footer>
+
+</body>
+</html>
