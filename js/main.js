@@ -218,11 +218,12 @@ function heroIntro(root) {
 async function initPage(root) {
   const page = document.body.dataset.page;
   MM.page = page;
-  $$(".nav__link").forEach((a) => {
+  $$(".nav__link, .menu__link").forEach((a) => {
     const href = new URL(a.getAttribute("href"), location.origin).pathname;
     if (href === location.pathname) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   });
+  if (MM.menuClose) MM.menuClose();
   initRolls(root);
   initReveals(root);
   initCounters(root);
@@ -248,13 +249,23 @@ function teardown() {
 
 /* ---------- curtain transitions ---------- */
 
+const SIG_PATHS = [
+  "M36 208 C 58 130, 84 64, 108 70 C 130 76, 118 168, 142 158 C 164 148, 176 76, 200 78 C 224 80, 214 162, 240 150 C 258 142, 268 122, 288 114 C 312 104, 330 132, 350 120 L 366 96",
+  "M352 152 C 364 126, 382 104, 404 100",
+  "M388 160 C 396 136, 414 116, 436 116 C 458 116, 452 148, 472 140 C 494 131, 506 104, 530 100 C 558 95, 574 130, 600 118 C 620 109, 634 96, 654 102 C 672 108, 678 124, 664 138 C 648 154, 610 158, 596 146",
+  "M330 74 C 334 68, 342 68, 346 74 C 342 80, 334 80, 330 74",
+  "M330 190 C 400 176, 500 176, 590 186",
+];
+
 const curtainHTML = `
   <div class="curtain__panel curtain__panel--accent"></div>
   <div class="curtain__panel curtain__panel--bg"></div>
   <div class="curtain__label">
     <div>
-      <div class="curtain__logo">Load&nbsp;Martin<sup style="font-size:.35em">®</sup></div>
-      <div class="curtain__pct mono mono--accent">fetching Â· <span>0</span>%</div>
+      <svg class="curtain__sig" viewBox="0 0 700 260" aria-hidden="true">
+        ${SIG_PATHS.map((d) => `<path d="${d}"/>`).join("")}
+      </svg>
+      <div class="curtain__pct mono mono--accent">load martin \u00B7 <span>0</span>%</div>
     </div>
   </div>`;
 
@@ -363,19 +374,73 @@ function initLoader() {
   const loader = $(".loader");
   if (!loader) return;
   const pct = $(".loader__pct span", loader);
+  const paths = $$(".loader__sig path", loader).map((path) => {
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    return { path, len };
+  });
   let p = 0;
   const iv = setInterval(() => {
-    p = Math.min(p + Math.random() * 26, 100);
+    p = Math.min(p + Math.random() * 24, 100);
     pct.textContent = Math.round(p);
+    paths.forEach(({ path, len }) => { path.style.strokeDashoffset = len * (1 - p / 100); });
     if (p >= 100) {
       clearInterval(iv);
       setTimeout(() => {
         loader.style.transition = "transform .7s var(--ease)";
         loader.style.transform = "translateY(-101%)";
         setTimeout(() => loader.remove(), 800);
-      }, 220);
+      }, 260);
     }
-  }, 110);
+  }, 100);
+}
+
+/* ---------- fullscreen menu ---------- */
+
+function initMenu() {
+  const btn = $("[data-menu-btn]");
+  const menu = $("#menu");
+  if (!btn || !menu) return;
+  const setOpen = (open) => {
+    menu.classList.toggle("is-open", open);
+    menu.setAttribute("aria-hidden", String(!open));
+    btn.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
+    if (MM.lenis) { open ? MM.lenis.stop() : MM.lenis.start(); }
+  };
+  btn.addEventListener("click", () => setOpen(!menu.classList.contains("is-open")));
+  addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+  $$(".menu__link", menu).forEach((a) => {
+    const key = a.dataset.menu;
+    const activate = () => {
+      $$(".menu__img", menu).forEach((im) => im.classList.toggle("is-active", im.dataset.menuImg === key));
+    };
+    a.addEventListener("mouseenter", activate);
+    a.addEventListener("focus", activate);
+    a.addEventListener("click", () => setOpen(false));
+  });
+  MM.menuClose = () => setOpen(false);
+}
+
+/* ---------- copy-to-clipboard (Discord handle) ---------- */
+
+function initCopy() {
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    try { await navigator.clipboard.writeText(b.dataset.copy); } catch (err) {}
+    let toast = $(".copy-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "copy-toast";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = `${b.dataset.copy} — copied to clipboard`;
+    toast.classList.add("is-in");
+    clearTimeout(initCopy._t);
+    initCopy._t = setTimeout(() => toast.classList.remove("is-in"), 1800);
+  });
 }
 
 /* ---------- easter eggs ---------- */
@@ -427,6 +492,8 @@ addEventListener("DOMContentLoaded", () => {
   initLenis();
   initCursor();
   initCurtain();
+  initMenu();
+  initCopy();
   initTransitions();
   initEggs();
   initPage(document);

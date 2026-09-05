@@ -19,22 +19,53 @@
 </head>
 <body data-page="projects">
 
-  <div class="loader" aria-hidden="true">
+    <div class="loader" aria-hidden="true">
     <div class="loader__inner">
+      <svg class="loader__sig" viewBox="0 0 700 260" aria-hidden="true">
+        <path d="M36 208 C 58 130, 84 64, 108 70 C 130 76, 118 168, 142 158 C 164 148, 176 76, 200 78 C 224 80, 214 162, 240 150 C 258 142, 268 122, 288 114 C 312 104, 330 132, 350 120 L 366 96"/>
+        <path d="M352 152 C 364 126, 382 104, 404 100"/>
+        <path d="M388 160 C 396 136, 414 116, 436 116 C 458 116, 452 148, 472 140 C 494 131, 506 104, 530 100 C 558 95, 574 130, 600 118 C 620 109, 634 96, 654 102 C 672 108, 678 124, 664 138 C 648 154, 610 158, 596 146"/>
+        <path d="M330 74 C 334 68, 342 68, 346 74 C 342 80, 334 80, 330 74"/>
+        <path d="M330 190 C 400 176, 500 176, 590 186"/>
+      </svg>
       <div class="loader__pct"><span>0</span>%</div>
-      <div class="loader__tag mono mono--accent">load martin® · sequencing</div>
     </div>
+    <div class="loader__tag--bottom">Load Martin<sup>®</sup></div>
   </div>
 
-  <header class="nav">
-    <a class="nav__logo" href="/" aria-label="Mika Martin — home">MM<sup>®</sup></a>
-    <nav class="nav__links" aria-label="Main">
-      <a class="nav__link" href="/" data-nav><span class="nav__idx">01</span> <span class="roll">Home</span></a>
-      <a class="nav__link" href="/research/" data-nav><span class="nav__idx">02</span> <span class="roll">Research</span></a>
-      <a class="nav__link" href="/projects/" data-nav aria-current="page"><span class="nav__idx">03</span> <span class="roll">Projects</span></a>
-      <a class="nav__link" href="/about/" data-nav><span class="nav__idx">04</span> <span class="roll">About</span></a>
-    </nav>
+    <header class="nav">
+    <a class="nav__logo" href="/" data-nav aria-label="Mika Martin — home">MM<sup>®</sup></a>
+    <button class="nav__menu-btn" type="button" data-menu-btn aria-expanded="false" aria-controls="menu">
+      <span class="mono">Menu</span>
+      <span class="lines" aria-hidden="true"><i></i><i></i></span>
+    </button>
   </header>
+
+  <div class="menu" id="menu" aria-hidden="true">
+    <div class="menu__grid">
+      <div class="menu__imgs" aria-hidden="true">
+        <div class="menu__img mask-arch is-active" data-menu-img="home"><img src="/assets/img/portrait.png" alt=""></div>
+        <div class="menu__img mask-arch" data-menu-img="research"><img src="/assets/img/card-dna.png" alt=""></div>
+        <div class="menu__img mask-arch" data-menu-img="projects"><img src="/assets/img/card-nodes.png" alt=""></div>
+        <div class="menu__img mask-arch" data-menu-img="about"><img src="/assets/img/card-karate.png" alt=""></div>
+      </div>
+      <nav class="menu__links" aria-label="Menu">
+        <a class="menu__link" href="/" data-nav data-menu="home"><span class="idx">01</span><span class="word">Home</span></a>
+        <a class="menu__link" href="/research/" data-nav data-menu="research"><span class="idx">02</span><span class="word">Research</span></a>
+        <a class="menu__link" href="/projects/" data-nav data-menu="projects"><span class="idx">03</span><span class="word">Projects</span></a>
+        <a class="menu__link" href="/about/" data-nav data-menu="about"><span class="idx">04</span><span class="word">About</span></a>
+      </nav>
+    </div>
+    <div class="menu__base">
+      <a class="mono" href="mailto:nieuwenhuyzenmikamartin@gmail.com">nieuwenhuyzenmikamartin@gmail.com</a>
+      <div class="menu__socials">
+        <a href="https://www.instagram.com/mikamartinn" target="_blank" rel="noopener">Instagram</a>
+        <button type="button" data-copy="classacre">Discord · classacre</button>
+        <a href="https://github.com/Classacre" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mika-nieuwenhuyzen/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
 
   <main>
 
@@ -190,7 +221,9 @@
       <div class="footer__col">
         <span class="mono">Elsewhere</span>
         <ul>
-          <li><a href="https://github.com/Classacre" target="_blank" rel="noopener"><span class="roll">GitHub</span></a></li>
+                    <li><a href="https://www.instagram.com/mikamartinn" target="_blank" rel="noopener"><span class="roll">Instagram</span></a></li>
+          <li><button type="button" data-copy="classacre"><span class="roll">Discord · classacre</span></button></li>
+<li><a href="https://github.com/Classacre" target="_blank" rel="noopener"><span class="roll">GitHub</span></a></li>
           <li><a href="https://www.linkedin.com/in/mika-nieuwenhuyzen/" target="_blank" rel="noopener"><span class="roll">LinkedIn</span></a></li>
           <li><a href="https://scholar.google.com/citations?user=e35SfMcAAAAJ&hl=en" target="_blank" rel="noopener"><span class="roll">Google Scholar</span></a></li>
           <li><a href="https://orcid.org/0009-0000-7294-8288" target="_blank" rel="noopener"><span class="roll">ORCID</span></a></li>

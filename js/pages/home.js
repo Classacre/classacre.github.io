@@ -5,6 +5,12 @@ import { createHero3D } from "/js/hero3d.js";
 export function init(root) {
   const cleanups = [];
 
+  const daysEl = root.querySelector("[data-days-to-phd]");
+  if (daysEl) {
+    const target = new Date("2027-02-01T00:00:00+08:00").getTime();
+    daysEl.textContent = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
+  }
+
   const heroWrap = root.querySelector("[data-hero3d]");
   if (heroWrap && !window.MM.reduced) {
     cleanups.push(createHero3D(heroWrap, {
