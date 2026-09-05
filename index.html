@@ -36,10 +36,13 @@
 
     <header class="nav">
     <a class="nav__logo" href="/" data-nav aria-label="Mika Martin — home">MM<sup>®</sup></a>
-    <button class="nav__menu-btn" type="button" data-menu-btn aria-expanded="false" aria-controls="menu">
-      <span class="mono">Menu</span>
-      <span class="lines" aria-hidden="true"><i></i><i></i></span>
-    </button>
+    <div class="nav__right">
+      <a class="nav__pill" href="https://bionodulo.com/" target="_blank" rel="noopener">BioNodulo<span aria-hidden="true">&#8599;</span></a>
+      <button class="nav__menu-btn" type="button" data-menu-btn aria-expanded="false" aria-controls="menu">
+        <span class="mono">Menu</span>
+        <span class="lines" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
   </header>
 
   <div class="menu" id="menu" aria-hidden="true">
@@ -73,21 +76,23 @@
     <!-- HERO — sticky WebGL depth portrait -->
     <section class="hero">
       <div class="hero__canvas-wrap" data-hero3d aria-hidden="true"></div>
+      <div class="hero__top">
       <a class="race-card" href="/research/" data-nav>
         <span class="mono mono--accent">Next milestone</span>
         <span class="race-card__helix" aria-hidden="true">
           <svg viewBox="0 0 100 40">
-            <path d="M0 8 Q 12.5 -8, 25 8 T 50 8 T 75 8 T 100 8" fill="none" stroke="#d2ff00" stroke-width="2"/>
-            <path d="M0 32 Q 12.5 48, 25 32 T 50 32 T 75 32 T 100 32" fill="none" stroke="#8a9455" stroke-width="2"/>
-            <line x1="25" y1="9" x2="25" y2="31" stroke="#55603c" stroke-width="1.5"/>
-            <line x1="50" y1="9" x2="50" y2="31" stroke="#55603c" stroke-width="1.5"/>
-            <line x1="75" y1="9" x2="75" y2="31" stroke="#55603c" stroke-width="1.5"/>
+            <path d="M0 8 Q 12.5 -8, 25 8 T 50 8 T 75 8 T 100 8" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+            <path d="M0 32 Q 12.5 48, 25 32 T 50 32 T 75 32 T 100 32" fill="none" stroke="#64748b" stroke-width="2"/>
+            <line x1="25" y1="9" x2="25" y2="31" stroke="#475569" stroke-width="1.5"/>
+            <line x1="50" y1="9" x2="50" y2="31" stroke="#475569" stroke-width="1.5"/>
+            <line x1="75" y1="9" x2="75" y2="31" stroke="#475569" stroke-width="1.5"/>
           </svg>
         </span>
         <span class="race-card__name">PhD begins</span>
         <span class="race-card__when mono">Feb 2027 · <span data-days-to-phd>&mdash;</span> days</span>
         <span class="race-card__badge">Bioinformatics since 2020</span>
       </a>
+      </div>
       <div class="oval" style="top: calc(var(--nav-h) + 3vh); right: var(--pad);" aria-hidden="true">
         <svg viewBox="0 0 100 100">
           <defs><path id="ov" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
@@ -165,8 +170,8 @@
         <a class="card" href="/research/" data-nav data-reveal>
           <span class="card__arrow">&#8599;</span>
           <div class="card__media mask-arch">
-            <img class="img-base" src="/assets/img/card-gel.png" alt="Abstract gel electrophoresis placeholder" loading="lazy">
-            <img class="img-reveal" src="/assets/img/card-dna.png" alt="" aria-hidden="true" loading="lazy">
+            <img class="img-base" src="/assets/img/card-paper.png" alt="Screenshot of the Trends in Genetics paper page" loading="lazy">
+            <img class="img-reveal" src="/assets/img/paper-figure.png" alt="Figure 1 of the paper" aria-hidden="true" loading="lazy">
           </div>
           <div class="card__body">
             <h2 class="card__title display">In silico</h2>
@@ -197,8 +202,8 @@
         </div>
         <div class="hgal__track">
           <figure class="hgal__item">
-            <img src="/assets/img/portrait.png" alt="Portrait placeholder" loading="lazy">
-            <figcaption class="mono">Perth, 2026</figcaption>
+            <img src="/assets/img/bionodulo-wide.png" alt="BioNodulo canvas screenshot" loading="lazy">
+            <figcaption class="mono">BioNodulo, 2026</figcaption>
           </figure>
           <div class="hgal__quote">
             <p>Simplifying bioinformatics without losing any of the science.</p>
@@ -219,7 +224,7 @@
             <figcaption class="mono">Biocodecs lab, 2026</figcaption>
           </figure>
           <figure class="hgal__item">
-            <img src="/assets/img/card-karate.png" alt="Karate placeholder" loading="lazy">
+            <img src="/assets/img/surabaya.png" alt="Tugu Pahlawan monument, Surabaya" loading="lazy">
             <figcaption class="mono">Surabaya, 2016</figcaption>
           </figure>
         </div>
@@ -232,23 +237,142 @@
         <span class="mono">Fig. 04 — The kit</span>
         <span class="mono">Hover to inspect</span>
       </div>
+      <div class="kit-legend" data-reveal>
+        <span class="kit-legend__item" data-cat="lang"><i></i>language</span>
+        <span class="kit-legend__item" data-cat="infra"><i></i>infra</span>
+        <span class="kit-legend__item" data-cat="flow"><i></i>workflows</span>
+        <span class="kit-legend__item" data-cat="agent"><i></i>agents</span>
+        <span class="kit-legend__hint">hover a node to run it</span>
+      </div>
       <div class="tools">
-        <div class="tool" data-reveal><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Python</span></div><div class="tool__body"><span class="tool__name">Python</span><span class="mono">daily driver</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">R</span></div><div class="tool__body"><span class="tool__name">R</span><span class="mono">stats</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#282c20;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">SQL</span></div><div class="tool__body"><span class="tool__name">SQL</span><span class="mono">data</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Linux</span></div><div class="tool__body"><span class="tool__name">Linux</span><span class="mono">home turf</span></div></div>
-        <div class="tool" data-reveal><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Git</span></div><div class="tool__body"><span class="tool__name">Git</span><span class="mono">always</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#282c20;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:1.6rem;">Snakemake</span></div><div class="tool__body"><span class="tool__name">Snakemake</span><span class="mono">workflows</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#111112;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:1.6rem;">Nextflow</span></div><div class="tool__body"><span class="tool__name">Nextflow</span><span class="mono">workflows</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">Docker</span></div><div class="tool__body"><span class="tool__name">Docker</span><span class="mono">containers</span></div></div>
-        <div class="tool" data-reveal><div class="tool__media" style="background:#282c20;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">HPC</span></div><div class="tool__body"><span class="tool__name">HPC / Slurm</span><span class="mono">compute</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">MCP</span></div><div class="tool__body"><span class="tool__name">MCP</span><span class="mono">agents</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:1.8rem;">FastAPI</span></div><div class="tool__body"><span class="tool__name">FastAPI</span><span class="mono">backend</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#282c20;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">React</span></div><div class="tool__body"><span class="tool__name">React</span><span class="mono">frontend</span></div></div>
-        <div class="tool" data-reveal><div class="tool__media" style="background:#111112;color:#d2ff00;display:grid;place-items:center;"><span class="display" style="font-size:1.8rem;">LoRA</span></div><div class="tool__body"><span class="tool__name">LoRA training</span><span class="mono">off hours</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="60"><div class="tool__media" style="background:#d2ff00;color:#111112;display:grid;place-items:center;"><span class="display" style="font-size:2.2rem;">VBA</span></div><div class="tool__body"><span class="tool__name">VBA</span><span class="mono">old faithful</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="120"><div class="tool__media" style="background:#282c20;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:1.4rem;">Claude Code</span></div><div class="tool__body"><span class="tool__name">Claude Code</span><span class="mono">I grade its homework</span></div></div>
-        <div class="tool" data-reveal data-reveal-delay="180"><div class="tool__media" style="background:#111112;color:#f4f4ed;display:grid;place-items:center;"><span class="display" style="font-size:1.8rem;">Tauri</span></div><div class="tool__body"><span class="tool__name">Tauri</span><span class="mono">desktop</span></div></div>
+        <div class="tool" data-cat="lang" data-reveal>
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>lang</span></div>
+          <div class="tool__name">Python</div>
+          <div class="tool__sub">daily driver</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="lang" data-reveal data-reveal-delay="60">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>lang</span></div>
+          <div class="tool__name">R</div>
+          <div class="tool__sub">stats and plots</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="lang" data-reveal data-reveal-delay="120">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>lang</span></div>
+          <div class="tool__name">SQL</div>
+          <div class="tool__sub">ask the database</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="lang" data-reveal data-reveal-delay="180">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>lang</span></div>
+          <div class="tool__name">VBA</div>
+          <div class="tool__sub">old faithful</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal>
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">Git</div>
+          <div class="tool__sub">everything versioned</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal data-reveal-delay="60">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">Linux</div>
+          <div class="tool__sub">home turf</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal data-reveal-delay="120">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">Docker</div>
+          <div class="tool__sub">it runs everywhere</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal data-reveal-delay="180">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">HPC / Slurm</div>
+          <div class="tool__sub">serious compute</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal>
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">FastAPI</div>
+          <div class="tool__sub">BioNodulo backend</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal data-reveal-delay="60">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">React</div>
+          <div class="tool__sub">BioNodulo frontend</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="infra" data-reveal data-reveal-delay="120">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>infra</span></div>
+          <div class="tool__name">Tauri</div>
+          <div class="tool__sub">desktop shell</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="flow" data-reveal data-reveal-delay="180">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>flow</span></div>
+          <div class="tool__name">Snakemake</div>
+          <div class="tool__sub">export target</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="flow" data-reveal>
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>flow</span></div>
+          <div class="tool__name">Nextflow</div>
+          <div class="tool__sub">export target</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="agent" data-reveal data-reveal-delay="60">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>agent</span></div>
+          <div class="tool__name">MCP</div>
+          <div class="tool__sub">drive the editor from Claude</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="agent" data-reveal data-reveal-delay="120">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>agent</span></div>
+          <div class="tool__name">Claude Code</div>
+          <div class="tool__sub">I grade its homework</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="tool" data-cat="agent" data-reveal data-reveal-delay="180">
+          <span class="tool__port tool__port--in" aria-hidden="true"></span>
+          <span class="tool__port tool__port--out" aria-hidden="true"></span>
+          <div class="tool__head"><i></i><span>agent</span></div>
+          <div class="tool__name">LoRA training</div>
+          <div class="tool__sub">off hours</div>
+          <div class="tool__run" aria-hidden="true"><i></i></div>
+        </div>
       </div>
     </section>
 
@@ -287,13 +411,14 @@
         <span class="mono">Fig. 06 — Affiliations</span>
       </div>
       <div class="affils" data-reveal>
-        <span>UWA</span>
-        <span>ACRTC</span>
-        <span>Biocodecs</span>
-        <span>Trends in Genetics</span>
-        <span>Alignerr</span>
-        <span>Mercor</span>
-        <span>UWA AI Club</span>
+        <a href="https://www.uwa.edu.au/" target="_blank" rel="noopener">UWA</a>
+        <a href="https://www.appliedbioinformatics.com.au/" target="_blank" rel="noopener">Centre for Applied Bioinformatics</a>
+        <a href="https://www.uwa.edu.au/australian-centre-for-rna-therapeutics-in-cancer" target="_blank" rel="noopener">ACRTC</a>
+        <a href="https://biocodecs.org/" target="_blank" rel="noopener">Biocodecs</a>
+        <a href="https://www.cell.com/trends/genetics" target="_blank" rel="noopener">Trends in Genetics</a>
+        <a href="https://alignerr.com/" target="_blank" rel="noopener">Alignerr</a>
+        <a href="https://mercor.com/" target="_blank" rel="noopener">Mercor</a>
+        <a href="https://www.linkedin.com/company/uwa-ai-club" target="_blank" rel="noopener">UWA AI Club</a>
       </div>
     </section>
 

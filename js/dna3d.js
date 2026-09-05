@@ -4,9 +4,9 @@
 
 import * as THREE from "three";
 
-const LIME = 0xd2ff00;
-const OLIVE = 0x8a9455;
-const RUNG = 0x55603c;
+const LIME = 0x2dd4bf;
+const OLIVE = 0x64748b;
+const RUNG = 0x334155;
 
 export function createDNA(container) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -21,7 +21,7 @@ export function createDNA(container) {
   const key = new THREE.DirectionalLight(0xffffff, 1.6);
   key.position.set(4, 6, 8);
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0xd2ff00, 0.7);
+  const rim = new THREE.DirectionalLight(0x2dd4bf, 0.7);
   rim.position.set(-6, -2, -4);
   scene.add(rim);
 

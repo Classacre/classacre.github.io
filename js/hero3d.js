@@ -41,8 +41,7 @@ const FRAG = /* glsl */ `
     col.b = texture2D(uTex, uv + par * 0.94).b;
     float vig = smoothstep(1.15, 0.35, length(vUv - 0.5));
     col *= mix(0.72, 1.0, vig);
-    float scan = sin((vUv.y + uTime * 0.02) * 800.0) * 0.012;
-    gl_FragColor = vec4(col + scan, 1.0);
+    gl_FragColor = vec4(col, 1.0);
   }
 `;
 

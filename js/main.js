@@ -180,7 +180,7 @@ function initManifesto(root) {
 function initHgal(root) {
   $$(".hgal", root).forEach((sec) => {
     const track = $(".hgal__track", sec);
-    const from = sec.dataset.bgFrom || "#111112";
+    const from = sec.dataset.bgFrom || "#0f172a";
     const to = sec.dataset.bgTo || "#f4f4ed";
     let raf;
     (function loop() {
@@ -448,8 +448,8 @@ function initCopy() {
 function initEggs() {
   console.log(
     "%cMIKA%cMARTIN%c — bioinformatics, nodes and pipelines. Curious? github.com/Classacre",
-    "background:#d2ff00;color:#111112;font-weight:900;font-size:28px;padding:4px 2px 4px 10px;font-family:monospace",
-    "background:#111112;color:#d2ff00;font-weight:900;font-size:28px;padding:4px 10px 4px 2px;font-family:monospace",
+    "background:#2dd4bf;color:#0f172a;font-weight:900;font-size:28px;padding:4px 2px 4px 10px;font-family:monospace",
+    "background:#0f172a;color:#2dd4bf;font-weight:900;font-size:28px;padding:4px 10px 4px 2px;font-family:monospace",
     "color:#f4f4ed;font-size:12px;font-family:monospace"
   );
   let buf = "";
@@ -472,11 +472,11 @@ function acgtRain() {
   const chars = "ACGT";
   const t0 = performance.now();
   (function draw(now) {
-    ctx.fillStyle = "rgba(17,17,18,0.18)";
+    ctx.fillStyle = "rgba(15,23,42,0.18)";
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.font = "20px 'Space Mono', monospace";
     drops.forEach((y, i) => {
-      ctx.fillStyle = Math.random() < 0.12 ? "#d2ff00" : "rgba(210,255,0,0.45)";
+      ctx.fillStyle = Math.random() < 0.12 ? "#2dd4bf" : "rgba(210,255,0,0.45)";
       ctx.fillText(chars[Math.floor(Math.random() * 4)], i * 26, y);
       drops[i] = y + 18 + Math.random() * 8;
       if (y > c.height) drops[i] = Math.random() * -200;
