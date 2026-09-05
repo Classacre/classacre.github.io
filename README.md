@@ -47,18 +47,22 @@ then open http://localhost:8000/ (ES modules need a server; file:// won't work).
 All in `assets/img/`, all 1200×900 (4:3). Replace with your own photos using
 the **same filename** — nothing else to change.
 
+Already real: `card-paper.png` (screenshot of the paper's cell.com page),
+`paper-figure.png` (Figure 1 from the paper, shown on card hover),
+`card-nodes/agent/doi/multiplayer/cloud/mcp.png` (real BioNodulo app
+screenshots — agent/DOI/multiplayer are stand-ins since those features render
+as live demos, not static images), `bionodulo-wide.png` (single-cell canvas,
+home gallery), `surabaya.png` (Tugu Pahlawan, Wikimedia Commons).
+
 | File | Used for | Suggested real photo |
 |---|---|---|
-| `card-gel.png` | "In silico" card, gallery, research | lab work, gels, screens with data |
-| `card-dna.png` | research hover, menu image | plants / Arabidopsis / lab bench |
-| `card-karate.png` | "In person" card, about hover, menu | karate photo |
-| `card-nodes.png` | BioNodulo canvas, menu image | screenshot of the BioNodulo canvas |
-| `card-agent.png` | BioNodulo AI agent, gallery | screenshot of the agent building a graph |
+| `card-gel.png` | gallery ("UWA, 2024") | lab work, gels, screens with data |
+| `card-dna.png` | menu image (Research) | plants / Arabidopsis / lab bench |
+| `card-karate.png` | "In person" card, about hover, menu | karate photo (currently a skateboarder) |
+| `card-agent.png` | BioNodulo AI agent | screenshot of the agent building a graph |
 | `card-doi.png` | DOI-to-pipeline feature | screenshot of the DOI feature |
-| `card-paper.png` | Trends in Genetics card | screenshot of the paper's landing page |
 | `card-multiplayer.png` | BioNodulo multiplayer/MCP | screenshot of multiplayer editing |
-| `card-cloud.png` | BioNodulo cloud runs | screenshot of a cloud run |
-| `card-mcp.png` | MCP server feature | screenshot of Claude driving the editor |
+| `card-mcp.png` | node library / MCP | screenshot of Claude driving the editor |
 
 ## Not files, but also swappable
 
