@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Sleep — Mika Martin (demo)</title>
+  <meta name="description" content="Demo sleep tracker with made-up data. Temporary page.">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/sleep.css">
+</head>
+<body data-page="sleep">
+
+  <main class="sleep-app">
+    <header class="sleep-head">
+      <div class="sleep-logo">
+        <span class="sleep-glyph" aria-hidden="true">&#9789;</span>
+        <h1 class="sleep-title">Mika <em>sleeps</em></h1>
+      </div>
+      <span class="sleep-demo">demo page · made-up data</span>
+    </header>
+
+    <div class="month-tabs" role="tablist" aria-label="Month">
+      <button class="month-tab is-active" type="button" data-month="0" role="tab">July 2026</button>
+      <button class="month-tab" type="button" data-month="1" role="tab">August 2026</button>
+    </div>
+
+    <section class="sleep-stats" aria-label="Averages">
+      <div class="sstat sstat--hero">
+        <div class="sstat__num"><span data-stat="avg">–</span><small>h</small></div>
+        <div class="sstat__label">Month average</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat__num"><span data-stat="wd">–</span><small>h</small></div>
+        <div class="sstat__label">Weekday average</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat__num"><span data-stat="we">–</span><small>h</small></div>
+        <div class="sstat__label">Weekend average</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat__num"><span data-stat="best">–</span><small>h</small></div>
+        <div class="sstat__label">Best night</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat__num"><span data-stat="worst">–</span><small>h</small></div>
+        <div class="sstat__label">Worst night</div>
+      </div>
+    </section>
+
+    <div class="sleep-legend" aria-hidden="true">
+      <span class="mono">3h</span>
+      <div class="legend-bar"></div>
+      <span class="mono">8h+</span>
+    </div>
+
+    <section class="cal" id="cal" aria-label="Sleep calendar"></section>
+
+    <p class="mono" style="margin-top: 1.6rem; opacity: 0.6;">Red = short night, green = healthy. Sundays with 12h+ are the catch-up specials. This page is temporary and the data is invented.</p>
+  </main>
+
+  <script type="module">
+    /* Deterministic made-up data for July + August 2026. */
+
+    const MONTHS = [
+      { year: 2026, month: 6 },
+      { year: 2026, month: 7 },
+    ];
+    const BIG_SUNDAYS = new Set(["2026-07-12", "2026-07-26", "2026-08-16", "2026-08-30"]);
+    const WD_TARGET = 4.2;
+
+    function mulberry32(seed) {
+      return function () {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const rand = mulberry32(22938292);
+
+    const iso = (y, m, d) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+    const DATA = MONTHS.map(({ year, month }) => {
+      const days = new Date(year, month + 1, 0).getDate();
+      const nights = [];
+      for (let d = 1; d <= days; d++) {
+        const date = new Date(year, month, d);
+        const dow = (date.getDay() + 6) % 7; // 0 = Monday
+        const key = iso(year, month, d);
+        let h;
+        if (BIG_SUNDAYS.has(key)) h = 12 + rand() * 5;          // catch-up Sundays: 12-17h
+        else if (dow < 5) h = 3.1 + rand() * 2.4;               // weekdays: short
+        else if (dow === 5) h = 6 + rand() * 2.5;               // Saturdays
+        else h = 6.5 + rand() * 2.5;                            // ordinary Sundays
+        nights.push({ d, dow, h });
+      }
+      // pin weekday mean to exactly WD_TARGET
+      const wd = nights.filter((n) => n.dow < 5);
+      const mean = wd.reduce((s, n) => s + n.h, 0) / wd.length;
+      const delta = WD_TARGET - mean;
+      wd.forEach((n) => { n.h = Math.min(6.2, Math.max(2.4, n.h + delta)); });
+      return nights;
+    });
+
+    const colorFor = (h) => {
+      const t = Math.min(1, Math.max(0, (h - 3) / 5));
+      return `hsl(${Math.round(t * 145)} 78% 52%)`;
+    };
+
+    const avg = (arr) => (arr.length ? arr.reduce((s, n) => s + n.h, 0) / arr.length : 0);
+    const fmt = (h) => h.toFixed(1);
+
+    const cal = document.getElementById("cal");
+    const tabs = [...document.querySelectorAll(".month-tab")];
+    const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    function render(mi) {
+      const nights = DATA[mi];
+      const { year, month } = MONTHS[mi];
+
+      const wd = nights.filter((n) => n.dow < 5);
+      const we = nights.filter((n) => n.dow >= 5);
+      const best = nights.reduce((a, b) => (b.h > a.h ? b : a));
+      const worst = nights.reduce((a, b) => (b.h < a.h ? b : a));
+      document.querySelector('[data-stat="avg"]').textContent = fmt(avg(nights));
+      document.querySelector('[data-stat="wd"]').textContent = fmt(avg(wd));
+      document.querySelector('[data-stat="we"]').textContent = fmt(avg(we));
+      document.querySelector('[data-stat="best"]').textContent = fmt(best.h);
+      document.querySelector('[data-stat="worst"]').textContent = fmt(worst.h);
+
+      const firstDow = (new Date(year, month, 1).getDay() + 6) % 7;
+      const cells = [];
+      for (let i = 0; i < firstDow; i++) cells.push(null);
+      nights.forEach((n) => cells.push(n));
+      while (cells.length % 7) cells.push(null);
+
+      let html = DOW.map((d) => `<div class="cal__dow">${d}</div>`).join("") + `<div class="cal__dow cal__avg-head">Avg</div>`;
+      for (let w = 0; w < cells.length / 7; w++) {
+        const row = cells.slice(w * 7, w * 7 + 7);
+        row.forEach((n) => {
+          if (!n) { html += `<div class="cal__cell cal__cell--empty"></div>`; return; }
+          const c = colorFor(n.h);
+          const big = n.h >= 12;
+          html += `
+            <div class="cal__cell${big ? " cal__cell--flat" : ""}" style="--cell-c:${c}" title="${fmt(n.h)} hours">
+              <span class="cal__date">${n.d}</span>
+              <div class="cal__bars"><div class="cal__bar" style="height:${Math.min(100, (n.h / 13) * 100)}%"></div></div>
+              <span class="cal__hours"><b>${fmt(n.h)}</b>h</span>
+            </div>`;
+        });
+        const wa = avg(row.filter(Boolean));
+        html += `<div class="cal__avg"><span>wk</span><b>${fmt(wa)}</b></div>`;
+      }
+      cal.innerHTML = html;
+    }
+
+    tabs.forEach((t) => t.addEventListener("click", () => {
+      tabs.forEach((x) => x.classList.remove("is-active"));
+      t.classList.add("is-active");
+      render(Number(t.dataset.month));
+    }));
+
+    render(0);
+  </script>
+</body>
+</html>

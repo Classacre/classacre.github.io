@@ -1,0 +1,101 @@
+/* ==========================================================================
+   SLEEP — demo sleep-tracker page. Reuses the site tokens via main.css.
+   App-style dark UI, calendar with red->green health scale.
+   ========================================================================== */
+
+:root {
+  --s-bg: #0b1120;
+  --s-card: #16213a;
+  --s-line: rgba(248, 250, 252, 0.1);
+}
+
+body { background: var(--s-bg); }
+
+.sleep-app { min-height: 100svh; padding: clamp(1.2rem, 3vw, 2.5rem) var(--pad) 3rem; max-width: 1200px; margin: 0 auto; }
+
+/* header */
+
+.sleep-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; padding-top: 0.6rem; }
+.sleep-logo { display: flex; align-items: baseline; gap: 0.8rem; }
+.sleep-glyph { font-size: 1.8rem; color: var(--accent); line-height: 1; }
+.sleep-title { font-family: var(--font-display); font-stretch: 125%; font-weight: 850; text-transform: uppercase; font-size: clamp(1.5rem, 3.4vw, 2.4rem); line-height: 0.95; }
+.sleep-title em { font-style: normal; color: var(--accent); }
+.sleep-demo { border: 1px solid var(--accent-2); color: var(--accent-2); border-radius: 999px; padding: 0.3rem 0.75rem; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* month tabs */
+
+.month-tabs { display: flex; gap: 0.5rem; margin: clamp(1.4rem, 3vh, 2.2rem) 0 1.2rem; }
+.month-tab {
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--s-line); border-radius: 999px; padding: 0.55rem 1.2rem;
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
+}
+.month-tab:hover { color: var(--ink); border-color: var(--ink); }
+.month-tab.is-active { background: var(--accent); border-color: var(--accent); color: #0f172a; font-weight: 700; }
+
+/* stats */
+
+.sleep-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--s-line); border: 1px solid var(--s-line); border-radius: 14px; overflow: hidden; }
+.sstat { background: var(--s-card); padding: 1.1rem 1.2rem 1.2rem; }
+.sstat__num { font-family: var(--font-display); font-stretch: 125%; font-weight: 850; font-size: clamp(1.8rem, 3.6vw, 2.8rem); line-height: 1; }
+.sstat__num small { font-size: 0.42em; font-weight: 600; color: var(--muted); margin-left: 0.15em; }
+.sstat__label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; }
+.sstat--hero .sstat__num { color: var(--accent); }
+
+/* legend */
+
+.sleep-legend { display: flex; align-items: center; gap: 0.8rem; margin: 1.4rem 0 0.8rem; }
+.sleep-legend .mono { font-size: 0.62rem; }
+.legend-bar { flex: 1; max-width: 320px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, hsl(0 80% 55%), hsl(35 90% 55%), hsl(70 85% 50%), hsl(145 75% 45%)); }
+
+/* calendar */
+
+.cal { display: grid; grid-template-columns: repeat(7, 1fr) 64px; gap: 6px; margin-top: 0.6rem; }
+.cal__dow { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; padding-bottom: 0.3rem; }
+.cal__avg-head { text-align: center; }
+.cal__cell {
+  position: relative;
+  background: var(--s-card);
+  border: 1px solid var(--s-line);
+  border-radius: 10px;
+  min-height: 92px;
+  padding: 0.45rem 0.5rem 0.5rem;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.35s var(--ease), border-color 0.3s;
+}
+.cal__cell:hover { transform: translateY(-3px); border-color: var(--cell-c, var(--accent)); z-index: 2; }
+.cal__cell--empty { background: transparent; border-color: transparent; pointer-events: none; }
+.cal__date { font-family: var(--font-mono); font-size: 0.66rem; color: var(--muted); }
+.cal__date--today { color: var(--accent-2); font-weight: 700; }
+.cal__bars { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding: 0.35rem 0 0.3rem; }
+.cal__bar {
+  width: min(46%, 26px);
+  border-radius: 6px;
+  background: var(--cell-c);
+  min-height: 4px;
+}
+.cal__hours { font-family: var(--font-mono); font-size: 0.66rem; text-align: center; color: var(--ink); }
+.cal__hours b { font-weight: 700; }
+.cal__cell--flat .cal__hours { color: var(--cell-c); font-weight: 700; }
+.cal__avg {
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.15rem;
+  font-family: var(--font-mono); font-size: 0.64rem; color: var(--muted);
+  border-left: 1px dashed var(--s-line);
+}
+.cal__avg b { color: var(--ink); font-size: 0.78rem; }
+
+/* cell tint = health color at low alpha */
+.cal__cell::before {
+  content: ""; position: absolute; inset: 0;
+  background: var(--cell-c, transparent);
+  opacity: 0.13; pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .cal { grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal__avg, .cal__avg-head { display: none; }
+  .cal__cell { min-height: 64px; padding: 0.3rem 0.35rem 0.35rem; }
+  .cal__hours { font-size: 0.56rem; }
+  .cal__date { font-size: 0.56rem; }
+}
