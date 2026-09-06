@@ -1,101 +1,112 @@
 /* ==========================================================================
-   SLEEP — demo sleep-tracker page. Reuses the site tokens via main.css.
-   App-style dark UI, calendar with red->green health scale.
+   SLEEP — Apple Health-style demo page. Self-contained (no site theme).
+   iOS dark: black base, #1c1c1e cards, system colors, system font stack.
    ========================================================================== */
 
 :root {
-  --s-bg: #0b1120;
-  --s-card: #16213a;
-  --s-line: rgba(248, 250, 252, 0.1);
+  --ios-bg: #000000;
+  --ios-card: #1c1c1e;
+  --ios-card-2: #2c2c2e;
+  --ios-line: rgba(255, 255, 255, 0.08);
+  --ios-text: #ffffff;
+  --ios-muted: #98989d;
+  --ios-red: #ff453a;
+  --ios-teal: #64d2ff;
+  --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
 
-body { background: var(--s-bg); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.sleep-app { min-height: 100svh; padding: clamp(1.2rem, 3vw, 2.5rem) var(--pad) 3rem; max-width: 1200px; margin: 0 auto; }
+body {
+  background: var(--ios-bg);
+  color: var(--ios-text);
+  font-family: var(--ios-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sleep-app { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* fake iOS status bar */
+
+.statusbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 8px 4px;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
+}
+.statusbar__icons { display: flex; align-items: center; gap: 6px; opacity: 0.9; }
+.statusbar svg { display: block; height: 12px; width: auto; }
 
 /* header */
 
-.sleep-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; padding-top: 0.6rem; }
-.sleep-logo { display: flex; align-items: baseline; gap: 0.8rem; }
-.sleep-glyph { font-size: 1.8rem; color: var(--accent); line-height: 1; }
-.sleep-title { font-family: var(--font-display); font-stretch: 125%; font-weight: 850; text-transform: uppercase; font-size: clamp(1.5rem, 3.4vw, 2.4rem); line-height: 0.95; }
-.sleep-title em { font-style: normal; color: var(--accent); }
-.sleep-demo { border: 1px solid var(--accent-2); color: var(--accent-2); border-radius: 999px; padding: 0.3rem 0.75rem; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.sleep-head { padding: 14px 4px 0; }
+.sleep-head h1 { font-size: 34px; font-weight: 700; letter-spacing: 0.01em; }
+.sleep-head .sub { color: var(--ios-muted); font-size: 13px; margin-top: 2px; }
 
-/* month tabs */
+/* month navigator (chevrons) */
 
-.month-tabs { display: flex; gap: 0.5rem; margin: clamp(1.4rem, 3vh, 2.2rem) 0 1.2rem; }
-.month-tab {
-  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--muted); border: 1px solid var(--s-line); border-radius: 999px; padding: 0.55rem 1.2rem;
-  transition: color 0.3s, border-color 0.3s, background 0.3s;
+.month-nav { display: flex; align-items: center; justify-content: space-between; margin: 20px 4px 12px; }
+.month-nav__label { font-size: 17px; font-weight: 600; }
+.month-nav__btns { display: flex; gap: 4px; }
+.month-nav__btns button {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--ios-card); border: 0; color: var(--ios-teal);
+  font-size: 17px; cursor: pointer; line-height: 1;
+  transition: background 0.2s, opacity 0.2s;
 }
-.month-tab:hover { color: var(--ink); border-color: var(--ink); }
-.month-tab.is-active { background: var(--accent); border-color: var(--accent); color: #0f172a; font-weight: 700; }
+.month-nav__btns button:hover { background: var(--ios-card-2); }
+.month-nav__btns button:disabled { opacity: 0.25; cursor: default; }
 
-/* stats */
+/* stat cards — iOS grouped style */
 
-.sleep-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--s-line); border: 1px solid var(--s-line); border-radius: 14px; overflow: hidden; }
-.sstat { background: var(--s-card); padding: 1.1rem 1.2rem 1.2rem; }
-.sstat__num { font-family: var(--font-display); font-stretch: 125%; font-weight: 850; font-size: clamp(1.8rem, 3.6vw, 2.8rem); line-height: 1; }
-.sstat__num small { font-size: 0.42em; font-weight: 600; color: var(--muted); margin-left: 0.15em; }
-.sstat__label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; }
-.sstat--hero .sstat__num { color: var(--accent); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat {
+  background: var(--ios-card); border-radius: 16px; padding: 14px 16px 16px;
+}
+.stat--wide { grid-column: 1 / -1; }
+.stat__label { font-size: 13px; color: var(--ios-muted); font-weight: 500; }
+.stat__num { font-size: 30px; font-weight: 700; margin-top: 2px; letter-spacing: 0.01em; }
+.stat__num small { font-size: 15px; font-weight: 500; color: var(--ios-muted); margin-left: 3px; }
+.stat--wide .stat__num { color: var(--ios-teal); }
 
 /* legend */
 
-.sleep-legend { display: flex; align-items: center; gap: 0.8rem; margin: 1.4rem 0 0.8rem; }
-.sleep-legend .mono { font-size: 0.62rem; }
-.legend-bar { flex: 1; max-width: 320px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, hsl(0 80% 55%), hsl(35 90% 55%), hsl(70 85% 50%), hsl(145 75% 45%)); }
+.legend { display: flex; align-items: center; gap: 10px; margin: 18px 4px 8px; font-size: 12px; color: var(--ios-muted); }
+.legend-bar { flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #ff453a, #ff9f0a, #ffd60a, #30d158); }
 
-/* calendar */
+/* calendar card */
 
-.cal { display: grid; grid-template-columns: repeat(7, 1fr) 64px; gap: 6px; margin-top: 0.6rem; }
-.cal__dow { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; padding-bottom: 0.3rem; }
-.cal__avg-head { text-align: center; }
+.cal-card { background: var(--ios-card); border-radius: 16px; padding: 14px 12px 12px; margin-top: 12px; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal__dow { text-align: center; font-size: 11px; font-weight: 600; color: var(--ios-muted); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 6px; }
 .cal__cell {
-  position: relative;
-  background: var(--s-card);
-  border: 1px solid var(--s-line);
-  border-radius: 10px;
-  min-height: 92px;
-  padding: 0.45rem 0.5rem 0.5rem;
+  background: var(--ios-card-2);
+  border-radius: 12px;
+  min-height: 74px;
+  padding: 6px 6px 7px;
   display: flex; flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.35s var(--ease), border-color 0.3s;
+  position: relative; overflow: hidden;
+  transition: transform 0.18s ease;
 }
-.cal__cell:hover { transform: translateY(-3px); border-color: var(--cell-c, var(--accent)); z-index: 2; }
-.cal__cell--empty { background: transparent; border-color: transparent; pointer-events: none; }
-.cal__date { font-family: var(--font-mono); font-size: 0.66rem; color: var(--muted); }
-.cal__date--today { color: var(--accent-2); font-weight: 700; }
-.cal__bars { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding: 0.35rem 0 0.3rem; }
-.cal__bar {
-  width: min(46%, 26px);
-  border-radius: 6px;
-  background: var(--cell-c);
-  min-height: 4px;
-}
-.cal__hours { font-family: var(--font-mono); font-size: 0.66rem; text-align: center; color: var(--ink); }
-.cal__hours b { font-weight: 700; }
-.cal__cell--flat .cal__hours { color: var(--cell-c); font-weight: 700; }
-.cal__avg {
-  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.15rem;
-  font-family: var(--font-mono); font-size: 0.64rem; color: var(--muted);
-  border-left: 1px dashed var(--s-line);
-}
-.cal__avg b { color: var(--ink); font-size: 0.78rem; }
-
-/* cell tint = health color at low alpha */
+.cal__cell:hover { transform: scale(1.04); }
+.cal__cell--empty { background: transparent; pointer-events: none; }
 .cal__cell::before {
   content: ""; position: absolute; inset: 0;
-  background: var(--cell-c, transparent);
-  opacity: 0.13; pointer-events: none;
+  background: var(--cell-c, transparent); opacity: 0.16; pointer-events: none;
 }
+.cal__date {
+  font-size: 11px; font-weight: 600; color: var(--ios-muted);
+  width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%;
+}
+.cal__date--today { background: var(--ios-red); color: #fff; }
+.cal__bars { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding: 4px 0; }
+.cal__bar { width: 14px; border-radius: 7px; background: var(--cell-c); min-height: 4px; }
+.cal__hours { font-size: 11px; text-align: center; font-weight: 600; color: var(--ios-text); }
 
-@media (max-width: 720px) {
-  .cal { grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal__avg, .cal__avg-head { display: none; }
-  .cal__cell { min-height: 64px; padding: 0.3rem 0.35rem 0.35rem; }
-  .cal__hours { font-size: 0.56rem; }
-  .cal__date { font-size: 0.56rem; }
+.footnote { margin-top: 18px; text-align: center; font-size: 12px; color: var(--ios-muted); }
+
+@media (max-width: 560px) {
+  .sleep-head h1 { font-size: 30px; }
+  .cal__cell { min-height: 60px; border-radius: 10px; }
+  .cal__hours { font-size: 10px; }
+  .stat__num { font-size: 24px; }
 }
