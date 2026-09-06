@@ -26,19 +26,9 @@ body {
 
 .sleep-app { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
 
-/* fake iOS status bar */
-
-.statusbar {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 8px 4px;
-  font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
-}
-.statusbar__icons { display: flex; align-items: center; gap: 6px; opacity: 0.9; }
-.statusbar svg { display: block; height: 12px; width: auto; }
-
 /* header */
 
-.sleep-head { padding: 14px 4px 0; }
+.sleep-head { padding: 22px 4px 0; }
 .sleep-head h1 { font-size: 34px; font-weight: 700; letter-spacing: 0.01em; }
 .sleep-head .sub { color: var(--ios-muted); font-size: 13px; margin-top: 2px; }
 
